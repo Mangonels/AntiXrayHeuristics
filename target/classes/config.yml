@@ -1,0 +1,56 @@
+#------------------------------------------------------------------------------------------------------
+#                           ANTI XRAY HEURISTICS (AXH) - by __Mithrandir__
+#
+#    Config version 1.0
+#    Disclaimer: This plugin may not function as intended with servers with custom or modified
+#    terrain and ores generation.
+#------------------------------------------------------------------------------------------------------
+
+#If true, AXH will output debug messages (no need to activate this unless a developer requests it):
+Debug: false
+
+#AXH will only monitor player behaviour in order to detect xrays in the following worlds:
+TrackWorlds:
+  - 'exampleworld1'
+  - 'exampleworld2'
+
+#The following values are to be balanced depending on the world's mineral density. Default values should be ok for
+#regular mineral generation. Set to 0 to ignore. Negative values will reduce player suspicion (not recommended).
+QuartzWeight: 9.0
+CoalWeight: 9.0
+IronWeight: 9.0
+GoldWeight: 15.0
+LapisWeight: 15.0
+RedstoneWeight: 15.0
+EmeraldWeight: 30.0
+DiamondWeight: 30.0
+
+#For further efficiency, let AXH know how many adjacent blocks in any direction should be considered as part of
+#a same ore vein. Default should be ok for default vanilla ore generation, set to 0 or less to disable:
+ConsiderAdjacentWithinDistance: 10
+
+#For further efficiency, let AXH know how many blocks a player would have to mine at very least, in order to
+#encounter another ore vein. This value should be more or less the average minimum distance between veins on your
+#server's map, default should be ok for default vanilla ore generation. Setting this to a lower value than default
+#is not recomended at all (and your server shouldn't even have a higher ore density than vanilla, else you wouldn't
+#be using this plugin), but you can if you're crazy enough.
+MinimumBlocksMinedToNextVein: 10
+
+#The following commands are to be executed from console when a player must be punished for certain xraying.
+#Set it like this: 'CommandsExecuted: []', if you wish to disable command executions.
+#Available placeholders (Caps sensitive): {PlayerName}
+CommandsExecuted:
+  - 'helpop {PlayerName} is probably Xraying'
+
+#If set to true, all of the player's items will be erased. This includes Hotbar, OffHand, Inventory and Equipment:
+ClensePlayerItems: false
+
+#Following options allow you to send a message right when the player is punished for Xraying.
+SendMessageToPlayer: false
+MessageToSend: '[Xray] You where punished for Xraying, uninstall xrays inmediately. Resume your gameplay only after you have uninstalled Xrays.'
+
+#Recommended true. If so, will nullify the player's suspicion after being punished:
+NullifySuspicionAferPunish: true
+
+#Ignore mined blocks above following altitude (default value should be ok):
+IgnoreHigherThanAltitude: 65
