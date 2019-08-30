@@ -21,9 +21,6 @@ public final class AntiXrayHeuristics extends JavaPlugin implements Listener {
     //Mining sessions HashMap:
     public static HashMap<String, MiningSession> sessions = new HashMap<String, MiningSession>();
 
-    //Thread concurrency access Semaphore:
-    public Semaphore sessionsSemaphore = new Semaphore(1);
-
     //Hardcoded heuristics:
 
     private final float suspicionLevelThreshold = 100f; //Suspicion Threshold value above which we consider a player as Xraying.
@@ -91,11 +88,7 @@ public final class AntiXrayHeuristics extends JavaPlugin implements Listener {
             @Override
             public void run()
             {
-                try {
-                    sessionsSemaphore.acquire();
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
+
                 for (HashMap.Entry<String, MiningSession> entry : sessions.entrySet()) {
                     //Reductions:
                     entry.getValue().AddSuspicionLevel(suspicionDecreaseAmount); //Less suspicion
@@ -110,9 +103,8 @@ public final class AntiXrayHeuristics extends JavaPlugin implements Listener {
                     else entry.getValue().foundAtZeroSuspicionStreak = 0; //Reset streak
                     if(entry.getValue().minedNonOreBlocksStreak < 0) entry.getValue().minedNonOreBlocksStreak = 0; //Non ore mined blocks streak min 0
                 }
-                sessionsSemaphore.release();
             }
-        }.runTaskTimerAsynchronously(this, suspicionDecreaseFrequency, suspicionDecreaseFrequency);
+        }.runTaskTimer(this, suspicionDecreaseFrequency, suspicionDecreaseFrequency);
     }
 
     private void HandleXrayer(String name) //If called, executes what must be done to an inputted Xrayer by name.
@@ -135,13 +127,7 @@ public final class AntiXrayHeuristics extends JavaPlugin implements Listener {
             }
 
             if (getConfig().getBoolean("NullifySuspicionAferPunish")) {
-                try {
-                    sessionsSemaphore.acquire();
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
                 sessions.remove(player.getName());
-                sessionsSemaphore.release();
             }
         }
         else{ System.out.println("Player named " + name + " was not found while attempting to handle as Xrayer."); }
@@ -149,11 +135,6 @@ public final class AntiXrayHeuristics extends JavaPlugin implements Listener {
 
     private boolean UpdateMiningSession(BlockBreakEvent ev, Material m) //Attempts at updating the mining session for a player who broke a block, with just a few arguments. If this fails, the function returns false, else returns true
     {
-        try {
-            sessionsSemaphore.acquire();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
         MiningSession s = sessions.get(ev.getPlayer().getName());
         if (s == null) return false; //Return update unsuccessful
         else {
@@ -250,7 +231,6 @@ public final class AntiXrayHeuristics extends JavaPlugin implements Listener {
             {
                 HandleXrayer(ev.getPlayer().getName());
             }
-        sessionsSemaphore.release();
 
         return true; //Return update successful
     }
@@ -289,22 +269,10 @@ public final class AntiXrayHeuristics extends JavaPlugin implements Listener {
             if (m != Material.AIR) { //Attempt at updating player mining session:
                 if (!UpdateMiningSession(ev, m)) { //Then is the block consequently a first stone or first netherrack (while netherquartz isn't disabled in config)?
                     if (m == Material.STONE) {
-                        try {
-                            sessionsSemaphore.acquire();
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        }
                         sessions.put(ev.getPlayer().getName(), new MiningSession()); //Adds new entry to sessions HashMap for player
-                        sessionsSemaphore.release();
                     }
                     else if (m == Material.NETHERRACK && getConfig().getInt("QuartzWeight") != 0f) {
-                        try {
-                            sessionsSemaphore.acquire();
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        }
                         sessions.put(ev.getPlayer().getName(), new MiningSession()); //Adds new entry to sessions HashMap for player
-                        sessionsSemaphore.release();
                     }
                 }
             }

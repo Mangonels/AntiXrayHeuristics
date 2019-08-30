@@ -24,13 +24,7 @@ public class ResetXraySuspicion implements CommandExecutor {
                  if(player.hasPermission("AXH.commands.ResetSuspicion")) {
                      MiningSession tempMS = AntiXrayHeuristics.sessions.get(player.getName());
                      if (tempMS != null){
-                         try {
-                             mainClassAccess.sessionsSemaphore.acquire();
-                         } catch (InterruptedException e) {
-                             e.printStackTrace();
-                         }
                          AntiXrayHeuristics.sessions.remove(player.getName());
-                         mainClassAccess.sessionsSemaphore.release();
                          player.sendMessage("Your suspicion has been nullified.");
                      }
                      else player.sendMessage("You are not suspicious of Xray usage. No suspicion reset applied.");
@@ -46,13 +40,7 @@ public class ResetXraySuspicion implements CommandExecutor {
                  if(player.hasPermission("AXH.commands.ResetSuspicion")) {
                      MiningSession tempMS = AntiXrayHeuristics.sessions.get(args[0]);
                      if (tempMS != null) {
-                         try {
-                             mainClassAccess.sessionsSemaphore.acquire();
-                         } catch (InterruptedException e) {
-                             e.printStackTrace();
-                         }
                          AntiXrayHeuristics.sessions.remove(args[0]);
-                         mainClassAccess.sessionsSemaphore.release();
                          player.sendMessage(args[0] + "'s suspicion has been nullified.");
                      } else
                          player.sendMessage(args[0] + " Is not suspicious of Xray usage. No suspicion reset was applied.");
@@ -62,13 +50,7 @@ public class ResetXraySuspicion implements CommandExecutor {
              else {
                  MiningSession tempMS = AntiXrayHeuristics.sessions.get(args[0]);
                  if (tempMS != null) {
-                     try {
-                         mainClassAccess.sessionsSemaphore.acquire();
-                     } catch (InterruptedException e) {
-                         e.printStackTrace();
-                     }
                      AntiXrayHeuristics.sessions.remove(args[0]);
-                     mainClassAccess.sessionsSemaphore.release();
                      System.out.println(args[0] + "'s suspicion has been nullified.");
                  } else
                      System.out.println(args[0] + " Is not suspicious of Xray usage. No suspicion reset was applied."); //Is console
