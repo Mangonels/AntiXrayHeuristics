@@ -10,10 +10,6 @@ import org.bukkit.entity.Player;
 
 public class ResetXraySuspicion implements CommandExecutor {
 
-    private final es.mithrandircraft.antixrayheuristics.AntiXrayHeuristics mainClassAccess;
-
-    public ResetXraySuspicion(es.mithrandircraft.antixrayheuristics.AntiXrayHeuristics main) { this.mainClassAccess = main; }
-
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
          if(args.length == 0) //Non parametrized command:

@@ -57,7 +57,7 @@ public final class AntiXrayHeuristics extends JavaPlugin implements Listener {
 
         //Commands:
         getCommand("AXH").setExecutor(new AXH(this));
-        getCommand("ResetXraySuspicion").setExecutor(new ResetXraySuspicion(this));
+        getCommand("ResetXraySuspicion").setExecutor(new ResetXraySuspicion());
         getCommand("XraySuspicion").setExecutor(new XraySuspicion());
 
         //Events:
