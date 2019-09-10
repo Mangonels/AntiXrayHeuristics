@@ -38,11 +38,27 @@ public class AXH implements CommandExecutor {
         }
         else if(args.length == 0)
         {
-            System.out.println("Command instructions will be here soon.");
+            if (sender instanceof Player) //Is player
+            {
+                Player player = (Player) sender;
+                player.sendMessage("Please provide an argument.");
+            }
+            else //Is console
+            {
+                System.out.println("Please provide an argument.");
+            }
         }
         else
         {
-            System.out.println("Invalid command argument. May also show command instructions here soon.");
+            if (sender instanceof Player) //Is player
+            {
+                Player player = (Player) sender;
+                player.sendMessage("Invalid command argument.");
+            }
+            else //Is console
+            {
+                System.out.println("Invalid command argument.");
+            }
         }
         return false;
     }
