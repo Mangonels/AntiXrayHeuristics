@@ -9,6 +9,10 @@
 #If true, AXH will output debug messages (no need to activate this unless a developer requests it):
 Debug: false
 
+#----------------------------------------------
+#HEURISTICALLY BASED MONITORING CONFIGURATIONS:
+#----------------------------------------------
+
 #AXH will only monitor player behaviour in order to detect xrays in the following worlds:
 TrackWorlds:
   - 'exampleworld1'
@@ -36,14 +40,22 @@ ConsiderAdjacentWithinDistance: 10
 #be using this plugin), but you can if you're crazy enough.
 MinimumBlocksMinedToNextVein: 10
 
-#The following commands are to be executed from console when a player must be punished for certain xraying.
-#Set it like this: 'CommandsExecuted: []', if you wish to disable command executions.
-#Available placeholders (Caps sensitive): {PlayerName}
-CommandsExecuted:
-  - 'helpop {PlayerName} is probably Xraying'
+#Ignore mined blocks above following altitude (default value should be ok):
+IgnoreHigherThanAltitude: 65
 
-#If set to true, all of the player's items will be erased. This includes Hotbar, OffHand, Inventory and Equipment:
-ClensePlayerItems: false
+#------------------------------------------------------
+#AUTOMATIC XRAYER HANDLING & PUNISHMENT CONFIGURATIONS:
+#------------------------------------------------------
+#Following configurable automatic actions are executed in the same order as configured (default config order):
+
+#If set to true, the player's items will be stored (even before a configurable clense) which will later be revisable.
+#This includes HotBar, OffHand, Inventory and Equipment.
+#(View "STORAGE CONFIGURATION" for details on how the persistent memory storage can be configured)
+StoreCopy: true
+
+#If set to true, all of the player's items will be erased. This includes HotBar, OffHand, Inventory and Equipment.
+#Warning: This should be set to true if StoreCopy is true, else player absolving will result in duplications:
+ClensePlayerItems: true
 
 #Following options allow you to send a message right when the player is punished for Xraying.
 SendMessageToPlayer: false
@@ -52,5 +64,32 @@ MessageToSend: '[Xray] You where punished for Xraying, uninstall xrays inmediate
 #Recommended true. If so, will nullify the player's suspicion after being punished:
 NullifySuspicionAferPunish: true
 
-#Ignore mined blocks above following altitude (default value should be ok):
-IgnoreHigherThanAltitude: 65
+#The following commands are to be executed from console when a player must be punished for certain xraying.
+#Set it like this: 'CommandsExecuted: []', if you wish to disable command executions.
+#If you wish to add commands, remove the [] and add them on each following line like this (without the # ofc):
+#  - 'say {PlayerName} is probably Xraying'
+#Available placeholders (Caps sensitive): {PlayerName}
+CommandsExecuted: []
+
+#If set to true, players with the permission AXH.XrayerWarning will be notified if an xrayer was found and dealt with
+TellPlayersWithPermission: true
+
+#----------------------
+#STORAGE CONFIGURATION:
+#----------------------
+#AXH needs to store certain persistent information, here you should configure your preferred method for data storing.
+
+#Storage type (available: 'MYSQL', 'SQLITE', 'FLATFILE')
+#Be warned: AAX does not currently auto-convert data between storage types, so it's currently up to you to copy data
+#from one storage type to another if you really wish to change the storage type. Choose wisely before you start using
+#this plugin. The storage type will be swapped once you change it on this config and restart the server.
+#Reloading the plugin will not change the database if you reconfigure it while this plugin is running!
+#(If you don't even know what the storage types are and how they work, just leave the default SQLITE and never change
+#it, it will do just fine and requires no further setups):
+StorageType: 'SQLITE'
+
+#Edit the following credentials if you are using MySQL:
+SQLHost: '127.0.0.1'
+SQLDatabaseName: 'myDatabase'
+SQLUsername: 'root'
+SQLPassword: 'root'

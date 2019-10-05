@@ -1,9 +1,9 @@
 package es.mithrandircraft.antixrayheuristics.commands;
 
+import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
 
 public class AXH implements CommandExecutor {
 
@@ -15,50 +15,27 @@ public class AXH implements CommandExecutor {
     }
 
     @Override
-    public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-        if(args.length == 1) //Non parametrized command:
+    public boolean onCommand(CommandSender sender, Command command, String label, String[] args) { //Check for what command it is in following list:
+        if(args.length == 1)
         {
-            if (sender instanceof Player) //Is player
-            {
-                Player player = (Player) sender;
-                if (args[0].equalsIgnoreCase("reload")) {
-                    if (player.hasPermission("AXH.commands.Reload")) {
-                        //Do reload
-                        mainClassAccess.reloadConfig();
-                        player.sendMessage("AntiXrayHeuristics has reloaded.");
-                    } else player.sendMessage("You do not have permission to execute this command.");
-                } else player.sendMessage("Invalid command argument.");
-            } else { //Is console
-                if (args[0].equalsIgnoreCase("reload")) {
-                    //Do reload
-                    mainClassAccess.reloadConfig();
-                    System.out.println("AntiXrayHeuristics has reloaded.");
-                } else System.out.println("Invalid command argument.");
-            }
+            if (args[0].equalsIgnoreCase("vault") || args[0].equalsIgnoreCase("v")) ARGVault.V(sender, mainClassAccess);
+            else if (args[0].equalsIgnoreCase("reload") || args[0].equalsIgnoreCase("r")) ARGReload.R(sender, mainClassAccess);
+            else if (args[0].equalsIgnoreCase("resetsuspicion") || args[0].equalsIgnoreCase("rs")) ARGResetSuspicion.RS(sender);
+            else if (args[0].equalsIgnoreCase("suspicion") || args[0].equalsIgnoreCase("s")) ARGSuspicion.S(sender);
+            else sender.sendMessage("Invalid command.");
         }
-        else if(args.length == 0)
+        else if(args.length == 2)
         {
-            if (sender instanceof Player) //Is player
-            {
-                Player player = (Player) sender;
-                player.sendMessage("Please provide an argument.");
-            }
-            else //Is console
-            {
-                System.out.println("Please provide an argument.");
-            }
+            if (args[0].equalsIgnoreCase("xrayer") || args[0].equalsIgnoreCase("x")) ARGXrayer.X(sender, args[1]);
+            else if (args[0].equalsIgnoreCase("absolve") || args[0].equalsIgnoreCase("a")) ARGAbsolvePlayer.A(sender, args[1], mainClassAccess);
+            else if (args[0].equalsIgnoreCase("purge") || args[0].equalsIgnoreCase("p")) ARGPurgePlayer.P(sender, args[1], mainClassAccess);
+            else if (args[0].equalsIgnoreCase("resetsuspicion") || args[0].equalsIgnoreCase("rs")) ARGResetSuspicion.RS(sender, args[1]);
+            else if (args[0].equalsIgnoreCase("suspicion") || args[0].equalsIgnoreCase("s")) ARGSuspicion.S(sender, args[1]);
+            else sender.sendMessage("Invalid command.");
         }
-        else
+        else //Show help
         {
-            if (sender instanceof Player) //Is player
-            {
-                Player player = (Player) sender;
-                player.sendMessage("Invalid command argument.");
-            }
-            else //Is console
-            {
-                System.out.println("Invalid command argument.");
-            }
+            Bukkit.getServer().getPlayer(sender.getName()).chat("/axh help");
         }
         return false;
     }

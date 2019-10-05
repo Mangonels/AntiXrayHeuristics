@@ -1,30 +1,38 @@
 package es.mithrandircraft.antixrayheuristics;
 
 import es.mithrandircraft.antixrayheuristics.commands.AXH;
-import es.mithrandircraft.antixrayheuristics.commands.ResetXraySuspicion;
-import es.mithrandircraft.antixrayheuristics.commands.XraySuspicion;
 
+import es.mithrandircraft.antixrayheuristics.events.BlockBreakEv;
+import es.mithrandircraft.antixrayheuristics.events.ClickEv;
+import es.mithrandircraft.antixrayheuristics.events.InventoryCloseEv;
+import es.mithrandircraft.antixrayheuristics.events.ItemDragEv;
+import es.mithrandircraft.antixrayheuristics.gui.PlayerViewInfo;
+import es.mithrandircraft.antixrayheuristics.gui.XrayerVault;
 import org.bukkit.Material;
-import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
-import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 
+import java.sql.SQLException;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Set;
 
 public final class AntiXrayHeuristics extends JavaPlugin implements Listener {
 
     //Mining sessions HashMap:
     public static HashMap<String, MiningSession> sessions = new HashMap<String, MiningSession>();
 
+    //Persistent memory storage manager:
+    public MemoryManager mm = new MemoryManager(this);
+
     //Hardcoded heuristics:
 
     private final float suspicionLevelThreshold = 100f; //Suspicion Threshold value above which we consider a player as Xraying.
 
-    private final int suspicionDecreaseFrequency = 200; //(ticks)15s - Time in ticks at which suspicion decrease runnable is executed.
+    private final int MainRunnableFrequency = 200; //(ticks)15s - Time in ticks at which suspicion decrease runnable is executed.
 
     private final float suspicionDecreaseAmount = -4f; //Suspicion decrease from all sessions every time suspicionDecreaseFrequency is reached.
 
@@ -47,6 +55,10 @@ public final class AntiXrayHeuristics extends JavaPlugin implements Listener {
 //
 //    private final int straightMiningThreshold = 5; //Threshold that determines when we can determine that the player is mining straight
 
+    //GUI:
+    public XrayerVault vault = new XrayerVault(this);
+
+
     @Override
     public void onEnable() {
 
@@ -56,14 +68,26 @@ public final class AntiXrayHeuristics extends JavaPlugin implements Listener {
 
         //Commands:
         getCommand("AXH").setExecutor(new AXH(this));
-        getCommand("ResetXraySuspicion").setExecutor(new ResetXraySuspicion());
-        getCommand("XraySuspicion").setExecutor(new XraySuspicion());
 
-        //Events:
-        getServer().getPluginManager().registerEvents(this, this);
+        //Sql connect?:
+        if(getConfig().getString("StorageType").equals("MYSQL"))
+        {
+            try {
+                mm.SQLConnect();
+                mm.SQLCreateTableIfNotExists();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+
+        //Event registring:
+        getServer().getPluginManager().registerEvents(new BlockBreakEv(this), this);
+        getServer().getPluginManager().registerEvents(new ClickEv(this), this);
+        getServer().getPluginManager().registerEvents(new ItemDragEv(), this);
+        getServer().getPluginManager().registerEvents(new InventoryCloseEv(this), this);
 
         //Runnables:
-        SessionsRunnable();
+        MainRunnable();
 
         //Precalculations:
         nonOreStreakDecreaseAmount = -((int)Math.ceil((float)getConfig().getInt("MinimumBlocksMinedToNextVein") / 4f)); //Calculates bock streak reduction ammount on Runnable
@@ -72,64 +96,50 @@ public final class AntiXrayHeuristics extends JavaPlugin implements Listener {
 
         extraDiamondWeight = getConfig().getLong("DiamondWeight") + (getConfig().getLong("DiamondWeight") / 2);
         extraEmeraldWeight = getConfig().getLong("EmeraldWeight") + (getConfig().getLong("EmeraldWeight") / 2);
+
     }
 
     @Override
     public void onDisable()
     {
-
+        if(mm.GetSQLcon() != null) { //Check if we're connected to sql
+            try {
+                mm.SQLDisconnect(); //Disconnect from sql
+            } catch (SQLException e) {
+                System.out.println("[AntiXrayHeuristics]: Error disconnecting from SQL database.");
+                e.printStackTrace();
+            }
+        }
     }
 
-    public void SessionsRunnable() //Performs sessions HashMap updates at scheduled time
+    public void MainRunnable() //Performs plugin updates at scheduled time
     {
         new BukkitRunnable()
         {
             @Override
             public void run()
             {
-
-                for (HashMap.Entry<String, MiningSession> entry : sessions.entrySet()) {
+                //Task: sessions HashMap update, Player suspicion decrease:
+                Set sessionsKeySet = sessions.keySet();
+                Iterator sessionsIterator = sessionsKeySet.iterator();
+                while (sessionsIterator.hasNext()) {
+                    String key = (String) sessionsIterator.next();
                     //Reductions:
-                    entry.getValue().AddSuspicionLevel(suspicionDecreaseAmount); //Less suspicion
-                    entry.getValue().minedNonOreBlocksStreak += nonOreStreakDecreaseAmount; //Less streak
+                    sessions.get(key).AddSuspicionLevel(suspicionDecreaseAmount); //Less suspicion
+                    sessions.get(key).minedNonOreBlocksStreak += nonOreStreakDecreaseAmount; //Less streak
+
                     //Clamps:
-                    if(entry.getValue().GetSuspicionLevel() < 0)
+                    if(sessions.get(key).GetSuspicionLevel() < 0)
                     {
-                        entry.getValue().SetSuspicionLevel(0); //Suspicion min 0
-                        entry.getValue().foundAtZeroSuspicionStreak++;
-                        if(entry.getValue().foundAtZeroSuspicionStreak >= suspicionStreakZeroThreshold) sessions.remove(entry.getKey()); //Remove MiningSession for inactivity
+                        sessions.get(key).SetSuspicionLevel(0); //Suspicion min 0
+                        sessions.get(key).foundAtZeroSuspicionStreak++;
+                        if(sessions.get(key).foundAtZeroSuspicionStreak >= suspicionStreakZeroThreshold) sessions.remove(sessions.get(key)); //Remove MiningSession for inactivity
                     }
-                    else entry.getValue().foundAtZeroSuspicionStreak = 0; //Reset streak
-                    if(entry.getValue().minedNonOreBlocksStreak < 0) entry.getValue().minedNonOreBlocksStreak = 0; //Non ore mined blocks streak min 0
+                    else sessions.get(key).foundAtZeroSuspicionStreak = 0; //Reset streak
+                    if(sessions.get(key).minedNonOreBlocksStreak < 0) sessions.get(key).minedNonOreBlocksStreak = 0; //Non ore mined blocks streak min 0
                 }
             }
-        }.runTaskTimer(this, suspicionDecreaseFrequency, suspicionDecreaseFrequency);
-    }
-
-    private void HandleXrayer(String name) //If called, executes what must be done to an inputted Xrayer by name.
-    {
-        Player player = getServer().getPlayer(name); //Reference to player
-        if(player != null)
-        {
-            for (int i = 0; i < getConfig().getStringList("CommandsExecuted").size(); i++) { //Executes commands if configured:
-                getServer().dispatchCommand(getServer().getConsoleSender(), PlaceholderManager.SubstitutePlaceholders(getConfig().getStringList("CommandsExecuted").get(i), name));
-            }
-
-            if (getConfig().getBoolean("SendMessageToPlayer")) { //Sends message to player if configured:
-                String m = getConfig().getString("MessageToSend");
-                if (m != null) player.sendMessage(m);
-            }
-
-            if (getConfig().getBoolean("ClensePlayerItems")) { //Removes all of the player's belongings if configured:
-                try{player.getInventory().clear();
-                    player.getEquipment().clear(); } catch(Exception e){ if(getConfig().getBoolean("Debug")) System.out.println("Failed to remove player " + name + "'s equipment while attempting to handle as Xrayer."); }
-            }
-
-            if (getConfig().getBoolean("NullifySuspicionAferPunish")) {
-                sessions.remove(player.getName());
-            }
-        }
-        else{ System.out.println("Player named " + name + " was not found while attempting to handle as Xrayer."); }
+        }.runTaskTimer(this, MainRunnableFrequency, MainRunnableFrequency);
     }
 
     private boolean UpdateMiningSession(BlockBreakEvent ev, Material m) //Attempts at updating the mining session for a player who broke a block, with just a few arguments. If this fails, the function returns false, else returns true
@@ -228,7 +238,7 @@ public final class AntiXrayHeuristics extends JavaPlugin implements Listener {
             //Behaviour analysis and handling:
             if(s.GetSuspicionLevel() > suspicionLevelThreshold)
             {
-                HandleXrayer(ev.getPlayer().getName());
+                XrayerHandler.HandleXrayer(ev.getPlayer().getName());
             }
 
         return true; //Return update successful
@@ -260,9 +270,9 @@ public final class AntiXrayHeuristics extends JavaPlugin implements Listener {
         else return Material.AIR;
     }
 
-    private void BBEventAnalyzer(BlockBreakEvent ev) //Inspects the blockbreak event further for actions
+    public void BBEventAnalyzer(BlockBreakEvent ev) //Inspects the blockbreak event further for actions
     {
-        if (!ev.getPlayer().hasPermission("AXH.ignore")) {
+        if (!ev.getPlayer().hasPermission("AXH.Ignore")) {
             //Check if the block is relevant:
             Material m = RelevantBlockCheck(ev);
             if (m != Material.AIR) { //Attempt at updating player mining session:
@@ -278,20 +288,15 @@ public final class AntiXrayHeuristics extends JavaPlugin implements Listener {
         }
     }
 
-    @EventHandler
-    public void OnPlayerMineBlock(BlockBreakEvent ev) {
-        //Check if the event occurred in one of the configured worlds:
-        for (int i = 0; i < getConfig().getStringList("TrackWorlds").size(); i++) {
-            if (getConfig().getStringList("TrackWorlds").get(i).equals(ev.getBlock().getWorld().getName()) && ev.getBlock().getLocation().getY() < getConfig().getInt("IgnoreHigherThanAltitude")) //It's one of the whitelisted "TrackWorlds", and altitude is lower than configured.
-            {
-                BBEventAnalyzer(ev);
-                break;
-            }
-        }
-    }
-
-    @EventHandler
-    public void playerQuit(PlayerQuitEvent ev) {
-
-    }
+//    @EventHandler
+//    public void OnPlayerMineBlock(BlockBreakEvent ev) {
+//        //Check if the event occurred in one of the configured worlds:
+//        for (int i = 0; i < getConfig().getStringList("TrackWorlds").size(); i++) {
+//            if (getConfig().getStringList("TrackWorlds").get(i).equals(ev.getBlock().getWorld().getName()) && ev.getBlock().getLocation().getY() < getConfig().getInt("IgnoreHigherThanAltitude")) //It's one of the whitelisted "TrackWorlds", and altitude is lower than configured.
+//            {
+//                BBEventAnalyzer(ev);
+//                break;
+//            }
+//        }
+//    }
 }
