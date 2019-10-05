@@ -43,28 +43,28 @@ public class MemoryManager {
         }
     }
 
-    public ArrayList<String> GetXrayerUUIDs()
+    public ArrayList<String> GetBaseXrayerData(ArrayList<Integer> handledAmounts, ArrayList<String> firstHandledTimes) //Returns array list containing all registered xrayer UUID's
     {
         switch (mainClassAccess.getConfig().getString("StorageType")) {
             case "MYSQL":
                 try {
-                    return SQLGetXrayerUUIDs();
+                    return SQLGetBaseXrayerData(handledAmounts, firstHandledTimes);
                 } catch (SQLException e) {
                     System.err.print(e);
                 }
                 break;
             case "FLATFILE":
-                //FlatFileGetXrayerUUIDs();
+                //FlatFileGetBaseXrayerData();
                 break;
             case "SQLITE":
             default:
-                //SQLiteGetXrayerUUIDs();
+                //SQLiteGetBaseXrayerData();
                 break;
         }
         return null;
     }
 
-    public ItemStack[] GetXrayerBelongings(String xrayerUUID)
+    public ItemStack[] GetXrayerBelongings(String xrayerUUID) //Returns ItemStack array containing all confiscated ItemStacks from the specified player by UUID
     {
         switch (mainClassAccess.getConfig().getString("StorageType")) {
             case "MYSQL":
@@ -85,7 +85,7 @@ public class MemoryManager {
         return null;
     }
 
-    public void DeleteXrayer(String xrayerUUID)
+    public void DeleteXrayer(String xrayerUUID) //Deletes xrayer with specified UUID from memory
     {
         switch (mainClassAccess.getConfig().getString("StorageType")) {
             case "MYSQL":
@@ -105,7 +105,7 @@ public class MemoryManager {
         }
     }
 
-    public void DeleteRegisteredXrayers()
+    public void DeleteRegisteredXrayers() //Deletes all registered xrayers (basically leaves memory empty)
     {
         switch (mainClassAccess.getConfig().getString("StorageType")) {
             case "MYSQL":
@@ -145,48 +145,83 @@ public class MemoryManager {
 
     void SQLCreateTableIfNotExists() throws SQLException //Creates the Xrayers table
     {
-        PreparedStatement create = SQLcon.prepareStatement("CREATE TABLE IF NOT EXISTS Xrayers(UUID VARCHAR(36) NOT NULL, Belongings TEXT NULL, PRIMARY KEY(UUID));");
+        PreparedStatement create = SQLcon.prepareStatement("CREATE TABLE IF NOT EXISTS Xrayers(UUID VARCHAR(36) NOT NULL, Handled INT NOT NULL, FirstHandleTime TIMESTAMP DEFAULT CURRENT_TIMESTAMP, Belongings TEXT NULL, PRIMARY KEY(UUID))");
         create.executeUpdate();
 
         System.out.println("[AntiXrayHeuristics]: SQL Xrayers table was either found or created from scratch. All seems to be in order.");
     }
 
-    private void SQLPlayerDataStore(String n) throws SQLException //Stores player name as xrayer and some other info (+ player belongings if configured)
+    private boolean SQLFindUUID(String n) throws SQLException //Returns true if UUID was found in the database
+    {
+        PreparedStatement query = SQLcon.prepareStatement("SELECT COUNT(1) FROM Xrayers WHERE UUID = ?");
+        query.setString(1, n);
+        ResultSet result = query.executeQuery();
+        result.next();
+        return result.getInt(1) == 1;
+    }
+
+    private void SQLPlayerDataStore(String n) throws SQLException //Stores player name as xrayer and some other info (+ player belongings if configured), ONLY IF there isn't information already stored.
     {
         Player p = Bukkit.getServer().getPlayer(n);
         assert p != null;
-        if(mainClassAccess.getConfig().getBoolean("StoreCopy")) //Full store
-        {
-            PreparedStatement entry = SQLcon.prepareStatement("INSERT INTO Xrayers(UUID, Belongings) VALUES(?,?);");
-            entry.setString(1, p.getUniqueId().toString());
-            entry.setString(2, BukkitSerializer.itemStackArrayToBase64(BukkitSerializer.InventoryAndEquipmentToSingleItemStackArray(p.getInventory(), p.getEquipment())));
-            entry.executeUpdate();
+        if(!SQLFindUUID(p.getUniqueId().toString())){ //Primary key (player UUID) doesn't already exist
+            if(mainClassAccess.getConfig().getBoolean("StoreCopy")) //Full store
+            {
+                PreparedStatement entry = SQLcon.prepareStatement("INSERT INTO Xrayers(UUID, Handled, FirstHandleTime, Belongings) VALUES(?,?,?,?)");
+                entry.setString(1, p.getUniqueId().toString());
+                entry.setInt(2, 1);
+                entry.setString(3, BukkitSerializer.itemStackArrayToBase64(BukkitSerializer.InventoryAndEquipmentToSingleItemStackArray(p.getInventory(), p.getEquipment())));
+                entry.executeUpdate();
+            }
+            else //Partial store
+            {
+                PreparedStatement entry = SQLcon.prepareStatement("INSERT INTO Xrayers(UUID, Handled, FirstHandleTime) VALUES(?,?,?)");
+                entry.setString(1, p.getUniqueId().toString());
+                entry.setInt(2, 1);
+                entry.executeUpdate();
+            }
         }
-        else //Partial store
-        {
-            PreparedStatement entry = SQLcon.prepareStatement("INSERT INTO Xrayers(UUID) VALUES(?);");
-            entry.setString(1, p.getUniqueId().toString());
-            entry.executeUpdate();
+        else{ //Primary key (player UUID) already exists
+            //Just add +1 to Handled column
+            PreparedStatement update = SQLcon.prepareStatement("UPDATE Xrayers SET Handled = Handled + 1 WHERE UUID = ?");
+            update.setString(1, p.getUniqueId().toString());
+            update.executeUpdate();
         }
     }
 
-    private ArrayList<String> SQLGetXrayerUUIDs() throws SQLException
+    private ArrayList<String> SQLGetBaseXrayerData(ArrayList<Integer> handledAmounts, ArrayList<String> firstHandledTimes) throws SQLException //Returns all of the basic xrayer information (pretty much everything except for the inventory)
     {
-        PreparedStatement entry = SQLcon.prepareStatement("SELECT UUID FROM Xrayers;");
+        PreparedStatement entry = SQLcon.prepareStatement("SELECT UUID, Handled, FirstHandleTime FROM Xrayers");
 
         ResultSet result = entry.executeQuery();
 
-        ArrayList<String> arr =  new ArrayList<String>();
+        ArrayList<String> arr = new ArrayList<String>();
         while(result.next())
         {
             arr.add(result.getString("UUID"));
+            handledAmounts.add(result.getInt("Handled"));
+            firstHandledTimes.add(result.getString("FirstHandleTime"));
         }
         return arr;
     }
 
-    private ItemStack[] SQLGetXrayerBelongings(String xrayerUUID) throws SQLException //Gets an xrayer player's confiscated belongings
+//    private ArrayList<String> SQLGetXrayerUUIDs() throws SQLException //Returns UUID column from database as array list.
+//    {
+//        PreparedStatement entry = SQLcon.prepareStatement("SELECT UUID FROM Xrayers;");
+//
+//        ResultSet result = entry.executeQuery();
+//
+//        ArrayList<String> arr =  new ArrayList<String>();
+//        while(result.next())
+//        {
+//            arr.add(result.getString("UUID"));
+//        }
+//        return arr;
+//    }
+
+    private ItemStack[] SQLGetXrayerBelongings(String xrayerUUID) throws SQLException //Gets an xrayer player's (by UUID) confiscated belongings
     {
-        PreparedStatement query = SQLcon.prepareStatement("SELECT Belongings FROM Xrayers WHERE UUID = ?;");
+        PreparedStatement query = SQLcon.prepareStatement("SELECT Belongings FROM Xrayers WHERE UUID = ?");
         query.setString(1, xrayerUUID);
 
         ResultSet result = query.executeQuery();
@@ -200,9 +235,9 @@ public class MemoryManager {
         }
     }
 
-    private void SQLDeleteXrayer(String xrayerUUID) throws SQLException //Removes player from xrayers database
+    private void SQLDeleteXrayer(String xrayerUUID) throws SQLException //Removes player (by UUID) from xrayers database
     {
-        PreparedStatement purge = SQLcon.prepareStatement("DELETE FROM Xrayers WHERE UUID = ?;");
+        PreparedStatement purge = SQLcon.prepareStatement("DELETE FROM Xrayers WHERE UUID = ?");
         purge.setString(1, xrayerUUID);
 
         purge.executeUpdate();
@@ -210,7 +245,7 @@ public class MemoryManager {
         System.out.println("[AntiXrayHeuristics]: Player with UUID: " + xrayerUUID + " stored in SQL Xrayers table was cleared by a user with permissions.");
     }
 
-    private void SQLDeleteRegistry() throws SQLException
+    private void SQLDeleteRegistry() throws SQLException //Truncates the whole Xrayers table, basically emptying all registered xrayers
     {
         PreparedStatement purge = SQLcon.prepareStatement("TRUNCATE TABLE Xrayers");
         purge.executeUpdate();

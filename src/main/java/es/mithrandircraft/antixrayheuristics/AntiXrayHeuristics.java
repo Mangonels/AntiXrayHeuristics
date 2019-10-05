@@ -6,7 +6,6 @@ import es.mithrandircraft.antixrayheuristics.events.BlockBreakEv;
 import es.mithrandircraft.antixrayheuristics.events.ClickEv;
 import es.mithrandircraft.antixrayheuristics.events.InventoryCloseEv;
 import es.mithrandircraft.antixrayheuristics.events.ItemDragEv;
-import es.mithrandircraft.antixrayheuristics.gui.PlayerViewInfo;
 import es.mithrandircraft.antixrayheuristics.gui.XrayerVault;
 import org.bukkit.Material;
 import org.bukkit.event.Listener;
@@ -17,7 +16,6 @@ import org.bukkit.scheduler.BukkitRunnable;
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.Map;
 import java.util.Set;
 
 public final class AntiXrayHeuristics extends JavaPlugin implements Listener {
@@ -287,16 +285,4 @@ public final class AntiXrayHeuristics extends JavaPlugin implements Listener {
             }
         }
     }
-
-//    @EventHandler
-//    public void OnPlayerMineBlock(BlockBreakEvent ev) {
-//        //Check if the event occurred in one of the configured worlds:
-//        for (int i = 0; i < getConfig().getStringList("TrackWorlds").size(); i++) {
-//            if (getConfig().getStringList("TrackWorlds").get(i).equals(ev.getBlock().getWorld().getName()) && ev.getBlock().getLocation().getY() < getConfig().getInt("IgnoreHigherThanAltitude")) //It's one of the whitelisted "TrackWorlds", and altitude is lower than configured.
-//            {
-//                BBEventAnalyzer(ev);
-//                break;
-//            }
-//        }
-//    }
 }

@@ -16,7 +16,10 @@ public class XrayerVault {
 
     private final es.mithrandircraft.antixrayheuristics.AntiXrayHeuristics mainClassAccess;
 
-    private ArrayList<String> xrayerUUIDs;
+    private ArrayList<String> UUIDs = new ArrayList<String>(); //These 3 list's values are parallel, and represent xrayer information.
+    private ArrayList<Integer> handledAmmounts = new ArrayList<Integer>();
+    private ArrayList<String> firstHandledTimes = new ArrayList<String>();
+
     private int pages; //How many pages the vault should have
 
     private HashMap<String, PlayerViewInfo> viewers = new HashMap<String, PlayerViewInfo>(); //Stores who's viewing the GUI and info on what's being looked at.
@@ -71,10 +74,10 @@ public class XrayerVault {
         absolvePlayerButton.setItemMeta(absolveplayer_meta);
     }
 
-    public void UpdateUUIDList() //Updates the Xrayer UUID ArrayList
+    public void UpdateXrayerInfoList() //Updates Xrayer information arrays
     {
-        xrayerUUIDs = mainClassAccess.mm.GetXrayerUUIDs();
-        pages = MathFunctions.Cut(45, xrayerUUIDs.size()); //Calculate pages considering the amount of registered xrayer uuid's, and that there can only be 27 results per page
+        UUIDs = mainClassAccess.mm.GetBaseXrayerData(handledAmmounts, firstHandledTimes); //This single function fills up the 3 lists with xrayer information.
+        pages = MathFunctions.Cut(45, UUIDs.size()); //Calculate pages considering the amount of registered xrayer uuid's, and that there can only be 27 results per page
     }
 
     //Button format getter methods:
@@ -97,13 +100,13 @@ public class XrayerVault {
         SkullMeta meta = (SkullMeta) skull.getItemMeta();
         UUID currentUUID;
         int iteration = 0;
-        ListIterator<String> iter = xrayerUUIDs.listIterator(page * 45);
+        ListIterator<String> iter = UUIDs.listIterator(page * 45);
         while (iter.hasNext() && !(iteration >= 45)) //Fills up the vault page with skulls containing xrayer data
         {
             currentUUID = UUID.fromString(iter.next());
             meta.setOwningPlayer(Bukkit.getServer().getOfflinePlayer(currentUUID)); //Assigns player to head owner
             meta.setDisplayName(Bukkit.getServer().getOfflinePlayer(currentUUID).getName()); //Head name editing
-            //meta.setLore(); //Head lore editing
+            meta.setLore(Arrays.asList("Times handled: " + handledAmmounts.get(iteration), "First detected: " + firstHandledTimes.get(iteration))); //Head lore editing
             skull.setItemMeta(meta);
             gui.setItem(iteration, skull);
             iteration++;
@@ -127,11 +130,11 @@ public class XrayerVault {
 
     public void OpenXrayerConfiscatedInventory(Player player, int xrayerUUIDIndex) //Opens an xrayer's confiscated inventory by xrayer name
     {
-        viewers.get(player.getName()).xrayerInvUUID = xrayerUUIDs.get(xrayerUUIDIndex); //Update uuid of xrayer we're watching
+        viewers.get(player.getName()).xrayerInvUUID = UUIDs.get(xrayerUUIDIndex); //Update uuid of xrayer we're watching
 
         Inventory inv = Bukkit.createInventory(null, 54, "Xrayer Vault"); //Vault contents to display
 
-        ItemStack[] confiscatedItems = mainClassAccess.mm.GetXrayerBelongings(xrayerUUIDs.get(xrayerUUIDIndex));
+        ItemStack[] confiscatedItems = mainClassAccess.mm.GetXrayerBelongings(UUIDs.get(xrayerUUIDIndex));
 
         //Fill up vault:
         for (int i = 0; i < 41; i++) //Fills up the vault page with confiscated xrayer's inventory
@@ -145,7 +148,6 @@ public class XrayerVault {
         inv.setItem(47, separator);
         inv.setItem(48, separator);
         inv.setItem(49, separator);
-        inv.setItem(50, separator);
         inv.setItem(52, separator);
 
         //Lower section vault/gui stuff:
@@ -153,13 +155,20 @@ public class XrayerVault {
         inv.setItem(51, purgePlayerButton);
         inv.setItem(53, absolvePlayerButton);
 
+        ItemStack skull = new ItemStack(Material.PLAYER_HEAD);
+        SkullMeta meta = (SkullMeta) skull.getItemMeta();
+        meta.setOwningPlayer(Bukkit.getServer().getOfflinePlayer(UUID.fromString(UUIDs.get(xrayerUUIDIndex)))); //Assigns player to head owner
+        meta.setDisplayName(Bukkit.getServer().getOfflinePlayer(UUID.fromString(UUIDs.get(xrayerUUIDIndex))).getName()); //Head name editing
+        meta.setLore(Arrays.asList("Times handled: " + handledAmmounts.get(xrayerUUIDIndex), "First detected: " + firstHandledTimes.get(xrayerUUIDIndex))); //Head lore editing
+        inv.setItem(50, skull);
+
         player.openInventory(inv);
     }
 
     public int GetPage(String player) { return viewers.get(player).page; } //Returns page player is on
     public String GetInspectedXrayer(String player) { return viewers.get(player).xrayerInvUUID; } //Returns the uuid of the inventory player is inspecting (if any)
 
-    public void RemoveXrayerUUIDFromList(String uuid){ xrayerUUIDs.remove(uuid); }
+    public void RemoveXrayerUUIDFromList(String uuid){ UUIDs.remove(uuid); }
     public void RemovePlayerAsViewer(String name) { viewers.remove(name); }
 
 }

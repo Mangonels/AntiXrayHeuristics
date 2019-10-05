@@ -11,7 +11,7 @@ class ARGVault {
         {
             Player player = (Player) sender;
             if (player.hasPermission("AXH.Commands.Vault")) {
-                mainClass.vault.UpdateUUIDList(); //Update all of the xrayer's uuid's in vault's arraylist
+                mainClass.vault.UpdateXrayerInfoList(); //Update all of the xrayer's uuid's in vault's arraylist
                 mainClass.vault.OpenVault(player, 0);
 
             } else player.sendMessage("You do not have permission to execute this command.");
