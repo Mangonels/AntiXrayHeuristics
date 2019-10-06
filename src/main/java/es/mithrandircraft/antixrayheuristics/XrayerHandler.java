@@ -1,6 +1,7 @@
 package es.mithrandircraft.antixrayheuristics;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -60,10 +61,13 @@ public class XrayerHandler {
         else{ System.out.println("Player named " + xrayername + " was not found while attempting to handle as Xrayer. Player must be online."); }
     }
 
-    public static void DropItemAtPlayerLocation(ItemStack item, Player p)
+    private static void DropItemAtPlayerLocation(ItemStack item, Player p) //Drops items at player location
     {
-        Item dropedItem = p.getWorld().dropItem(p.getLocation(), item);
-        dropedItem.setVelocity(new Vector(0,0,0));
+        if(item != null && item.getType() != Material.AIR) //Error prevention
+        {
+            Item dropedItem = p.getWorld().dropItem(p.getLocation(), item); //Drop item at player location
+            dropedItem.setVelocity(new Vector(0, 0, 0)); //Remove velocity from dropped item
+        }
     }
 
     public static boolean PlayerAbsolver(String uuid, ItemStack[] possessions) //Currently returns confiscated items to an absolved player. If the player isn't online, function returns false.
@@ -73,9 +77,9 @@ public class XrayerHandler {
             //Return inventory
             for(int i = 0; i < 36; i++)
             {
-                //Check if there's a free slot and place confiscated possession if so:
-                if(target.getInventory().firstEmpty() != -1) target.getInventory().addItem(possessions[i]);
-                else DropItemAtPlayerLocation(possessions[i], target); //No space, drop on floor.
+                //Check if there's a free slot and place confiscated possession if so (With a bunch of error preventions):
+                if (possessions[i] != null && possessions[i].getType() != Material.AIR && target.getInventory().firstEmpty() != -1) target.getInventory().addItem(possessions[i]);
+                else if(possessions[i] != null && possessions[i].getType() != Material.AIR) DropItemAtPlayerLocation(possessions[i], target); //No space, drop on floor.
             }
             //Return equipment
             if(target.getEquipment().getItemInOffHand() == null) target.getEquipment().setItemInOffHand(possessions[36]); //Check if nothing in slot

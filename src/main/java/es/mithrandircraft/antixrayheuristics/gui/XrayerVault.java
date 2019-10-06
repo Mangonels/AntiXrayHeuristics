@@ -147,7 +147,7 @@ public class XrayerVault {
         inv.setItem(46, separator);
         inv.setItem(47, separator);
         inv.setItem(48, separator);
-        inv.setItem(49, separator);
+        inv.setItem(50, separator);
         inv.setItem(52, separator);
 
         //Lower section vault/gui stuff:
@@ -160,7 +160,8 @@ public class XrayerVault {
         meta.setOwningPlayer(Bukkit.getServer().getOfflinePlayer(UUID.fromString(UUIDs.get(xrayerUUIDIndex)))); //Assigns player to head owner
         meta.setDisplayName(Bukkit.getServer().getOfflinePlayer(UUID.fromString(UUIDs.get(xrayerUUIDIndex))).getName()); //Head name editing
         meta.setLore(Arrays.asList("Times handled: " + handledAmmounts.get(xrayerUUIDIndex), "First detected: " + firstHandledTimes.get(xrayerUUIDIndex))); //Head lore editing
-        inv.setItem(50, skull);
+        skull.setItemMeta(meta);
+        inv.setItem(49, skull);
 
         player.openInventory(inv);
     }

@@ -29,7 +29,7 @@ public class ClickEv implements Listener {
                 {
                     return;
                 }
-                else if(e.getCurrentItem().getType() == Material.PLAYER_HEAD && e.getSlot() != 50) //Clicked on player head, and it wasn't head located at slot 50 (which shows up in xrayer confiscated belongings inspector)
+                else if(e.getCurrentItem().getType() == Material.PLAYER_HEAD && e.getSlot() != 49) //Clicked on player head, and it wasn't head located at slot 50 (which shows up in xrayer confiscated belongings inspector)
                 {
                     //Open xrayer's confiscated inventory: The slot the item we clicked is on + the page we're on multiplied by the entry slots range (45 player heads) is equal to the xrayer's UUID position in the vault's XrayerUUID's array:
                     mainClassAccess.vault.OpenXrayerConfiscatedInventory((Player) e.getView().getPlayer(), e.getRawSlot() + mainClassAccess.vault.GetPage(e.getWhoClicked().getName()) * 45);

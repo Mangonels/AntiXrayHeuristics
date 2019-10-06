@@ -7,6 +7,8 @@ import org.bukkit.inventory.ItemStack;
 
 import java.io.IOException;
 import java.sql.*;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 
 public class MemoryManager {
@@ -145,7 +147,7 @@ public class MemoryManager {
 
     void SQLCreateTableIfNotExists() throws SQLException //Creates the Xrayers table
     {
-        PreparedStatement create = SQLcon.prepareStatement("CREATE TABLE IF NOT EXISTS Xrayers(UUID VARCHAR(36) NOT NULL, Handled INT NOT NULL, FirstHandleTime TIMESTAMP DEFAULT CURRENT_TIMESTAMP, Belongings TEXT NULL, PRIMARY KEY(UUID))");
+        PreparedStatement create = SQLcon.prepareStatement("CREATE TABLE IF NOT EXISTS Xrayers(UUID VARCHAR(36) NOT NULL, Handled INT NOT NULL, FirstHandleTime VARCHAR(36) NOT NULL, Belongings TEXT NULL, PRIMARY KEY(UUID))");
         create.executeUpdate();
 
         System.out.println("[AntiXrayHeuristics]: SQL Xrayers table was either found or created from scratch. All seems to be in order.");
@@ -167,17 +169,25 @@ public class MemoryManager {
         if(!SQLFindUUID(p.getUniqueId().toString())){ //Primary key (player UUID) doesn't already exist
             if(mainClassAccess.getConfig().getBoolean("StoreCopy")) //Full store
             {
+                DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
+                LocalDateTime now = LocalDateTime.now();
+
                 PreparedStatement entry = SQLcon.prepareStatement("INSERT INTO Xrayers(UUID, Handled, FirstHandleTime, Belongings) VALUES(?,?,?,?)");
                 entry.setString(1, p.getUniqueId().toString());
                 entry.setInt(2, 1);
-                entry.setString(3, BukkitSerializer.itemStackArrayToBase64(BukkitSerializer.InventoryAndEquipmentToSingleItemStackArray(p.getInventory(), p.getEquipment())));
+                entry.setString(3, dtf.format(now));
+                entry.setString(4, BukkitSerializer.itemStackArrayToBase64(BukkitSerializer.InventoryAndEquipmentToSingleItemStackArray(p.getInventory(), p.getEquipment())));
                 entry.executeUpdate();
             }
             else //Partial store
             {
+                DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
+                LocalDateTime now = LocalDateTime.now();
+
                 PreparedStatement entry = SQLcon.prepareStatement("INSERT INTO Xrayers(UUID, Handled, FirstHandleTime) VALUES(?,?,?)");
                 entry.setString(1, p.getUniqueId().toString());
                 entry.setInt(2, 1);
+                entry.setString(3, dtf.format(now));
                 entry.executeUpdate();
             }
         }
