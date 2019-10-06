@@ -30,9 +30,16 @@ public class MemoryManager {
         switch (mainClassAccess.getConfig().getString("StorageType")) {
             case "MYSQL":
                 try {
+                    SQLConnect();
                     SQLPlayerDataStore(playername);
                 } catch (SQLException e) {
                     System.err.print(e);
+                } finally {
+                    try {
+                        SQLDisconnect();
+                    } catch (SQLException e) {
+                        System.err.print(e);
+                    }
                 }
                 break;
             case "FLATFILE":
@@ -45,14 +52,21 @@ public class MemoryManager {
         }
     }
 
-    public ArrayList<String> GetBaseXrayerData(ArrayList<Integer> handledAmounts, ArrayList<String> firstHandledTimes) //Returns array list containing all registered xrayer UUID's
+    public void GetBaseXrayerData(ArrayList<String> UUIDs, ArrayList<Integer> handledAmounts, ArrayList<String> firstHandledTimes) //Returns array list containing all registered xrayer UUID's
     {
         switch (mainClassAccess.getConfig().getString("StorageType")) {
             case "MYSQL":
                 try {
-                    return SQLGetBaseXrayerData(handledAmounts, firstHandledTimes);
+                    SQLConnect();
+                    SQLGetBaseXrayerData(UUIDs ,handledAmounts, firstHandledTimes);
                 } catch (SQLException e) {
                     System.err.print(e);
+                } finally {
+                    try {
+                        SQLDisconnect();
+                    } catch (SQLException e) {
+                        System.err.print(e);
+                    }
                 }
                 break;
             case "FLATFILE":
@@ -63,7 +77,6 @@ public class MemoryManager {
                 //SQLiteGetBaseXrayerData();
                 break;
         }
-        return null;
     }
 
     public ItemStack[] GetXrayerBelongings(String xrayerUUID) //Returns ItemStack array containing all confiscated ItemStacks from the specified player by UUID
@@ -71,9 +84,16 @@ public class MemoryManager {
         switch (mainClassAccess.getConfig().getString("StorageType")) {
             case "MYSQL":
                 try {
+                    SQLConnect();
                     return SQLGetXrayerBelongings(xrayerUUID);
                 } catch (SQLException e) {
                     System.err.print(e);
+                } finally {
+                    try {
+                        SQLDisconnect();
+                    } catch (SQLException e) {
+                        System.err.print(e);
+                    }
                 }
                 break;
             case "FLATFILE":
@@ -92,9 +112,16 @@ public class MemoryManager {
         switch (mainClassAccess.getConfig().getString("StorageType")) {
             case "MYSQL":
                 try {
+                    SQLConnect();
                     SQLDeleteXrayer(xrayerUUID);
                 } catch (SQLException e) {
                     System.err.print(e);
+                } finally {
+                    try {
+                        SQLDisconnect();
+                    } catch (SQLException e) {
+                        System.err.print(e);
+                    }
                 }
                 break;
             case "FLATFILE":
@@ -112,9 +139,16 @@ public class MemoryManager {
         switch (mainClassAccess.getConfig().getString("StorageType")) {
             case "MYSQL":
                 try {
+                    SQLConnect();
                     SQLDeleteRegistry();
                 } catch (SQLException e) {
                     System.err.print(e);
+                } finally {
+                    try {
+                        SQLDisconnect();
+                    } catch (SQLException e) {
+                        System.err.print(e);
+                    }
                 }
                 break;
             case "FLATFILE":
@@ -131,9 +165,8 @@ public class MemoryManager {
 
     void SQLConnect() throws SQLException //Establishes sql connection
     {
-        String url = "jdbc:mysql://" + mainClassAccess.getConfig().getString("SQLHost") + "/" + mainClassAccess.getConfig().getString("SQLDatabaseName");
+        String url = "jdbc:mysql://" + mainClassAccess.getConfig().getString("SQLHost") + "/" + mainClassAccess.getConfig().getString("SQLDatabaseName") + "?useSSL=false";
         SQLcon = DriverManager.getConnection(url, mainClassAccess.getConfig().getString("SQLUsername"), mainClassAccess.getConfig().getString("SQLPassword"));
-        System.out.println("[AntiXrayHeuristics]: Successfully connected to SQL database.");
     }
 
     void SQLDisconnect() throws SQLException //Disconnects from sql
@@ -141,13 +174,13 @@ public class MemoryManager {
         if(SQLcon != null)
         {
             SQLcon.close();
-            System.out.println("[AntiXrayHeuristics]: Disconnected from SQL database.");
         }
     }
 
     void SQLCreateTableIfNotExists() throws SQLException //Creates the Xrayers table
     {
         PreparedStatement create = SQLcon.prepareStatement("CREATE TABLE IF NOT EXISTS Xrayers(UUID VARCHAR(36) NOT NULL, Handled INT NOT NULL, FirstHandleTime VARCHAR(36) NOT NULL, Belongings TEXT NULL, PRIMARY KEY(UUID))");
+
         create.executeUpdate();
 
         System.out.println("[AntiXrayHeuristics]: SQL Xrayers table was either found or created from scratch. All seems to be in order.");
@@ -157,7 +190,9 @@ public class MemoryManager {
     {
         PreparedStatement query = SQLcon.prepareStatement("SELECT COUNT(1) FROM Xrayers WHERE UUID = ?");
         query.setString(1, n);
+
         ResultSet result = query.executeQuery();
+
         result.next();
         return result.getInt(1) == 1;
     }
@@ -177,6 +212,7 @@ public class MemoryManager {
                 entry.setInt(2, 1);
                 entry.setString(3, dtf.format(now));
                 entry.setString(4, BukkitSerializer.itemStackArrayToBase64(BukkitSerializer.InventoryAndEquipmentToSingleItemStackArray(p.getInventory(), p.getEquipment())));
+
                 entry.executeUpdate();
             }
             else //Partial store
@@ -188,6 +224,7 @@ public class MemoryManager {
                 entry.setString(1, p.getUniqueId().toString());
                 entry.setInt(2, 1);
                 entry.setString(3, dtf.format(now));
+
                 entry.executeUpdate();
             }
         }
@@ -195,39 +232,24 @@ public class MemoryManager {
             //Just add +1 to Handled column
             PreparedStatement update = SQLcon.prepareStatement("UPDATE Xrayers SET Handled = Handled + 1 WHERE UUID = ?");
             update.setString(1, p.getUniqueId().toString());
+
             update.executeUpdate();
         }
     }
 
-    private ArrayList<String> SQLGetBaseXrayerData(ArrayList<Integer> handledAmounts, ArrayList<String> firstHandledTimes) throws SQLException //Returns all of the basic xrayer information (pretty much everything except for the inventory)
+    private void SQLGetBaseXrayerData(ArrayList<String> UUIDs, ArrayList<Integer> handledAmounts, ArrayList<String> firstHandledTimes) throws SQLException //Returns all of the basic xrayer information (pretty much everything except for the inventory)
     {
         PreparedStatement entry = SQLcon.prepareStatement("SELECT UUID, Handled, FirstHandleTime FROM Xrayers");
 
         ResultSet result = entry.executeQuery();
 
-        ArrayList<String> arr = new ArrayList<String>();
         while(result.next())
         {
-            arr.add(result.getString("UUID"));
+            UUIDs.add(result.getString("UUID"));
             handledAmounts.add(result.getInt("Handled"));
             firstHandledTimes.add(result.getString("FirstHandleTime"));
         }
-        return arr;
     }
-
-//    private ArrayList<String> SQLGetXrayerUUIDs() throws SQLException //Returns UUID column from database as array list.
-//    {
-//        PreparedStatement entry = SQLcon.prepareStatement("SELECT UUID FROM Xrayers;");
-//
-//        ResultSet result = entry.executeQuery();
-//
-//        ArrayList<String> arr =  new ArrayList<String>();
-//        while(result.next())
-//        {
-//            arr.add(result.getString("UUID"));
-//        }
-//        return arr;
-//    }
 
     private ItemStack[] SQLGetXrayerBelongings(String xrayerUUID) throws SQLException //Gets an xrayer player's (by UUID) confiscated belongings
     {
@@ -235,6 +257,7 @@ public class MemoryManager {
         query.setString(1, xrayerUUID);
 
         ResultSet result = query.executeQuery();
+
         result.next();
 
         try {
@@ -258,6 +281,7 @@ public class MemoryManager {
     private void SQLDeleteRegistry() throws SQLException //Truncates the whole Xrayers table, basically emptying all registered xrayers
     {
         PreparedStatement purge = SQLcon.prepareStatement("TRUNCATE TABLE Xrayers");
+
         purge.executeUpdate();
 
         System.out.println("[AntiXrayHeuristics]: SQL Xrayers table was cleared by a user with permissions.");

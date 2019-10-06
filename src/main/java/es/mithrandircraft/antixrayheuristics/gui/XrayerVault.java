@@ -76,7 +76,7 @@ public class XrayerVault {
 
     public void UpdateXrayerInfoList() //Updates Xrayer information arrays
     {
-        UUIDs = mainClassAccess.mm.GetBaseXrayerData(handledAmmounts, firstHandledTimes); //This single function fills up the 3 lists with xrayer information.
+        mainClassAccess.mm.GetBaseXrayerData(UUIDs, handledAmmounts, firstHandledTimes); //This single function fills up the 3 lists with xrayer information.
         pages = MathFunctions.Cut(45, UUIDs.size()); //Calculate pages considering the amount of registered xrayer uuid's, and that there can only be 27 results per page
     }
 

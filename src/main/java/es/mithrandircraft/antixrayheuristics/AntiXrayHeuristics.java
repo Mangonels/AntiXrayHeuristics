@@ -72,7 +72,9 @@ public final class AntiXrayHeuristics extends JavaPlugin implements Listener {
         {
             try {
                 mm.SQLConnect();
+                System.out.println("[AntiXrayHeuristics]: Successfully established first connection to SQL database.");
                 mm.SQLCreateTableIfNotExists();
+                mm.SQLDisconnect();
             } catch (SQLException e) {
                 e.printStackTrace();
             }
