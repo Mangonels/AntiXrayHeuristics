@@ -22,7 +22,7 @@ public class AXH implements CommandExecutor {
             else if (args[0].equalsIgnoreCase("reload") || args[0].equalsIgnoreCase("r")) ARGReload.R(sender, mainClassAccess);
             else if (args[0].equalsIgnoreCase("resetsuspicion") || args[0].equalsIgnoreCase("rs")) ARGResetSuspicion.RS(sender);
             else if (args[0].equalsIgnoreCase("suspicion") || args[0].equalsIgnoreCase("s")) ARGSuspicion.S(sender);
-            else sender.sendMessage("Invalid command.");
+            else sender.sendMessage("Invalid command argument.");
         }
         else if(args.length == 2)
         {
@@ -31,11 +31,11 @@ public class AXH implements CommandExecutor {
             else if (args[0].equalsIgnoreCase("purge") || args[0].equalsIgnoreCase("p")) ARGPurgePlayer.P(sender, args[1], mainClassAccess);
             else if (args[0].equalsIgnoreCase("resetsuspicion") || args[0].equalsIgnoreCase("rs")) ARGResetSuspicion.RS(sender, args[1]);
             else if (args[0].equalsIgnoreCase("suspicion") || args[0].equalsIgnoreCase("s")) ARGSuspicion.S(sender, args[1]);
-            else sender.sendMessage("Invalid command.");
+            else sender.sendMessage("Invalid command argument.");
         }
         else //Show help
         {
-            Bukkit.getServer().getPlayer(sender.getName()).chat("/axh help");
+            sender.sendMessage("Invalid command argument.");
         }
         return false;
     }

@@ -12,7 +12,7 @@ import java.util.UUID;
 
 public class XrayerHandler {
 
-    public static void XrayerWarn(String xrayername) //Sends a warning message to an xrayer by name
+    private static void XrayerWarn(String xrayername) //Sends a warning message to an xrayer by name
     {
         for (Player player : Bukkit.getOnlinePlayers()) {
             if(player.hasPermission("AXH.XrayerWarning")) player.sendMessage(PlaceholderManager.SubstitutePlaceholders("[AntiXrayHeuristics] {PlayerName} was automatically registered and handled for xraying.", xrayername));
@@ -56,7 +56,7 @@ public class XrayerHandler {
             System.out.println(PlaceholderManager.SubstitutePlaceholders("[AntiXrayHeuristics] {PlayerName} was automatically registered and handled for xraying.", xrayername));
 
             //Warn players with permission:
-            if(mainClass.getConfig().getBoolean("PlayersWithPermissionGetWarned")) XrayerWarn(xrayername);
+            if(mainClass.getConfig().getBoolean("TellPlayersWithPermission")) XrayerWarn(xrayername);
         }
         else{ System.out.println("Player named " + xrayername + " was not found while attempting to handle as Xrayer. Player must be online."); }
     }
