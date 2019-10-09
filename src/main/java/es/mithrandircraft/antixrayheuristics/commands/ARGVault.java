@@ -1,6 +1,7 @@
 package es.mithrandircraft.antixrayheuristics.commands;
 
 import es.mithrandircraft.antixrayheuristics.AntiXrayHeuristics;
+import es.mithrandircraft.antixrayheuristics.files.LocaleManager;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -11,12 +12,12 @@ class ARGVault {
         {
             Player player = (Player) sender;
             if (player.hasPermission("AXH.Commands.Vault")) {
-                mainClass.vault.UpdateXrayerInfoList(); //Update all of the xrayer's uuid's in vault's arraylist
+                mainClass.vault.UpdateXrayerInfoLists(); //Update all of the xrayer's uuid's in vault's arraylist
                 mainClass.vault.OpenVault(player, 0);
 
-            } else player.sendMessage("You do not have permission to execute this command.");
+            } else player.sendMessage(LocaleManager.get().getString("NoPermissionForCommand"));
         } else { //Is console
-            System.out.println("You need to be a player in order to execute this command.");
+            System.out.println(LocaleManager.get().getString("PlayerOnlyCommand"));
         }
     }
 }

@@ -1,6 +1,7 @@
 package es.mithrandircraft.antixrayheuristics.commands;
 
 import es.mithrandircraft.antixrayheuristics.AntiXrayHeuristics;
+import es.mithrandircraft.antixrayheuristics.files.LocaleManager;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -14,17 +15,17 @@ public class ARGPurgePlayer {
                 //purge xrayer from database:
                 Player target = Bukkit.getServer().getPlayer(arg);
                 if (target != null) { //Player online
-                    mainClass.mm.DeleteXrayer(target.getUniqueId().toString());
-                    sender.sendMessage("[AntiXrayHeuristics] The Xrayer's data was purged from the xrayer vault.");
+                    mainClass.vault.ClearRegisteredXrayerAndRefreshVault(arg, false);
+                    sender.sendMessage(LocaleManager.get().getString("PlayerDataPurged"));
                 }
-                else player.sendMessage("[AntiXrayHeuristics] Purging players through command is currently impossible for players that are not currently connected to the server. You CAN however purge individual players that are offline through the ingame XrayerVault GUI: /axh v");
-            } else player.sendMessage("You do not have permission to execute this command.");
+                else player.sendMessage(LocaleManager.get().getString("MessagesPrefix") + " " + LocaleManager.get().getString("PurgeCommandLimit"));
+            } else player.sendMessage(LocaleManager.get().getString("NoPermissionForCommand"));
         } else { //Is console
             Player target = Bukkit.getServer().getPlayer(arg);
             if (target != null) {
-                mainClass.mm.DeleteXrayer(target.getUniqueId().toString());
+                mainClass.vault.ClearRegisteredXrayerAndRefreshVault(arg, false);
             }
-            else System.out.print("[AntiXrayHeuristics] Purging players through command is currently impossible for players that are not currently connected to the server. You CAN however purge individual players that are offline through the ingame XrayerVault GUI: /axh v");
+            else System.out.print(LocaleManager.get().getString("MessagesPrefix") + " " + LocaleManager.get().getString("PurgeCommandLimit"));
         }
     }
 }

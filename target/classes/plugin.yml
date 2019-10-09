@@ -12,9 +12,9 @@ commands:
   AXH Reload:
     description: Will reload the plugin's configuration when specified as axh argument.
     aliases: r
-  AXH Suspicion:
-    description: Shows your own, or specified player's suspicion level when specified as axh argument. (Development intended)
-    aliases: s
+#  AXH Suspicion:
+#    description: Shows your own, or specified player's suspicion level when specified as axh argument. (Development intended)
+#    aliases: s
   AXH ResetSuspicion:
     description: Resets your own, or specified player's suspicion level back to 0.
     aliases: rs

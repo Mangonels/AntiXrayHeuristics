@@ -1,6 +1,8 @@
 package es.mithrandircraft.antixrayheuristics.events;
 
 import es.mithrandircraft.antixrayheuristics.XrayerHandler;
+import es.mithrandircraft.antixrayheuristics.files.LocaleManager;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -29,7 +31,7 @@ public class ClickEv implements Listener {
                 {
                     return;
                 }
-                else if(e.getCurrentItem().getType() == Material.PLAYER_HEAD && e.getSlot() != 49) //Clicked on player head, and it wasn't head located at slot 50 (which shows up in xrayer confiscated belongings inspector)
+                else if(e.getCurrentItem().getType() == Material.PLAYER_HEAD && e.getSlot() != 49) //Clicked on player head, and it wasn't located at slot 49 (which shows up in xrayer confiscated belongings inspector)
                 {
                     //Open xrayer's confiscated inventory: The slot the item we clicked is on + the page we're on multiplied by the entry slots range (45 player heads) is equal to the xrayer's UUID position in the vault's XrayerUUID's array:
                     mainClassAccess.vault.OpenXrayerConfiscatedInventory((Player) e.getView().getPlayer(), e.getRawSlot() + mainClassAccess.vault.GetPage(e.getWhoClicked().getName()) * 45);
@@ -47,19 +49,16 @@ public class ClickEv implements Listener {
                 else if(e.getCurrentItem().equals(mainClassAccess.vault.GetPurgeButtonFormat())) //Clicked purge vault button
                 {
                     if(e.getWhoClicked().hasPermission("AXH.Vault.Purge")) {
-                        //Dump registered xrayers:
-                        mainClassAccess.mm.DeleteRegisteredXrayers();
-                        //refresh:
-                        mainClassAccess.vault.UpdateXrayerInfoList();
-                        mainClassAccess.vault.OpenVault((Player) e.getView().getPlayer(), mainClassAccess.vault.GetPage(e.getWhoClicked().getName()));
+                        mainClassAccess.vault.PurgeAllXrayersAndRefreshVault();
                     }
-                    else e.getView().getPlayer().sendMessage("You do not have permission to execute this command.");
+                    else e.getView().getPlayer().sendMessage(LocaleManager.get().getString("NoPermissionForCommand"));
                 }
                 else if(e.getCurrentItem().equals(mainClassAccess.vault.GetRefreshButtonFormat())) //Clicked refresh vault button
                 {
                     //refresh:
-                    mainClassAccess.vault.UpdateXrayerInfoList();
+                    mainClassAccess.vault.UpdateXrayerInfoLists();
                     mainClassAccess.vault.OpenVault((Player) e.getView().getPlayer(), mainClassAccess.vault.GetPage(e.getWhoClicked().getName()));
+                    Bukkit.getServer().getPlayer(e.getWhoClicked().getName()).sendMessage(LocaleManager.get().getString("MessagesPrefix") + " " + LocaleManager.get().getString("SelfVaultViewRefresh"));
                 }
                 else if(e.getCurrentItem().equals(mainClassAccess.vault.GetBackButtonFormat())) //Clicked back button
                 {
@@ -69,30 +68,20 @@ public class ClickEv implements Listener {
                 else if(e.getCurrentItem().equals(mainClassAccess.vault.GetPurgePlayerButtonFormat())) //Clicked purge player button
                 {
                     if(e.getWhoClicked().hasPermission("AXH.Commands.PurgePlayer")) {
-                        //purge xrayer from database:
-                        mainClassAccess.mm.DeleteXrayer(mainClassAccess.vault.GetInspectedXrayer(e.getWhoClicked().getName()));
-                        //remove purged uuid from being listed in vault:
-                        mainClassAccess.vault.RemoveXrayerUUIDFromList(mainClassAccess.vault.GetInspectedXrayer(e.getWhoClicked().getName()));
-                        //go back to previous page with removed uuid:
-                        mainClassAccess.vault.OpenVault((Player) e.getView().getPlayer(), mainClassAccess.vault.GetPage(e.getWhoClicked().getName()));
+                        mainClassAccess.vault.ClearRegisteredXrayerAndRefreshVault(e.getWhoClicked().getName(), true);
                     }
-                    else e.getView().getPlayer().sendMessage("You do not have permission to execute this command.");
+                    else e.getView().getPlayer().sendMessage(LocaleManager.get().getString("NoPermissionForCommand"));
                 }
-                else if(e.getCurrentItem().equals(mainClassAccess.vault.GetAbsolvePlayerButtonFormat()))
+                else if(e.getCurrentItem().equals(mainClassAccess.vault.GetAbsolvePlayerButtonFormat())) //Clicked absolved player button
                 {
                     if(e.getWhoClicked().hasPermission("AXH.Commands.AbsolvePlayer")) {
                         //return inventory to player, and do the rest if player was online (function returns true if it worked):
                         if (XrayerHandler.PlayerAbsolver(mainClassAccess.vault.GetInspectedXrayer(e.getWhoClicked().getName()), mainClassAccess.mm.GetXrayerBelongings(mainClassAccess.vault.GetInspectedXrayer(e.getWhoClicked().getName())))) {
-                            //purge player from database:
-                            mainClassAccess.mm.DeleteXrayer(mainClassAccess.vault.GetInspectedXrayer(e.getWhoClicked().getName()));
-                            //remove absolved uuid from being listed in vault:
-                            mainClassAccess.vault.RemoveXrayerUUIDFromList(mainClassAccess.vault.GetInspectedXrayer(e.getWhoClicked().getName()));
-                            //go back to previous page with removed uuid:
-                            mainClassAccess.vault.OpenVault((Player) e.getView().getPlayer(), mainClassAccess.vault.GetPage(e.getWhoClicked().getName()));
+                            mainClassAccess.vault.ClearRegisteredXrayerAndRefreshVault(e.getWhoClicked().getName(), true);
                         }
-                        else e.getWhoClicked().sendMessage("[AntiXrayHeuristics] Player wasn't online. You can only absolve online players in order to return their items.");
+                        else e.getWhoClicked().sendMessage(LocaleManager.get().getString("MessagesPrefix") + " " + LocaleManager.get().getString("PlayerNotOnlineOnAbsolution"));
                     }
-                    else e.getView().getPlayer().sendMessage("You do not have permission to execute this command.");
+                    else e.getView().getPlayer().sendMessage(LocaleManager.get().getString("NoPermissionForCommand"));
                 }
             }
             else if (e.getAction().equals(InventoryAction.MOVE_TO_OTHER_INVENTORY)) //This check stops item stack movement with shift between inventories

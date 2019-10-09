@@ -6,6 +6,7 @@ import es.mithrandircraft.antixrayheuristics.events.BlockBreakEv;
 import es.mithrandircraft.antixrayheuristics.events.ClickEv;
 import es.mithrandircraft.antixrayheuristics.events.InventoryCloseEv;
 import es.mithrandircraft.antixrayheuristics.events.ItemDragEv;
+import es.mithrandircraft.antixrayheuristics.files.LocaleManager;
 import es.mithrandircraft.antixrayheuristics.gui.XrayerVault;
 import org.bukkit.Material;
 import org.bukkit.event.Listener;
@@ -54,8 +55,7 @@ public final class AntiXrayHeuristics extends JavaPlugin implements Listener {
 //    private final int straightMiningThreshold = 5; //Threshold that determines when we can determine that the player is mining straight
 
     //GUI:
-    public XrayerVault vault = new XrayerVault(this);
-
+    public XrayerVault vault;
 
     @Override
     public void onEnable() {
@@ -63,6 +63,14 @@ public final class AntiXrayHeuristics extends JavaPlugin implements Listener {
         //Config load:
         getConfig().options().copyDefaults();
         saveDefaultConfig();
+
+        //Locale load:
+        LocaleManager.setup();
+        LocaleManager.get().options().copyDefaults(true);
+        LocaleManager.save();
+
+        //Vault GUI object initialize:
+        vault = new XrayerVault(this);
 
         //Commands:
         getCommand("AXH").setExecutor(new AXH(this));
@@ -72,7 +80,7 @@ public final class AntiXrayHeuristics extends JavaPlugin implements Listener {
         {
             try {
                 mm.SQLConnect();
-                System.out.println("[AntiXrayHeuristics]: Successfully established first connection to SQL database.");
+                System.out.println(LocaleManager.get().getString("MessagesPrefix") + " " + LocaleManager.get().getString("SQLConEstablish"));
                 mm.SQLCreateTableIfNotExists();
                 mm.SQLDisconnect();
             } catch (SQLException e) {
@@ -106,13 +114,13 @@ public final class AntiXrayHeuristics extends JavaPlugin implements Listener {
             try {
                 mm.SQLDisconnect(); //Disconnect from sql
             } catch (SQLException e) {
-                System.out.println("[AntiXrayHeuristics]: Error disconnecting from SQL database.");
+                System.out.println(LocaleManager.get().getString("MessagesPrefix") + " " + LocaleManager.get().getString("SQLDisconError"));
                 e.printStackTrace();
             }
         }
     }
 
-    public void MainRunnable() //Performs plugin updates at scheduled time
+    private void MainRunnable() //Performs plugin updates at scheduled time
     {
         new BukkitRunnable()
         {

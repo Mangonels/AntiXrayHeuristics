@@ -21,7 +21,7 @@ public class InventoryCloseEv implements Listener {
         {
             ScheduledExecutorService executorService = Executors.newSingleThreadScheduledExecutor(); //Delayer scheduler
             DelayedInventoryCloseExecution delay = new DelayedInventoryCloseExecution(e.getPlayer(), mainClassAccess); //Class with the runnable run() method to be delayed
-            executorService.schedule(delay, 1, TimeUnit.SECONDS); //Set up the schedule to 1 second delay
+            executorService.schedule(delay, 500, TimeUnit.MILLISECONDS); //Set up the schedule to half a second delay
         }
     }
 }

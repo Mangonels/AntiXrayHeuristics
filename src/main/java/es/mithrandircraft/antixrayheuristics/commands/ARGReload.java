@@ -1,6 +1,7 @@
 package es.mithrandircraft.antixrayheuristics.commands;
 
 import es.mithrandircraft.antixrayheuristics.AntiXrayHeuristics;
+import es.mithrandircraft.antixrayheuristics.files.LocaleManager;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -11,13 +12,15 @@ public class ARGReload {
             Player player = (Player) sender;
             if (player.hasPermission("AXH.Commands.Reload")) {
                 //Do reload
-                mainClass.reloadConfig();
-                player.sendMessage("AntiXrayHeuristics has reloaded.");
-            } else player.sendMessage("You do not have permission to execute this command.");
+                mainClass.reloadConfig(); //Reload main config
+                LocaleManager.reload(); //Reload locale config
+                player.sendMessage(LocaleManager.get().getString("Reloaded"));
+            } else player.sendMessage(LocaleManager.get().getString("NoPermissionForCommand"));
         } else { //Is console
                 //Do reload
                 mainClass.reloadConfig();
-                System.out.println("AntiXrayHeuristics has reloaded.");
+                LocaleManager.reload();
+                System.out.println(LocaleManager.get().getString("Reloaded"));
         }
     }
 }

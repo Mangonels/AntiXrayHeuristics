@@ -1,4 +1,5 @@
 es\mithrandircraft\antixrayheuristics\math\MathFunctions.class
+es\mithrandircraft\antixrayheuristics\files\LocaleManager.class
 es\mithrandircraft\antixrayheuristics\commands\ARGXrayer.class
 es\mithrandircraft\antixrayheuristics\gui\PlayerViewInfo.class
 es\mithrandircraft\antixrayheuristics\commands\ARGResetSuspicion.class

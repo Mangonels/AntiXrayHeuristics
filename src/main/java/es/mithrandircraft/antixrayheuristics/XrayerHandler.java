@@ -1,5 +1,6 @@
 package es.mithrandircraft.antixrayheuristics;
 
+import es.mithrandircraft.antixrayheuristics.files.LocaleManager;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Item;
@@ -15,7 +16,7 @@ public class XrayerHandler {
     private static void XrayerWarn(String xrayername) //Sends a warning message to an xrayer by name
     {
         for (Player player : Bukkit.getOnlinePlayers()) {
-            if(player.hasPermission("AXH.XrayerWarning")) player.sendMessage(PlaceholderManager.SubstitutePlaceholders("[AntiXrayHeuristics] {PlayerName} was automatically registered and handled for xraying.", xrayername));
+            if(player.hasPermission("AXH.XrayerWarning")) player.sendMessage(PlaceholderManager.SubstitutePlaceholders(LocaleManager.get().getString("MessagesPrefix") + " " + LocaleManager.get().getString("AutoHandledPlayer"), xrayername));
         }
     }
 
@@ -85,13 +86,13 @@ public class XrayerHandler {
             if(target.getEquipment().getItemInOffHand() == null) target.getEquipment().setItemInOffHand(possessions[36]); //Check if nothing in slot
             else DropItemAtPlayerLocation(possessions[36], target); //No space, drop on floor.
             if(target.getEquipment().getBoots() == null) target.getEquipment().setBoots(possessions[37]); //Same with rest...
-            else DropItemAtPlayerLocation(possessions[37], target);
-            if(target.getEquipment().getLeggings() == null) target.getEquipment().setLeggings(possessions[38]);
-            else DropItemAtPlayerLocation(possessions[38], target);
-            if(target.getEquipment().getChestplate() == null) target.getEquipment().setChestplate(possessions[39]);
-            else DropItemAtPlayerLocation(possessions[39], target);
-            if(target.getEquipment().getHelmet() == null) target.getEquipment().setHelmet(possessions[40]);
             else DropItemAtPlayerLocation(possessions[40], target);
+            if(target.getEquipment().getLeggings() == null) target.getEquipment().setLeggings(possessions[38]);
+            else DropItemAtPlayerLocation(possessions[39], target);
+            if(target.getEquipment().getChestplate() == null) target.getEquipment().setChestplate(possessions[39]);
+            else DropItemAtPlayerLocation(possessions[38], target);
+            if(target.getEquipment().getHelmet() == null) target.getEquipment().setHelmet(possessions[40]);
+            else DropItemAtPlayerLocation(possessions[37], target);
 
             System.out.print("[AntiXrayHeuristics] Player " + target.getName() + "has been absolved from the Xrayer Vault by a player with permission, and his items have been returned.");
             return true;

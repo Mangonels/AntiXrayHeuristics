@@ -2,6 +2,7 @@ package es.mithrandircraft.antixrayheuristics.commands;
 
 import es.mithrandircraft.antixrayheuristics.AntiXrayHeuristics;
 import es.mithrandircraft.antixrayheuristics.MiningSession;
+import es.mithrandircraft.antixrayheuristics.files.LocaleManager;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -13,7 +14,7 @@ public class ARGSuspicion {
             if (tempMS != null) player.sendMessage("Your suspicion level: " + tempMS.GetSuspicionLevel());
             else player.sendMessage("You are not suspicious of Xray usage. No suspicion level available.");
         }
-        else System.out.println("You need to be a player in order to execute this command without arguments."); //Is console
+        else System.out.println(LocaleManager.get().getString("PlayerOnlyCommand")); //Is console
     }
     public static void S(CommandSender sender, String arg) //Parametrized
     {

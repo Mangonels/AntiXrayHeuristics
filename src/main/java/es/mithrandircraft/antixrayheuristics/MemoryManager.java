@@ -1,5 +1,6 @@
 package es.mithrandircraft.antixrayheuristics;
 
+import es.mithrandircraft.antixrayheuristics.files.LocaleManager;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
@@ -183,7 +184,7 @@ public class MemoryManager {
 
         create.executeUpdate();
 
-        System.out.println("[AntiXrayHeuristics]: SQL Xrayers table was either found or created from scratch. All seems to be in order.");
+        System.out.println(LocaleManager.get().getString("MessagesPrefix") + " " + LocaleManager.get().getString("SQLTableFoundOrCreated"));
     }
 
     private boolean SQLFindUUID(String n) throws SQLException //Returns true if UUID was found in the database
@@ -274,8 +275,6 @@ public class MemoryManager {
         purge.setString(1, xrayerUUID);
 
         purge.executeUpdate();
-
-        System.out.println("[AntiXrayHeuristics]: Player with UUID: " + xrayerUUID + " stored in SQL Xrayers table was cleared by a user with permissions.");
     }
 
     private void SQLDeleteRegistry() throws SQLException //Truncates the whole Xrayers table, basically emptying all registered xrayers
@@ -283,8 +282,6 @@ public class MemoryManager {
         PreparedStatement purge = SQLcon.prepareStatement("TRUNCATE TABLE Xrayers");
 
         purge.executeUpdate();
-
-        System.out.println("[AntiXrayHeuristics]: SQL Xrayers table was cleared by a user with permissions.");
     }
 
     public static String MySQLGetPlayerData(Player p) //Gets an xrayer player's data
