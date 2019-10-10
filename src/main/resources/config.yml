@@ -79,14 +79,12 @@ TellPlayersWithPermission: true
 #----------------------
 #AXH needs to store certain persistent information, here you should configure your preferred method for data storing.
 
-#Storage type (available: 'MYSQL', 'SQLITE', 'FLATFILE')
-#Be warned: AAX does not currently auto-convert data between storage types, so it's currently up to you to copy data
-#from one storage type to another if you really wish to change the storage type. Choose wisely before you start using
-#this plugin. The storage type will be swapped once you change it on this config and restart the server.
-#Reloading the plugin will not change the database if you reconfigure it while this plugin is running!
-#(If you don't even know what the storage types are and how they work, just leave the default SQLITE and never change
-#it, it will do just fine and requires no further setups):
-StorageType: 'SQLITE'
+#Storage type (available: 'MYSQL', 'JSON')
+#Be warned: AAX does not currently auto-convert data between available storage types, so choose your data storage
+#wisely before you start using this plugin. The storage type will be swapped once you change it on this config and
+#restart the server. If you don't even know what the storage types are and how they work, just leave the default
+#JSON and never change it, it will do just fine and requires no further setups:
+StorageType: 'JSON'
 
 #Edit the following credentials if you are using MySQL:
 SQLHost: '127.0.0.1'

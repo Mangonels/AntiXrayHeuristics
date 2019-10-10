@@ -2,41 +2,38 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="2876e9f1-3d67-41cc-8b94-448fa827feed" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/src/main/java/es/mithrandircraft/antixrayheuristics/files/LocaleManager.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/es/mithrandircraft/antixrayheuristics/files/XrayerDataForJSON.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/es/mithrandircraft/antixrayheuristics/files/XrayerDataParser.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/es/mithrandircraft/antixrayheuristics/AntiXrayHeuristics.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/es/mithrandircraft/antixrayheuristics/AntiXrayHeuristics.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/AntiXrayHeuristics.iml" beforeDir="false" afterPath="$PROJECT_DIR$/AntiXrayHeuristics.iml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/es/mithrandircraft/antixrayheuristics/MemoryManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/es/mithrandircraft/antixrayheuristics/MemoryManager.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/es/mithrandircraft/antixrayheuristics/XrayerHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/es/mithrandircraft/antixrayheuristics/XrayerHandler.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/es/mithrandircraft/antixrayheuristics/commands/ARGAbsolvePlayer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/es/mithrandircraft/antixrayheuristics/commands/ARGAbsolvePlayer.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/es/mithrandircraft/antixrayheuristics/commands/ARGPurgePlayer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/es/mithrandircraft/antixrayheuristics/commands/ARGPurgePlayer.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/es/mithrandircraft/antixrayheuristics/commands/ARGReload.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/es/mithrandircraft/antixrayheuristics/commands/ARGReload.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/es/mithrandircraft/antixrayheuristics/commands/ARGResetSuspicion.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/es/mithrandircraft/antixrayheuristics/commands/ARGResetSuspicion.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/es/mithrandircraft/antixrayheuristics/commands/ARGSuspicion.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/es/mithrandircraft/antixrayheuristics/commands/ARGSuspicion.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/es/mithrandircraft/antixrayheuristics/commands/ARGVault.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/es/mithrandircraft/antixrayheuristics/commands/ARGVault.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/es/mithrandircraft/antixrayheuristics/commands/ARGXrayer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/es/mithrandircraft/antixrayheuristics/commands/ARGXrayer.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/es/mithrandircraft/antixrayheuristics/commands/AXH.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/es/mithrandircraft/antixrayheuristics/commands/AXH.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/es/mithrandircraft/antixrayheuristics/events/ClickEv.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/es/mithrandircraft/antixrayheuristics/events/ClickEv.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/es/mithrandircraft/antixrayheuristics/events/InventoryCloseEv.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/es/mithrandircraft/antixrayheuristics/events/InventoryCloseEv.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/es/mithrandircraft/antixrayheuristics/gui/XrayerVault.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/es/mithrandircraft/antixrayheuristics/gui/XrayerVault.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/plugin.yml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/plugin.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/es/mithrandircraft/antixrayheuristics/files/LocaleManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/es/mithrandircraft/antixrayheuristics/files/LocaleManager.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/config.yml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/config.yml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/AntiXrayHeuristics-1.0-SNAPSHOT-shaded.jar" beforeDir="false" afterPath="$PROJECT_DIR$/target/AntiXrayHeuristics-1.0-SNAPSHOT-shaded.jar" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/es/mithrandircraft/antixrayheuristics/AntiXrayHeuristics$1.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/es/mithrandircraft/antixrayheuristics/AntiXrayHeuristics$1.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/es/mithrandircraft/antixrayheuristics/AntiXrayHeuristics.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/es/mithrandircraft/antixrayheuristics/AntiXrayHeuristics.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/AntiXrayHeuristics-1.0-SNAPSHOT.jar" beforeDir="false" afterPath="$PROJECT_DIR$/target/AntiXrayHeuristics-1.0-SNAPSHOT.jar" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/config.yml" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/config.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/es/mithrandircraft/antixrayheuristics/AntiXrayHeuristics$1.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/es/mithrandircraft/antixrayheuristics/AntiXrayHeuristics.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/es/mithrandircraft/antixrayheuristics/BukkitSerializer.class" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/target/classes/es/mithrandircraft/antixrayheuristics/MemoryManager.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/es/mithrandircraft/antixrayheuristics/MemoryManager.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/es/mithrandircraft/antixrayheuristics/XrayerHandler.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/es/mithrandircraft/antixrayheuristics/XrayerHandler.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/es/mithrandircraft/antixrayheuristics/commands/ARGAbsolvePlayer.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/es/mithrandircraft/antixrayheuristics/commands/ARGAbsolvePlayer.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/es/mithrandircraft/antixrayheuristics/commands/ARGPurgePlayer.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/es/mithrandircraft/antixrayheuristics/commands/ARGPurgePlayer.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/es/mithrandircraft/antixrayheuristics/commands/ARGReload.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/es/mithrandircraft/antixrayheuristics/commands/ARGReload.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/es/mithrandircraft/antixrayheuristics/commands/ARGResetSuspicion.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/es/mithrandircraft/antixrayheuristics/commands/ARGResetSuspicion.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/es/mithrandircraft/antixrayheuristics/commands/ARGSuspicion.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/es/mithrandircraft/antixrayheuristics/commands/ARGSuspicion.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/es/mithrandircraft/antixrayheuristics/commands/ARGVault.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/es/mithrandircraft/antixrayheuristics/commands/ARGVault.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/es/mithrandircraft/antixrayheuristics/commands/ARGXrayer.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/es/mithrandircraft/antixrayheuristics/commands/ARGXrayer.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/es/mithrandircraft/antixrayheuristics/commands/AXH.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/es/mithrandircraft/antixrayheuristics/commands/AXH.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/es/mithrandircraft/antixrayheuristics/events/ClickEv.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/es/mithrandircraft/antixrayheuristics/events/ClickEv.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/es/mithrandircraft/antixrayheuristics/gui/XrayerVault.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/es/mithrandircraft/antixrayheuristics/gui/XrayerVault.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/plugin.yml" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/plugin.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/es/mithrandircraft/antixrayheuristics/MiningSession.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/es/mithrandircraft/antixrayheuristics/PlaceholderManager.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/es/mithrandircraft/antixrayheuristics/commands/ARGAbsolvePlayer.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/es/mithrandircraft/antixrayheuristics/commands/ARGPurgePlayer.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/es/mithrandircraft/antixrayheuristics/commands/ARGReload.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/es/mithrandircraft/antixrayheuristics/commands/ARGResetSuspicion.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/es/mithrandircraft/antixrayheuristics/commands/ARGSuspicion.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/es/mithrandircraft/antixrayheuristics/commands/ARGVault.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/es/mithrandircraft/antixrayheuristics/commands/ARGXrayer.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/es/mithrandircraft/antixrayheuristics/commands/AXH.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/es/mithrandircraft/antixrayheuristics/events/DelayedInventoryCloseExecution.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/es/mithrandircraft/antixrayheuristics/events/InventoryCloseEv.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/es/mithrandircraft/antixrayheuristics/events/ItemDragEv.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/es/mithrandircraft/antixrayheuristics/files/LocaleManager.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/es/mithrandircraft/antixrayheuristics/gui/PlayerViewInfo.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/es/mithrandircraft/antixrayheuristics/gui/XrayerVault.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/es/mithrandircraft/antixrayheuristics/math/MathFunctions.class" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/target/maven-status/maven-compiler-plugin/compile/default-compile/createdFiles.lst" beforeDir="false" afterPath="$PROJECT_DIR$/target/maven-status/maven-compiler-plugin/compile/default-compile/createdFiles.lst" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/maven-status/maven-compiler-plugin/compile/default-compile/inputFiles.lst" beforeDir="false" afterPath="$PROJECT_DIR$/target/maven-status/maven-compiler-plugin/compile/default-compile/inputFiles.lst" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/original-AntiXrayHeuristics-1.0-SNAPSHOT.jar" beforeDir="false" afterPath="$PROJECT_DIR$/target/original-AntiXrayHeuristics-1.0-SNAPSHOT.jar" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -67,9 +64,9 @@
   <component name="ProjectId" id="1PZ2tIaBarV6lp54ZuebdkWfXv0" />
   <component name="PropertiesComponent">
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/../SimpleHubParkour" />
-    <property name="project.structure.last.edited" value="Libraries" />
-    <property name="project.structure.proportion" value="0.0" />
+    <property name="last_opened_file_path" value="$USER_HOME$/Downloads/jackson-all-1.9.11.jar!/" />
+    <property name="project.structure.last.edited" value="Modules" />
+    <property name="project.structure.proportion" value="0.15" />
     <property name="project.structure.side.proportion" value="0.2" />
   </component>
   <component name="RecentsManager">

@@ -1,10 +1,13 @@
 package es.mithrandircraft.antixrayheuristics;
 
 import es.mithrandircraft.antixrayheuristics.files.LocaleManager;
+import es.mithrandircraft.antixrayheuristics.files.XrayerDataParser;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.codehaus.jackson.JsonParseException;
+import org.codehaus.jackson.map.JsonMappingException;
+import org.codehaus.jackson.map.ObjectMapper;
 
 import java.io.IOException;
 import java.sql.*;
@@ -43,12 +46,9 @@ public class MemoryManager {
                     }
                 }
                 break;
-            case "FLATFILE":
-                FlatFilePlayerDataStore(playername);
-                break;
-            case "SQLITE":
+            case "JSON":
             default:
-                SQLitePlayerDataStore(playername);
+                JSONFilePlayerDataStore(playername);
                 break;
         }
     }
@@ -70,13 +70,10 @@ public class MemoryManager {
                     }
                 }
                 break;
-            case "FLATFILE":
-                //FlatFileGetBaseXrayerData();
-                break;
-            case "SQLITE":
-            default:
-                //SQLiteGetBaseXrayerData();
-                break;
+//            case "JSON":
+//            default:
+//                JSONGetBaseXrayerData(UUIDs ,handledAmounts, firstHandledTimes);
+//                break;
         }
     }
 
@@ -97,13 +94,10 @@ public class MemoryManager {
                     }
                 }
                 break;
-            case "FLATFILE":
-                //FlatFileGetXrayerBelongings();
-                break;
-            case "SQLITE":
-            default:
-                //SQLiteGetXrayerBelongings();
-                break;
+//            case "JSON":
+//            default:
+//                return JSONGetXrayerBelongings(xrayerUUID);
+//                break;
         }
         return null;
     }
@@ -125,13 +119,10 @@ public class MemoryManager {
                     }
                 }
                 break;
-            case "FLATFILE":
-                //FlatFileDeleteXrayer();
-                break;
-            case "SQLITE":
-            default:
-                //SQLiteDeleteXrayer();
-                break;
+//            case "JSON":
+//            default:
+//                JSONDeleteXrayer(xrayerUUID);
+//                break;
         }
     }
 
@@ -152,13 +143,10 @@ public class MemoryManager {
                     }
                 }
                 break;
-            case "FLATFILE":
-                //FlatFileDeleteRegistry();
-                break;
-            case "SQLITE":
-            default:
-                //SQLiteDeleteRegistry();
-                break;
+//            case "JSON":
+//            default:
+//                JSONDeleteRegistry();
+//                break;
         }
     }
 
@@ -198,9 +186,9 @@ public class MemoryManager {
         return result.getInt(1) == 1;
     }
 
-    private void SQLPlayerDataStore(String n) throws SQLException //Stores player name as xrayer and some other info (+ player belongings if configured), ONLY IF there isn't information already stored.
+    private void SQLPlayerDataStore(String playername) throws SQLException //Stores player name as xrayer and some other info (+ player belongings if configured), ONLY IF there isn't information already stored.
     {
-        Player p = Bukkit.getServer().getPlayer(n);
+        Player p = Bukkit.getServer().getPlayer(playername);
         assert p != null;
         if(!SQLFindUUID(p.getUniqueId().toString())){ //Primary key (player UUID) doesn't already exist
             if(mainClassAccess.getConfig().getBoolean("StoreCopy")) //Full store
@@ -284,26 +272,62 @@ public class MemoryManager {
         purge.executeUpdate();
     }
 
-    public static String MySQLGetPlayerData(Player p) //Gets an xrayer player's data
+
+    //JSON related operations:
+
+    private boolean JSONFindUUID(String uuid) //Returns true if UUID was found in the JSON file
     {
-        //TO-DO
-        return p.getName();
-    }
-    public static String MySQLGetPlayerData(Player p, Inventory inventory) //Gets an xrayer player's data and belongings
-    {
-        //TO-DO 2
-        return p.getName();
+        return true;
     }
 
-    //SQLite Operations
-    private void SQLitePlayerDataStore(String n)
+    private void JSONFilePlayerDataStore(String playername) //Stores player name as xrayer and some other info (+ player belongings if configured), ONLY IF there isn't information already stored.
     {
+        Player p = Bukkit.getServer().getPlayer(playername);
+        assert p != null;
+        if(!JSONFindUUID(p.getUniqueId().toString())){ //player UUID doesn't already exist in file
+            if(mainClassAccess.getConfig().getBoolean("StoreCopy")) //Full store
+            {
+                DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
+                LocalDateTime now = LocalDateTime.now();
 
-    }
+                //String inputJson ="{  \"email\":\"abc@123.com\",  \"did_you_mean\":\"abc@me.com\",  \"user\":\"abc\",  \"domain\":\"123.com\",  \"format_valid\":true,  \"mx_found\":false,  \"smtp_check\":false,  \"catch_all\":null,  \"role\":false,  \"disposable\":false,  \"free\":true,  \"score\":0.16}";
+                String inputJson = "{\"xrayer\":{\"uuid\":" + p.getUniqueId().toString() + ", \"Handled\":\"1\", \"FirstHandleTime\":" + dtf.format(now) + ", \"Belongings\":" + BukkitSerializer.itemStackArrayToBase64(BukkitSerializer.InventoryAndEquipmentToSingleItemStackArray(p.getInventory(), p.getEquipment())) + "}";
 
-    //FlatFile Operations
-    private void FlatFilePlayerDataStore(String n)
-    {
+                ObjectMapper mapper = new ObjectMapper();
+                try {
+                    XrayerDataParser xdp = mapper.readValue(inputJson, XrayerDataParser.class);
+                    System.out.println(xdp.getXrayerData().getUUID());
+                } catch (JsonParseException e) {
+                    e.printStackTrace();
+                } catch (JsonMappingException e) {
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+            else //Partial store
+            {
+                DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
+                LocalDateTime now = LocalDateTime.now();
 
+                String inputJson = "{\"xrayer\":{\"uuid\":" + p.getUniqueId().toString() + ", \"Handled\":\"1\", \"FirstHandleTime\":" + dtf.format(now) + "}";
+
+                ObjectMapper mapper = new ObjectMapper();
+                try {
+                    XrayerDataParser xdp = mapper.readValue(inputJson, XrayerDataParser.class);
+                    System.out.println(xdp.getXrayerData().getUUID());
+                } catch (JsonParseException e) {
+                    e.printStackTrace();
+                } catch (JsonMappingException e) {
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        else{ //player UUID already exists in file
+            //Just add +1 to Handled
+
+        }
     }
 }
