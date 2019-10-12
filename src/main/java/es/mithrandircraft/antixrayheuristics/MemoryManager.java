@@ -1,19 +1,19 @@
 package es.mithrandircraft.antixrayheuristics;
 
+import com.google.common.reflect.TypeToken;
+import com.google.gson.Gson;
 import es.mithrandircraft.antixrayheuristics.files.LocaleManager;
-import es.mithrandircraft.antixrayheuristics.files.XrayerDataParser;
+import es.mithrandircraft.antixrayheuristics.files.Xrayer;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import org.codehaus.jackson.JsonParseException;
-import org.codehaus.jackson.map.JsonMappingException;
-import org.codehaus.jackson.map.ObjectMapper;
 
-import java.io.IOException;
+import java.io.*;
 import java.sql.*;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.List;
 
 public class MemoryManager {
 
@@ -21,11 +21,14 @@ public class MemoryManager {
 
     MemoryManager(es.mithrandircraft.antixrayheuristics.AntiXrayHeuristics main) { this.mainClassAccess = main; }
 
+    //SQL Data:
     private Connection SQLcon = null;
     Connection GetSQLcon() //Returns sql connection reference
     {
         return SQLcon;
     }
+    //JSON Data:
+    private List<Xrayer> storedXrayersFromJSON = new ArrayList<Xrayer>();
 
     //The following functions manage persistent memory resources depending on plugin configuration:
 
@@ -47,19 +50,20 @@ public class MemoryManager {
                 }
                 break;
             case "JSON":
-            default:
                 JSONFilePlayerDataStore(playername);
+                break;
+            default:
                 break;
         }
     }
 
-    public void GetBaseXrayerData(ArrayList<String> UUIDs, ArrayList<Integer> handledAmounts, ArrayList<String> firstHandledTimes) //Returns array list containing all registered xrayer UUID's
+    public void GetAllBaseXrayerData(ArrayList<String> UUIDs, ArrayList<Integer> handledAmounts, ArrayList<String> firstHandledTimes) //Returns array list containing all registered xrayer UUID's
     {
         switch (mainClassAccess.getConfig().getString("StorageType")) {
             case "MYSQL":
                 try {
                     SQLConnect();
-                    SQLGetBaseXrayerData(UUIDs ,handledAmounts, firstHandledTimes);
+                    SQLGetAllBaseXrayerData(UUIDs ,handledAmounts, firstHandledTimes);
                 } catch (SQLException e) {
                     System.err.print(e);
                 } finally {
@@ -70,10 +74,11 @@ public class MemoryManager {
                     }
                 }
                 break;
-//            case "JSON":
-//            default:
-//                JSONGetBaseXrayerData(UUIDs ,handledAmounts, firstHandledTimes);
-//                break;
+            case "JSON":
+                JSONGetAllBaseXrayerData(UUIDs ,handledAmounts, firstHandledTimes);
+                break;
+            default:
+                break;
         }
     }
 
@@ -94,10 +99,10 @@ public class MemoryManager {
                     }
                 }
                 break;
-//            case "JSON":
-//            default:
-//                return JSONGetXrayerBelongings(xrayerUUID);
-//                break;
+            case "JSON":
+                return JSONGetXrayerBelongings(xrayerUUID);
+            default:
+                break;
         }
         return null;
     }
@@ -119,10 +124,11 @@ public class MemoryManager {
                     }
                 }
                 break;
-//            case "JSON":
-//            default:
-//                JSONDeleteXrayer(xrayerUUID);
-//                break;
+            case "JSON":
+                JSONDeleteXrayer(xrayerUUID);
+                break;
+            default:
+                break;
         }
     }
 
@@ -143,14 +149,15 @@ public class MemoryManager {
                     }
                 }
                 break;
-//            case "JSON":
-//            default:
-//                JSONDeleteRegistry();
-//                break;
+            case "JSON":
+                JSONStoreInFile("[]");
+                break;
+            default:
+                break;
         }
     }
 
-    //SQL related operations:
+    //------------------ SQL RELATED OPERATIONS ------------------:
 
     void SQLConnect() throws SQLException //Establishes sql connection
     {
@@ -226,7 +233,7 @@ public class MemoryManager {
         }
     }
 
-    private void SQLGetBaseXrayerData(ArrayList<String> UUIDs, ArrayList<Integer> handledAmounts, ArrayList<String> firstHandledTimes) throws SQLException //Returns all of the basic xrayer information (pretty much everything except for the inventory)
+    private void SQLGetAllBaseXrayerData(ArrayList<String> UUIDs, ArrayList<Integer> handledAmounts, ArrayList<String> firstHandledTimes) throws SQLException //Returns all of the basic xrayer information (pretty much everything except for the inventory)
     {
         PreparedStatement entry = SQLcon.prepareStatement("SELECT UUID, Handled, FirstHandleTime FROM Xrayers");
 
@@ -273,61 +280,152 @@ public class MemoryManager {
     }
 
 
-    //JSON related operations:
+    //------------------ JSON RELATED OPERATIONS ------------------
 
-    private boolean JSONFindUUID(String uuid) //Returns true if UUID was found in the JSON file
+    //Java File I.O. functions
+
+    public boolean JSONFileCreateIfNotExists() //Returns true if file was created
     {
-        return true;
+        try {
+            boolean created = new File(mainClassAccess.getDataFolder().getAbsolutePath() + "\\data.json").createNewFile(); // if file already exists will do nothing and return false
+            JSONStoreInFile("[]"); //Write dummy array into new data.json file
+            return created;
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+    private void JSONStoreInFile(String toStore) //Writes json content as string to file
+    {
+        try {
+            FileWriter writer = new FileWriter(mainClassAccess.getDataFolder().getAbsolutePath() + "\\data.json");
+            writer.write(toStore);
+            writer.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+    private BufferedReader JSONGetFromFile() //Gets json content from file in BufferedReader format
+    {
+        try {
+            return new BufferedReader(new FileReader(mainClassAccess.getDataFolder().getAbsolutePath() + "\\data.json")); //Return buffered file contents
+        }catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    //GSON Serialization functions
+
+    private String JSONSerializeXrayersData(List<Xrayer> xrayers) //Serializes class ArrayList to json String
+    {
+        return new Gson().toJson(xrayers);
+    }
+
+    private List<Xrayer> JSONDeserializeXrayersData(BufferedReader xrayers) //Serializes from BufferedReader to ArrayList.
+    {
+        return new Gson().fromJson(xrayers, new TypeToken<ArrayList<Xrayer>>(){}.getType()); //TypeToken gets the type of an arraylist of xrayers
+    }
+
+    //File data manipulation and querying using GSON
+
+    private void JSONRefreshLoadedXrayerData() //Loads json data from file and converts it to List, assigning it to storedXrayersFromJSON, consequently refreshing it in RAM Stack
+    {
+        storedXrayersFromJSON = JSONDeserializeXrayersData(JSONGetFromFile());
+    }
+
+    public void JSONFlushLoadedXrayerData() //Removes the loaded xrayer data from memory. Used for when nothing is actually using it.
+    {
+        storedXrayersFromJSON.clear();
     }
 
     private void JSONFilePlayerDataStore(String playername) //Stores player name as xrayer and some other info (+ player belongings if configured), ONLY IF there isn't information already stored.
     {
         Player p = Bukkit.getServer().getPlayer(playername);
-        assert p != null;
-        if(!JSONFindUUID(p.getUniqueId().toString())){ //player UUID doesn't already exist in file
-            if(mainClassAccess.getConfig().getBoolean("StoreCopy")) //Full store
-            {
-                DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
-                LocalDateTime now = LocalDateTime.now();
-
-                //String inputJson ="{  \"email\":\"abc@123.com\",  \"did_you_mean\":\"abc@me.com\",  \"user\":\"abc\",  \"domain\":\"123.com\",  \"format_valid\":true,  \"mx_found\":false,  \"smtp_check\":false,  \"catch_all\":null,  \"role\":false,  \"disposable\":false,  \"free\":true,  \"score\":0.16}";
-                String inputJson = "{\"xrayer\":{\"uuid\":" + p.getUniqueId().toString() + ", \"Handled\":\"1\", \"FirstHandleTime\":" + dtf.format(now) + ", \"Belongings\":" + BukkitSerializer.itemStackArrayToBase64(BukkitSerializer.InventoryAndEquipmentToSingleItemStackArray(p.getInventory(), p.getEquipment())) + "}";
-
-                ObjectMapper mapper = new ObjectMapper();
-                try {
-                    XrayerDataParser xdp = mapper.readValue(inputJson, XrayerDataParser.class);
-                    System.out.println(xdp.getXrayerData().getUUID());
-                } catch (JsonParseException e) {
-                    e.printStackTrace();
-                } catch (JsonMappingException e) {
-                    e.printStackTrace();
-                } catch (IOException e) {
-                    e.printStackTrace();
+        if (p != null) //Just a check to avoid null player errors
+        {
+            //Refresh loaded xrayers in RAM Stack:
+            JSONRefreshLoadedXrayerData();
+            //Check if xrayer is already stored?:
+            boolean exists = false;
+            for(Xrayer xrayer : storedXrayersFromJSON){
+                if(xrayer.UUID.equals(Bukkit.getServer().getPlayer(playername).getUniqueId().toString()))
+                {
+                    exists = true;
+                    //Also add +1 to handled:
+                    xrayer.Handled += 1;
+                    //Store List back to file:
+                    String serial = JSONSerializeXrayersData(storedXrayersFromJSON);
+                    JSONStoreInFile(serial);
+                    break;
                 }
             }
-            else //Partial store
-            {
-                DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
-                LocalDateTime now = LocalDateTime.now();
+            if (!exists) { //player UUID doesn't already exist in file
+                if (mainClassAccess.getConfig().getBoolean("StoreCopy")) //Full store
+                {
+                    DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
+                    LocalDateTime now = LocalDateTime.now();
 
-                String inputJson = "{\"xrayer\":{\"uuid\":" + p.getUniqueId().toString() + ", \"Handled\":\"1\", \"FirstHandleTime\":" + dtf.format(now) + "}";
+                    //Add xrayer to List:
+                    storedXrayersFromJSON.add(new Xrayer(p.getUniqueId().toString(), 1, dtf.format(now), BukkitSerializer.itemStackArrayToBase64(BukkitSerializer.InventoryAndEquipmentToSingleItemStackArray(p.getInventory(), p.getEquipment()))));
+                    //Store List back to file:
+                    String serial = JSONSerializeXrayersData(storedXrayersFromJSON);
+                    JSONStoreInFile(serial);
+                } else //Partial store
+                {
+                    DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
+                    LocalDateTime now = LocalDateTime.now();
 
-                ObjectMapper mapper = new ObjectMapper();
-                try {
-                    XrayerDataParser xdp = mapper.readValue(inputJson, XrayerDataParser.class);
-                    System.out.println(xdp.getXrayerData().getUUID());
-                } catch (JsonParseException e) {
-                    e.printStackTrace();
-                } catch (JsonMappingException e) {
-                    e.printStackTrace();
-                } catch (IOException e) {
-                    e.printStackTrace();
+                    //Add xrayer to List:
+                    storedXrayersFromJSON.add(new Xrayer(p.getUniqueId().toString(), 1, dtf.format(now), null));
+                    //Store List back to file:
+                    JSONStoreInFile(JSONSerializeXrayersData(storedXrayersFromJSON));
                 }
             }
         }
-        else{ //player UUID already exists in file
-            //Just add +1 to Handled
-
+    }
+    private void JSONGetAllBaseXrayerData(ArrayList<String> UUIDs, ArrayList<Integer> handledAmounts, ArrayList<String> firstHandledTimes)
+    {
+        //Refresh loaded xrayers in RAM Stack:
+        JSONRefreshLoadedXrayerData();
+        //Extract information from storedXrayersFromJSON:
+        for(Xrayer xrayer : storedXrayersFromJSON)
+        {
+            UUIDs.add(xrayer.UUID);
+            handledAmounts.add(xrayer.Handled);
+            firstHandledTimes.add(xrayer.FirstHandleTime);
+        }
+    }
+    private ItemStack[] JSONGetXrayerBelongings(String xrayerUUID)
+    {
+        //Refresh loaded xrayers in RAM Stack:
+        JSONRefreshLoadedXrayerData();
+        //Find uuid, and return it's belongings:
+        for(Xrayer xrayer : storedXrayersFromJSON)
+        {
+            if(xrayer.UUID.equals(xrayerUUID)) {
+                try{
+                return BukkitSerializer.itemStackArrayFromBase64(xrayer.Belongings);
+                } catch (IOException e){
+                    System.err.print(e);
+                    return null;
+                }
+            }
+        }
+        return null;
+    }
+    private void JSONDeleteXrayer(String xrayerUUID)
+    {
+        //Refresh loaded xrayers in RAM Stack:
+        JSONRefreshLoadedXrayerData();
+        for(Xrayer xrayer : storedXrayersFromJSON)
+        {
+            if(xrayer.UUID.equals(xrayerUUID)) {
+                storedXrayersFromJSON.remove(xrayer);
+                //Store List back to file:
+                JSONStoreInFile(JSONSerializeXrayersData(storedXrayersFromJSON));
+                break;
+            }
         }
     }
 }

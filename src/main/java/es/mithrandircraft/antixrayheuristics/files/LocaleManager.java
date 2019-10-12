@@ -42,6 +42,9 @@ public class LocaleManager {
         localeConfiguration.addDefault("SQLDisconError", "There was an error when attempting to disconnect from SQL database.");
         localeConfiguration.addDefault("SQLTableFoundOrCreated", "SQL Xrayers table was either found or created from scratch. All seems to be in order.");
 
+        //FileSystem:
+        localeConfiguration.addDefault("JSONFileCreated", "JSON file created since none existed.");
+
         //GUI Button descriptions:
         localeConfiguration.addDefault("BackButtonTitle", "&aBack");
         localeConfiguration.addDefault("GoBackButtonTitle", "&aGoBack");

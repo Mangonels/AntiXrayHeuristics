@@ -1,7 +1,6 @@
 #------------------------------------------------------------------------------------------------------
 #                           ANTI XRAY HEURISTICS (AXH) - by __Mithrandir__
 #
-#    Config version 1.0
 #    Disclaimer: This plugin may not function as intended with servers with custom or modified
 #    terrain and ores generation.
 #------------------------------------------------------------------------------------------------------
@@ -80,10 +79,10 @@ TellPlayersWithPermission: true
 #AXH needs to store certain persistent information, here you should configure your preferred method for data storing.
 
 #Storage type (available: 'MYSQL', 'JSON')
-#Be warned: AAX does not currently auto-convert data between available storage types, so choose your data storage
+#Be warned: AAX does not offer data conversion between available storage types, so choose your data storage
 #wisely before you start using this plugin. The storage type will be swapped once you change it on this config and
 #restart the server. If you don't even know what the storage types are and how they work, just leave the default
-#JSON and never change it, it will do just fine and requires no further setups:
+#JSON and don't change it, it will do just fine and requires no further setups:
 StorageType: 'JSON'
 
 #Edit the following credentials if you are using MySQL:

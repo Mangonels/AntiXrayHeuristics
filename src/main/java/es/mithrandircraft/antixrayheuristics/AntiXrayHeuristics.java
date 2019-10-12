@@ -88,6 +88,12 @@ public final class AntiXrayHeuristics extends JavaPlugin implements Listener {
             }
         }
 
+        //Create json file if not exists?:
+        else if(getConfig().getString("StorageType").equals("JSON"))
+        {
+            if(mm.JSONFileCreateIfNotExists()) System.out.println(LocaleManager.get().getString("MessagesPrefix") + " " + LocaleManager.get().getString("JSONFileCreated"));
+        }
+
         //Event registring:
         getServer().getPluginManager().registerEvents(new BlockBreakEv(this), this);
         getServer().getPluginManager().registerEvents(new ClickEv(this), this);

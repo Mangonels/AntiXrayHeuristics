@@ -83,15 +83,15 @@ public class XrayerHandler {
                 else if(possessions[i] != null && possessions[i].getType() != Material.AIR) DropItemAtPlayerLocation(possessions[i], target); //No space, drop on floor.
             }
             //Return equipment
-            if(target.getEquipment().getItemInOffHand() == null) target.getEquipment().setItemInOffHand(possessions[36]); //Check if nothing in slot
+            if(target.getEquipment().getItemInOffHand().getType().equals(Material.AIR)) target.getEquipment().setItemInOffHand(possessions[36]); //Check if nothing in slot
             else DropItemAtPlayerLocation(possessions[36], target); //No space, drop on floor.
-            if(target.getEquipment().getBoots() == null) target.getEquipment().setBoots(possessions[37]); //Same with rest...
+            if(target.getEquipment().getBoots() == null) target.getEquipment().setBoots(possessions[40]); //Same with rest...
             else DropItemAtPlayerLocation(possessions[40], target);
-            if(target.getEquipment().getLeggings() == null) target.getEquipment().setLeggings(possessions[38]);
+            if(target.getEquipment().getLeggings() == null) target.getEquipment().setLeggings(possessions[39]);
             else DropItemAtPlayerLocation(possessions[39], target);
-            if(target.getEquipment().getChestplate() == null) target.getEquipment().setChestplate(possessions[39]);
+            if(target.getEquipment().getChestplate() == null) target.getEquipment().setChestplate(possessions[38]);
             else DropItemAtPlayerLocation(possessions[38], target);
-            if(target.getEquipment().getHelmet() == null) target.getEquipment().setHelmet(possessions[40]);
+            if(target.getEquipment().getHelmet() == null) target.getEquipment().setHelmet(possessions[37]);
             else DropItemAtPlayerLocation(possessions[37], target);
 
             System.out.print("[AntiXrayHeuristics] Player " + target.getName() + "has been absolved from the Xrayer Vault by a player with permission, and his items have been returned.");

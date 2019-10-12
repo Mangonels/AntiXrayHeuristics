@@ -112,7 +112,7 @@ public class XrayerVault {
     {
         ClearXrayerInfoLists(); //Clearing previous data
 
-        mainClassAccess.mm.GetBaseXrayerData(UUIDs, handledAmmounts, firstHandledTimes); //This single function fills up the 3 lists with xrayer information.
+        mainClassAccess.mm.GetAllBaseXrayerData(UUIDs, handledAmmounts, firstHandledTimes); //This single function fills up the 3 lists with xrayer information.
     }
 
     public void ClearXrayerInfoLists() //clears all xrayer information arraylists
@@ -233,6 +233,8 @@ public class XrayerVault {
         firstHandledTimes.remove(UUIDindex);
     }
     public void RemovePlayerAsViewer(String name) { viewers.remove(name); } //Removes a player and it's data from the viewers hashmap
+
+    public boolean CheckIfNoViewers(){ return viewers.isEmpty(); }
 
     public void SetPages(int many) { pages = many; } //Forcefully sets how many pages the vault currently has
 }

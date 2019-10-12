@@ -14,6 +14,16 @@ public class DelayedInventoryCloseExecution implements Runnable {
     }
     public void run() //Removes the player as an Xrayer Vault viewer, only if player isn't still looking at Xrayer Vault inv:
     {
-        if(!(p.getOpenInventory().getTitle().equals("Xrayer Vault"))) mainClassAccess.vault.RemovePlayerAsViewer(p.getName());
+        if(!(p.getOpenInventory().getTitle().equals("Xrayer Vault"))) {
+            mainClassAccess.vault.RemovePlayerAsViewer(p.getName());
+            if(mainClassAccess.getConfig().getString("StorageMethod").equals("JSON"))
+            {
+                //Flush stored xrayer data from MemoryManager in RAM if no one is still viewing the GUI:
+                if(mainClassAccess.vault.CheckIfNoViewers())
+                {
+                    mainClassAccess.mm.JSONFlushLoadedXrayerData();
+                }
+            }
+        }
     }
 }
