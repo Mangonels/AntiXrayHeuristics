@@ -79,9 +79,6 @@ public final class AntiXrayHeuristics extends JavaPlugin implements Listener {
         //Commands:
         getCommand("AXH").setExecutor(new AXH(this));
 
-        //Enable metrics:
-        Metrics metrics = new Metrics(this);
-
         //Sql connect?:
         if(getConfig().getString("StorageType").equals("MYSQL"))
         {
