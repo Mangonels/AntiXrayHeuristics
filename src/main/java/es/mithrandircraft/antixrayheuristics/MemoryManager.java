@@ -291,7 +291,7 @@ public class MemoryManager {
     public boolean JSONFileCreateIfNotExists() //Returns true if file was created
     {
         try {
-            boolean created = new File(mainClassAccess.getDataFolder().getAbsolutePath() + "\\data.json").createNewFile(); // if file already exists will do nothing and return false
+            boolean created = new File(mainClassAccess.getDataFolder().getAbsolutePath() + "/data.json").createNewFile(); // if file already exists will do nothing and return false
             JSONStoreInFile("[]"); //Write dummy array into new data.json file
             return created;
         } catch (IOException e) {
@@ -302,7 +302,7 @@ public class MemoryManager {
     private void JSONStoreInFile(String toStore) //Writes json content as string to file
     {
         try {
-            FileWriter writer = new FileWriter(mainClassAccess.getDataFolder().getAbsolutePath() + "\\data.json");
+            FileWriter writer = new FileWriter(mainClassAccess.getDataFolder().getAbsolutePath() + "/data.json");
             writer.write(toStore);
             writer.close();
         } catch (IOException e) {
@@ -312,7 +312,7 @@ public class MemoryManager {
     private BufferedReader JSONGetFromFile() //Gets json content from file in BufferedReader format
     {
         try {
-            return new BufferedReader(new FileReader(mainClassAccess.getDataFolder().getAbsolutePath() + "\\data.json")); //Return buffered file contents
+            return new BufferedReader(new FileReader(mainClassAccess.getDataFolder().getAbsolutePath() + "/data.json")); //Return buffered file contents
         }catch (IOException e) {
             e.printStackTrace();
             return null;
