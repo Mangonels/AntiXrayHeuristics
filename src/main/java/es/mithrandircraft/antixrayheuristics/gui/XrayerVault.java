@@ -1,3 +1,7 @@
+//--------------------------------------------------------------------
+// Copyright © Dylan Calaf 2019 - AntiXrayHeuristics
+//--------------------------------------------------------------------
+
 package es.mithrandircraft.antixrayheuristics.gui;
 
 import es.mithrandircraft.antixrayheuristics.files.LocaleManager;

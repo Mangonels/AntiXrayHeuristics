@@ -1,3 +1,7 @@
+//--------------------------------------------------------------------
+// Copyright © Dylan Calaf 2019 - AntiXrayHeuristics
+//--------------------------------------------------------------------
+
 package es.mithrandircraft.antixrayheuristics.math;
 
 public class MathFunctions

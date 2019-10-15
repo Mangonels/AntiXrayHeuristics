@@ -1,6 +1,8 @@
-package es.mithrandircraft.antixrayheuristics.files;
+//--------------------------------------------------------------------
+// Copyright © Dylan Calaf 2019 - AntiXrayHeuristics
+//--------------------------------------------------------------------
 
-import java.util.List;
+package es.mithrandircraft.antixrayheuristics.files;
 
 public class Xrayer {
 

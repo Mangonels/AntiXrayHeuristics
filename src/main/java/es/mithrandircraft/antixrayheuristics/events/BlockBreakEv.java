@@ -1,3 +1,7 @@
+//--------------------------------------------------------------------
+// Copyright © Dylan Calaf 2019 - AntiXrayHeuristics
+//--------------------------------------------------------------------
+
 package es.mithrandircraft.antixrayheuristics.events;
 
 import org.bukkit.event.EventHandler;

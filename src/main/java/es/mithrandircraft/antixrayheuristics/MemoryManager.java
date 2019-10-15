@@ -1,3 +1,7 @@
+//--------------------------------------------------------------------
+// Copyright © Dylan Calaf 2019 - AntiXrayHeuristics
+//--------------------------------------------------------------------
+
 package es.mithrandircraft.antixrayheuristics;
 
 import com.google.common.reflect.TypeToken;
@@ -161,7 +165,7 @@ public class MemoryManager {
 
     void SQLConnect() throws SQLException //Establishes sql connection
     {
-        String url = "jdbc:mysql://" + mainClassAccess.getConfig().getString("SQLHost") + "/" + mainClassAccess.getConfig().getString("SQLDatabaseName") + "?useSSL=false";
+        String url = "jdbc:mysql://" + mainClassAccess.getConfig().getString("SQLHost") + ":" + mainClassAccess.getConfig().getString("SQLPort") + "/" + mainClassAccess.getConfig().getString("SQLDatabaseName") + "?useSSL=false";
         SQLcon = DriverManager.getConnection(url, mainClassAccess.getConfig().getString("SQLUsername"), mainClassAccess.getConfig().getString("SQLPassword"));
     }
 

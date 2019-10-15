@@ -87,6 +87,7 @@ StorageType: 'JSON'
 
 #Edit the following credentials if you are using MySQL:
 SQLHost: '127.0.0.1'
+SQLPort: '3306'
 SQLDatabaseName: 'myDatabase'
 SQLUsername: 'root'
 SQLPassword: 'root'
