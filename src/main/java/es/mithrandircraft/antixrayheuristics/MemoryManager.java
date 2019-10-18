@@ -291,13 +291,13 @@ public class MemoryManager {
     public boolean JSONFileCreateIfNotExists() //Returns true if file was created
     {
         try {
-            boolean created = new File(mainClassAccess.getDataFolder().getAbsolutePath() + "/data.json").createNewFile(); // if file already exists will do nothing and return false
-            JSONStoreInFile("[]"); //Write dummy array into new data.json file
-            return created;
+            // Does the file already exist?:
+            if(new File(mainClassAccess.getDataFolder().getAbsolutePath() + "/data.json").createNewFile()) { JSONStoreInFile("[]"); } //Store empty JSON array in file
         } catch (IOException e) {
             e.printStackTrace();
             return false;
         }
+        return true;
     }
     private void JSONStoreInFile(String toStore) //Writes json content as string to file
     {
