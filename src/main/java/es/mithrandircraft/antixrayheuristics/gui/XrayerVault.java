@@ -56,7 +56,7 @@ public class XrayerVault {
 
         ItemMeta purge_meta = purgeButton.getItemMeta();
         purge_meta.setDisplayName(ChatColor.translateAlternateColorCodes('&',LocaleManager.get().getString("PurgeButtonTitle")));
-        purge_meta.setLore(Arrays.asList("This will delete all xrayer", "entries within the vault.", "Entries are irrecoverable", "after they have been purged."));
+        purge_meta.setLore(LocaleManager.get().getStringList("PurgeButtonDesc"));
         purgeButton.setItemMeta(purge_meta);
 
         ItemMeta refresh_meta = refreshButton.getItemMeta();
@@ -70,12 +70,12 @@ public class XrayerVault {
 
         ItemMeta purgeplayer_meta = purgePlayerButton.getItemMeta();
         purgeplayer_meta.setDisplayName(ChatColor.translateAlternateColorCodes('&',LocaleManager.get().getString("PurgePlayerButtonTitle")));
-        purgeplayer_meta.setLore(Arrays.asList("This will delete this specific", " xrayer entry and inventory.", "Entries are irrecoverable", "after they have been purged."));
+        purgeplayer_meta.setLore(LocaleManager.get().getStringList("PurgePlayerButtonDesc"));
         purgePlayerButton.setItemMeta(purgeplayer_meta);
 
         ItemMeta absolveplayer_meta = absolvePlayerButton.getItemMeta();
         absolveplayer_meta.setDisplayName(ChatColor.translateAlternateColorCodes('&',LocaleManager.get().getString("AbsolvePlayerButtonTitle")));
-        absolveplayer_meta.setLore(Arrays.asList("Absolve this player,", "returning all confiscated", "items. If they don't fit in", "player's inventory, they", "will be dropped nearby.", "This also purges the player's", "entry in this vault."));
+        absolveplayer_meta.setLore(LocaleManager.get().getStringList("AbsolvePlayerButtonDesc"));
         absolvePlayerButton.setItemMeta(absolveplayer_meta);
     }
 

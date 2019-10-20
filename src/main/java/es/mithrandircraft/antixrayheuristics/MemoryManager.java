@@ -291,7 +291,7 @@ public class MemoryManager {
     public boolean JSONFileCreateIfNotExists() //Returns true if file was created
     {
         try {
-            // Does the file already exist?:
+            //Create file (will do nothing if it already exists):
             if(new File(mainClassAccess.getDataFolder().getAbsolutePath() + "/data.json").createNewFile()) { JSONStoreInFile("[]"); } //Store empty JSON array in file
         } catch (IOException e) {
             e.printStackTrace();

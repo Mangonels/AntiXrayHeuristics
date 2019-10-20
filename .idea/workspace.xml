@@ -4,24 +4,8 @@
     <list default="true" id="2876e9f1-3d67-41cc-8b94-448fa827feed" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/es/mithrandircraft/antixrayheuristics/MemoryManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/es/mithrandircraft/antixrayheuristics/MemoryManager.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/AntiXrayHeuristics-1.0.jar" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/es/mithrandircraft/antixrayheuristics/gui/XrayerVault.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/es/mithrandircraft/antixrayheuristics/gui/XrayerVault.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/AntiXrayHeuristics-1.1-shaded.jar" beforeDir="false" afterPath="$PROJECT_DIR$/target/AntiXrayHeuristics-1.1-shaded.jar" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/AntiXrayHeuristics-1.1.jar" beforeDir="false" afterPath="$PROJECT_DIR$/target/AntiXrayHeuristics-1.1.jar" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/es/mithrandircraft/antixrayheuristics/AntiXrayHeuristics$1.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/es/mithrandircraft/antixrayheuristics/AntiXrayHeuristics$1.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/es/mithrandircraft/antixrayheuristics/AntiXrayHeuristics.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/es/mithrandircraft/antixrayheuristics/AntiXrayHeuristics.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/es/mithrandircraft/antixrayheuristics/MemoryManager.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/es/mithrandircraft/antixrayheuristics/MemoryManager.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/es/mithrandircraft/antixrayheuristics/Metrics$1.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/es/mithrandircraft/antixrayheuristics/Metrics$2.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/es/mithrandircraft/antixrayheuristics/Metrics$AdvancedBarChart.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/es/mithrandircraft/antixrayheuristics/Metrics$AdvancedPie.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/es/mithrandircraft/antixrayheuristics/Metrics$CustomChart.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/es/mithrandircraft/antixrayheuristics/Metrics$DrilldownPie.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/es/mithrandircraft/antixrayheuristics/Metrics$MultiLineChart.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/es/mithrandircraft/antixrayheuristics/Metrics$SimpleBarChart.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/es/mithrandircraft/antixrayheuristics/Metrics$SimplePie.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/es/mithrandircraft/antixrayheuristics/Metrics$SingleLineChart.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/es/mithrandircraft/antixrayheuristics/Metrics.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/maven-status/maven-compiler-plugin/compile/default-compile/createdFiles.lst" beforeDir="false" afterPath="$PROJECT_DIR$/target/maven-status/maven-compiler-plugin/compile/default-compile/createdFiles.lst" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/original-AntiXrayHeuristics-1.1.jar" beforeDir="false" afterPath="$PROJECT_DIR$/target/original-AntiXrayHeuristics-1.1.jar" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
