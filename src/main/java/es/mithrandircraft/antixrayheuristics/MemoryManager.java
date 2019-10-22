@@ -8,10 +8,12 @@ import com.google.common.reflect.TypeToken;
 import com.google.gson.Gson;
 import es.mithrandircraft.antixrayheuristics.files.LocaleManager;
 import es.mithrandircraft.antixrayheuristics.files.Xrayer;
+import org.apache.commons.dbcp.BasicDataSource;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
+import javax.sql.DataSource;
 import java.io.*;
 import java.sql.*;
 import java.time.LocalDateTime;
@@ -26,13 +28,10 @@ public class MemoryManager {
     MemoryManager(es.mithrandircraft.antixrayheuristics.AntiXrayHeuristics main) { this.mainClassAccess = main; }
 
     //SQL Data:
-    private Connection SQLcon = null;
-    Connection GetSQLcon() //Returns sql connection reference
-    {
-        return SQLcon;
-    }
+    public DataSource dataSource; //Stores a pool of sql connections
+
     //JSON Data:
-    private List<Xrayer> storedXrayersFromJSON = new ArrayList<Xrayer>();
+    private List<Xrayer> storedXrayersFromJSON = new ArrayList<Xrayer>(); //Used for loading xrayer data from JSON
 
     //The following functions manage persistent memory resources depending on plugin configuration:
 
@@ -40,17 +39,21 @@ public class MemoryManager {
     {
         switch (mainClassAccess.getConfig().getString("StorageType")) {
             case "MYSQL":
+                java.sql.Connection cn = null;
                 try {
-                    SQLConnect();
-                    SQLPlayerDataStore(playername);
+                    cn = dataSource.getConnection();
+                    if(cn != null)
+                    {
+                        SQLPlayerDataStore(cn, playername);
+                    }
                 } catch (SQLException e) {
                     System.err.print(e);
                 } finally {
-                    try {
-                        SQLDisconnect();
-                    } catch (SQLException e) {
-                        System.err.print(e);
-                    }
+                        try {
+                            cn.close();
+                        } catch (SQLException e) {
+                            System.err.print(e);
+                        }
                 }
                 break;
             case "JSON":
@@ -65,14 +68,17 @@ public class MemoryManager {
     {
         switch (mainClassAccess.getConfig().getString("StorageType")) {
             case "MYSQL":
+                java.sql.Connection cn = null;
                 try {
-                    SQLConnect();
-                    SQLGetAllBaseXrayerData(UUIDs ,handledAmounts, firstHandledTimes);
+                    cn = dataSource.getConnection();
+                    if(cn != null) {
+                        SQLGetAllBaseXrayerData(cn, UUIDs, handledAmounts, firstHandledTimes);
+                    }
                 } catch (SQLException e) {
                     System.err.print(e);
                 } finally {
                     try {
-                        SQLDisconnect();
+                        cn.close();
                     } catch (SQLException e) {
                         System.err.print(e);
                     }
@@ -90,14 +96,17 @@ public class MemoryManager {
     {
         switch (mainClassAccess.getConfig().getString("StorageType")) {
             case "MYSQL":
+                java.sql.Connection cn = null;
                 try {
-                    SQLConnect();
-                    return SQLGetXrayerBelongings(xrayerUUID);
+                    cn = dataSource.getConnection();
+                    if(cn != null) {
+                        return SQLGetXrayerBelongings(cn, xrayerUUID);
+                    }
                 } catch (SQLException e) {
                     System.err.print(e);
                 } finally {
                     try {
-                        SQLDisconnect();
+                        cn.close();
                     } catch (SQLException e) {
                         System.err.print(e);
                     }
@@ -115,14 +124,17 @@ public class MemoryManager {
     {
         switch (mainClassAccess.getConfig().getString("StorageType")) {
             case "MYSQL":
+                java.sql.Connection cn = null;
                 try {
-                    SQLConnect();
-                    SQLDeleteXrayer(xrayerUUID);
+                    cn = dataSource.getConnection();
+                    if(cn != null) {
+                        SQLDeleteXrayer(cn, xrayerUUID);
+                    }
                 } catch (SQLException e) {
                     System.err.print(e);
                 } finally {
                     try {
-                        SQLDisconnect();
+                        cn.close();
                     } catch (SQLException e) {
                         System.err.print(e);
                     }
@@ -140,14 +152,17 @@ public class MemoryManager {
     {
         switch (mainClassAccess.getConfig().getString("StorageType")) {
             case "MYSQL":
+                java.sql.Connection cn = null;
                 try {
-                    SQLConnect();
-                    SQLDeleteRegistry();
+                    cn = dataSource.getConnection();
+                    if(cn != null) {
+                        SQLDeleteRegistry(cn);
+                    }
                 } catch (SQLException e) {
                     System.err.print(e);
                 } finally {
                     try {
-                        SQLDisconnect();
+                        cn.close();
                     } catch (SQLException e) {
                         System.err.print(e);
                     }
@@ -163,32 +178,45 @@ public class MemoryManager {
 
     //------------------ SQL RELATED OPERATIONS ------------------:
 
-    void SQLConnect() throws SQLException //Establishes sql connection
+    void InitializeDataSource()
     {
-        String url = "jdbc:mysql://" + mainClassAccess.getConfig().getString("SQLHost") + ":" + mainClassAccess.getConfig().getString("SQLPort") + "/" + mainClassAccess.getConfig().getString("SQLDatabaseName") + "?useSSL=false";
-        SQLcon = DriverManager.getConnection(url, mainClassAccess.getConfig().getString("SQLUsername"), mainClassAccess.getConfig().getString("SQLPassword"));
-    }
+        BasicDataSource basicDataSource = new BasicDataSource();
 
-    void SQLDisconnect() throws SQLException //Disconnects from sql
-    {
-        if(SQLcon != null)
-        {
-            SQLcon.close();
-        }
+        basicDataSource.setDriverClassName("org.gjt.mm.mysql.Driver");
+        basicDataSource.setUsername(mainClassAccess.getConfig().getString("SQLUsername"));
+        basicDataSource.setPassword(mainClassAccess.getConfig().getString("SQLPassword"));
+        basicDataSource.setUrl("jdbc:mysql://" + mainClassAccess.getConfig().getString("SQLHost") + ":" + mainClassAccess.getConfig().getString("SQLPort") + "/" + mainClassAccess.getConfig().getString("SQLDatabaseName") + "?useSSL=false");
+        basicDataSource.setMaxActive(mainClassAccess.getConfig().getInt("SQLMaxActiveConnections"));
+
+        dataSource = basicDataSource;
     }
 
     void SQLCreateTableIfNotExists() throws SQLException //Creates the Xrayers table
     {
-        PreparedStatement create = SQLcon.prepareStatement("CREATE TABLE IF NOT EXISTS Xrayers(UUID VARCHAR(36) NOT NULL, Handled INT NOT NULL, FirstHandleTime VARCHAR(36) NOT NULL, Belongings TEXT NULL, PRIMARY KEY(UUID))");
+        java.sql.Connection cn = null;
+        try {
+            cn = dataSource.getConnection();
+            if(cn != null) {
+                PreparedStatement create = cn.prepareStatement("CREATE TABLE IF NOT EXISTS Xrayers(UUID VARCHAR(36) NOT NULL, Handled INT NOT NULL, FirstHandleTime VARCHAR(36) NOT NULL, Belongings TEXT NULL, PRIMARY KEY(UUID))");
 
-        create.executeUpdate();
+                create.executeUpdate();
 
-        System.out.println(LocaleManager.get().getString("MessagesPrefix") + " " + LocaleManager.get().getString("SQLTableFoundOrCreated"));
+                System.out.println(LocaleManager.get().getString("MessagesPrefix") + " " + LocaleManager.get().getString("SQLTableFoundOrCreated"));
+            }
+        } catch (SQLException e) {
+            System.err.print(e);
+        } finally {
+            try {
+                cn.close();
+            } catch (SQLException e) {
+                System.err.print(e);
+            }
+        }
     }
 
-    private boolean SQLFindUUID(String n) throws SQLException //Returns true if UUID was found in the database
+    private boolean SQLFindUUID(java.sql.Connection connection, String n) throws SQLException //Returns true if UUID was found in the database
     {
-        PreparedStatement query = SQLcon.prepareStatement("SELECT COUNT(1) FROM Xrayers WHERE UUID = ?");
+        PreparedStatement query = connection.prepareStatement("SELECT COUNT(1) FROM Xrayers WHERE UUID = ?");
         query.setString(1, n);
 
         ResultSet result = query.executeQuery();
@@ -197,17 +225,17 @@ public class MemoryManager {
         return result.getInt(1) == 1;
     }
 
-    private void SQLPlayerDataStore(String playername) throws SQLException //Stores player name as xrayer and some other info (+ player belongings if configured), ONLY IF there isn't information already stored.
+    private void SQLPlayerDataStore(java.sql.Connection connection, String playername) throws SQLException //Stores player name as xrayer and some other info (+ player belongings if configured), ONLY IF there isn't information already stored.
     {
         Player p = Bukkit.getServer().getPlayer(playername);
         assert p != null;
-        if(!SQLFindUUID(p.getUniqueId().toString())){ //Primary key (player UUID) doesn't already exist
+        if(!SQLFindUUID(connection, p.getUniqueId().toString())){ //Primary key (player UUID) doesn't already exist
             if(mainClassAccess.getConfig().getBoolean("StoreCopy")) //Full store
             {
                 DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
                 LocalDateTime now = LocalDateTime.now();
 
-                PreparedStatement entry = SQLcon.prepareStatement("INSERT INTO Xrayers(UUID, Handled, FirstHandleTime, Belongings) VALUES(?,?,?,?)");
+                PreparedStatement entry = connection.prepareStatement("INSERT INTO Xrayers(UUID, Handled, FirstHandleTime, Belongings) VALUES(?,?,?,?)");
                 entry.setString(1, p.getUniqueId().toString());
                 entry.setInt(2, 1);
                 entry.setString(3, dtf.format(now));
@@ -220,7 +248,7 @@ public class MemoryManager {
                 DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
                 LocalDateTime now = LocalDateTime.now();
 
-                PreparedStatement entry = SQLcon.prepareStatement("INSERT INTO Xrayers(UUID, Handled, FirstHandleTime) VALUES(?,?,?)");
+                PreparedStatement entry = connection.prepareStatement("INSERT INTO Xrayers(UUID, Handled, FirstHandleTime) VALUES(?,?,?)");
                 entry.setString(1, p.getUniqueId().toString());
                 entry.setInt(2, 1);
                 entry.setString(3, dtf.format(now));
@@ -230,16 +258,16 @@ public class MemoryManager {
         }
         else{ //Primary key (player UUID) already exists
             //Just add +1 to Handled column
-            PreparedStatement update = SQLcon.prepareStatement("UPDATE Xrayers SET Handled = Handled + 1 WHERE UUID = ?");
+            PreparedStatement update = connection.prepareStatement("UPDATE Xrayers SET Handled = Handled + 1 WHERE UUID = ?");
             update.setString(1, p.getUniqueId().toString());
 
             update.executeUpdate();
         }
     }
 
-    private void SQLGetAllBaseXrayerData(ArrayList<String> UUIDs, ArrayList<Integer> handledAmounts, ArrayList<String> firstHandledTimes) throws SQLException //Returns all of the basic xrayer information (pretty much everything except for the inventory)
+    private void SQLGetAllBaseXrayerData(java.sql.Connection connection, ArrayList<String> UUIDs, ArrayList<Integer> handledAmounts, ArrayList<String> firstHandledTimes) throws SQLException //Returns all of the basic xrayer information (pretty much everything except for the inventory)
     {
-        PreparedStatement entry = SQLcon.prepareStatement("SELECT UUID, Handled, FirstHandleTime FROM Xrayers");
+        PreparedStatement entry = connection.prepareStatement("SELECT UUID, Handled, FirstHandleTime FROM Xrayers");
 
         ResultSet result = entry.executeQuery();
 
@@ -251,9 +279,9 @@ public class MemoryManager {
         }
     }
 
-    private ItemStack[] SQLGetXrayerBelongings(String xrayerUUID) throws SQLException //Gets an xrayer player's (by UUID) confiscated belongings
+    private ItemStack[] SQLGetXrayerBelongings(java.sql.Connection connection, String xrayerUUID) throws SQLException //Gets an xrayer player's (by UUID) confiscated belongings
     {
-        PreparedStatement query = SQLcon.prepareStatement("SELECT Belongings FROM Xrayers WHERE UUID = ?");
+        PreparedStatement query = connection.prepareStatement("SELECT Belongings FROM Xrayers WHERE UUID = ?");
         query.setString(1, xrayerUUID);
 
         ResultSet result = query.executeQuery();
@@ -268,17 +296,17 @@ public class MemoryManager {
         }
     }
 
-    private void SQLDeleteXrayer(String xrayerUUID) throws SQLException //Removes player (by UUID) from xrayers database
+    private void SQLDeleteXrayer(java.sql.Connection connection, String xrayerUUID) throws SQLException //Removes player (by UUID) from xrayers database
     {
-        PreparedStatement purge = SQLcon.prepareStatement("DELETE FROM Xrayers WHERE UUID = ?");
+        PreparedStatement purge = connection.prepareStatement("DELETE FROM Xrayers WHERE UUID = ?");
         purge.setString(1, xrayerUUID);
 
         purge.executeUpdate();
     }
 
-    private void SQLDeleteRegistry() throws SQLException //Truncates the whole Xrayers table, basically emptying all registered xrayers
+    private void SQLDeleteRegistry(java.sql.Connection connection) throws SQLException //Truncates the whole Xrayers table, basically emptying all registered xrayers
     {
-        PreparedStatement purge = SQLcon.prepareStatement("TRUNCATE TABLE Xrayers");
+        PreparedStatement purge = connection.prepareStatement("TRUNCATE TABLE Xrayers");
 
         purge.executeUpdate();
     }

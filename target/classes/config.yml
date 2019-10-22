@@ -91,3 +91,4 @@ SQLPort: '3306'
 SQLDatabaseName: 'myDatabase'
 SQLUsername: 'root'
 SQLPassword: 'root'
+SQLMaxActiveConnections: 10

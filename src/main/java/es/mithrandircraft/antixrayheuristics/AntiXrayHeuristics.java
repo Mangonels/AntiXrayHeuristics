@@ -79,14 +79,12 @@ public final class AntiXrayHeuristics extends JavaPlugin implements Listener {
         //Commands:
         getCommand("AXH").setExecutor(new AXH(this));
 
-        //Sql connect?:
+        //Sql connection?:
         if(getConfig().getString("StorageType").equals("MYSQL"))
         {
+            mm.InitializeDataSource();
             try {
-                mm.SQLConnect();
-                System.out.println(LocaleManager.get().getString("MessagesPrefix") + " " + LocaleManager.get().getString("SQLConEstablish"));
                 mm.SQLCreateTableIfNotExists();
-                mm.SQLDisconnect();
             } catch (SQLException e) {
                 e.printStackTrace();
             }
@@ -115,19 +113,6 @@ public final class AntiXrayHeuristics extends JavaPlugin implements Listener {
         extraDiamondWeight = getConfig().getLong("DiamondWeight") + (getConfig().getLong("DiamondWeight") / 2);
         extraEmeraldWeight = getConfig().getLong("EmeraldWeight") + (getConfig().getLong("EmeraldWeight") / 2);
 
-    }
-
-    @Override
-    public void onDisable()
-    {
-        if(mm.GetSQLcon() != null) { //Check if we're connected to sql
-            try {
-                mm.SQLDisconnect(); //Disconnect from sql
-            } catch (SQLException e) {
-                System.out.println(LocaleManager.get().getString("MessagesPrefix") + " " + LocaleManager.get().getString("SQLDisconError"));
-                e.printStackTrace();
-            }
-        }
     }
 
     private void MainRunnable() //Performs plugin updates at scheduled time

@@ -42,7 +42,6 @@ public class LocaleManager {
         localeConfiguration.addDefault("SelfVaultViewRefresh", "You refreshed your vault view.");
 
         //SQL:
-        localeConfiguration.addDefault("SQLConEstablish", "Successfully established first connection to SQL database.");
         localeConfiguration.addDefault("SQLDisconError", "There was an error when attempting to disconnect from SQL database.");
         localeConfiguration.addDefault("SQLTableFoundOrCreated", "SQL Xrayers table was either found or created from scratch. All seems to be in order.");
 
