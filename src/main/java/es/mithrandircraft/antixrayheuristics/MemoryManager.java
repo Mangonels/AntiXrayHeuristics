@@ -13,7 +13,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
-import javax.sql.DataSource;
 import java.io.*;
 import java.sql.*;
 import java.time.LocalDateTime;
@@ -28,7 +27,7 @@ public class MemoryManager {
     MemoryManager(es.mithrandircraft.antixrayheuristics.AntiXrayHeuristics main) { this.mainClassAccess = main; }
 
     //SQL Data:
-    public DataSource dataSource; //Stores a pool of sql connections
+    public BasicDataSource dataSource; //Stores a pool of sql connections
 
     //JSON Data:
     private List<Xrayer> storedXrayersFromJSON = new ArrayList<Xrayer>(); //Used for loading xrayer data from JSON
@@ -189,6 +188,15 @@ public class MemoryManager {
         basicDataSource.setMaxActive(mainClassAccess.getConfig().getInt("SQLMaxActiveConnections"));
 
         dataSource = basicDataSource;
+    }
+
+    void CloseDataSource()
+    {
+        try {
+            dataSource.close();
+        } catch (SQLException e) {
+            System.err.print(e);
+        }
     }
 
     void SQLCreateTableIfNotExists() throws SQLException //Creates the Xrayers table

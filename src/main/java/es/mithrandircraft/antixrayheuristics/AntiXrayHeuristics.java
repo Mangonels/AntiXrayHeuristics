@@ -115,6 +115,12 @@ public final class AntiXrayHeuristics extends JavaPlugin implements Listener {
 
     }
 
+    @Override
+    public void onDisable()
+    {
+        if(getConfig().getString("StorageType").equals("MYSQL")) mm.CloseDataSource();
+    }
+
     private void MainRunnable() //Performs plugin updates at scheduled time
     {
         new BukkitRunnable()
