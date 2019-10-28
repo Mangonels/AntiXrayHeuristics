@@ -5,6 +5,7 @@
 package es.mithrandircraft.antixrayheuristics.events;
 
 import es.mithrandircraft.antixrayheuristics.XrayerHandler;
+import es.mithrandircraft.antixrayheuristics.callbacks.GetXrayerBelongingsCallback;
 import es.mithrandircraft.antixrayheuristics.files.LocaleManager;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -13,6 +14,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryAction;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.inventory.ItemStack;
 
 public class ClickEv implements Listener {
 
@@ -60,9 +62,7 @@ public class ClickEv implements Listener {
                 else if(e.getCurrentItem().equals(mainClassAccess.vault.GetRefreshButtonFormat())) //Clicked refresh vault button
                 {
                     //refresh:
-                    mainClassAccess.vault.UpdateXrayerInfoLists();
-                    mainClassAccess.vault.OpenVault((Player) e.getView().getPlayer(), mainClassAccess.vault.GetPage(e.getWhoClicked().getName()));
-                    Bukkit.getServer().getPlayer(e.getWhoClicked().getName()).sendMessage(LocaleManager.get().getString("MessagesPrefix") + " " + LocaleManager.get().getString("SelfVaultViewRefresh"));
+                    mainClassAccess.vault.UpdateXrayerInfoLists((Player) e.getView().getPlayer(), mainClassAccess.vault.GetPage(e.getWhoClicked().getName()));
                 }
                 else if(e.getCurrentItem().equals(mainClassAccess.vault.GetBackButtonFormat())) //Clicked back button
                 {
@@ -76,14 +76,23 @@ public class ClickEv implements Listener {
                     }
                     else e.getView().getPlayer().sendMessage(LocaleManager.get().getString("NoPermissionForCommand"));
                 }
-                else if(e.getCurrentItem().equals(mainClassAccess.vault.GetAbsolvePlayerButtonFormat())) //Clicked absolved player button
+                else if(e.getCurrentItem().equals(mainClassAccess.vault.GetAbsolvePlayerButtonFormat())) //Clicked absolve player button
                 {
                     if(e.getWhoClicked().hasPermission("AXH.Commands.AbsolvePlayer")) {
+                        final String viewerName = e.getWhoClicked().getName();
+                        final String xrayerUUID = mainClassAccess.vault.GetInspectedXrayer(viewerName);
                         //return inventory to player, and do the rest if player was online (function returns true if it worked):
-                        if (XrayerHandler.PlayerAbsolver(mainClassAccess.vault.GetInspectedXrayer(e.getWhoClicked().getName()), mainClassAccess.mm.GetXrayerBelongings(mainClassAccess.vault.GetInspectedXrayer(e.getWhoClicked().getName())))) {
-                            mainClassAccess.vault.ClearRegisteredXrayerAndRefreshVault(e.getWhoClicked().getName(), true);
-                        }
-                        else e.getWhoClicked().sendMessage(LocaleManager.get().getString("MessagesPrefix") + " " + LocaleManager.get().getString("PlayerNotOnlineOnAbsolution"));
+                        Bukkit.getScheduler().runTaskAsynchronously(mainClassAccess, () -> mainClassAccess.mm.GetXrayerBelongings(xrayerUUID, new GetXrayerBelongingsCallback()
+                        {
+                            @Override
+                            public void onQueryDone(ItemStack[] belongings)
+                            {
+                                if (XrayerHandler.PlayerAbsolver(xrayerUUID, belongings)) {
+                                    mainClassAccess.vault.ClearRegisteredXrayerAndRefreshVault(viewerName, true);
+                                }
+                                else e.getWhoClicked().sendMessage(LocaleManager.get().getString("MessagesPrefix") + " " + LocaleManager.get().getString("PlayerNotOnlineOnAbsolution"));
+                            }
+                        }));
                     }
                     else e.getView().getPlayer().sendMessage(LocaleManager.get().getString("NoPermissionForCommand"));
                 }

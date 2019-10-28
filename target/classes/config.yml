@@ -45,7 +45,6 @@ IgnoreHigherThanAltitude: 65
 #------------------------------------------------------
 #AUTOMATIC XRAYER HANDLING & PUNISHMENT CONFIGURATIONS:
 #------------------------------------------------------
-#Following configurable automatic actions are executed in the same order as configured (default config order):
 
 #If set to true, the player's items will be stored (even before a configurable clense) which will later be revisable.
 #This includes HotBar, OffHand, Inventory and Equipment.

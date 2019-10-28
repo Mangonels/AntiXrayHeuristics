@@ -6,6 +6,7 @@ package es.mithrandircraft.antixrayheuristics;
 
 import com.google.common.reflect.TypeToken;
 import com.google.gson.Gson;
+import es.mithrandircraft.antixrayheuristics.callbacks.*;
 import es.mithrandircraft.antixrayheuristics.files.LocaleManager;
 import es.mithrandircraft.antixrayheuristics.files.Xrayer;
 import org.apache.commons.dbcp.BasicDataSource;
@@ -32,9 +33,10 @@ public class MemoryManager {
     //JSON Data:
     private List<Xrayer> storedXrayersFromJSON = new ArrayList<Xrayer>(); //Used for loading xrayer data from JSON
 
-    //The following functions manage persistent memory resources depending on plugin configuration:
+    //The following functions manage persistent memory resources depending on plugin configuration
+    //They are designed to be called asynchronously through Bukkit's scheduler, and return data with a callback function:
 
-    void StorePlayerData(String playername)
+    void StorePlayerData(String playername, final StorePlayerDataCallback callback)
     {
         switch (mainClassAccess.getConfig().getString("StorageType")) {
             case "MYSQL":
@@ -43,7 +45,7 @@ public class MemoryManager {
                     cn = dataSource.getConnection();
                     if(cn != null)
                     {
-                        SQLPlayerDataStore(cn, playername);
+                        SQLPlayerDataStore(cn, playername, callback);
                     }
                 } catch (SQLException e) {
                     System.err.print(e);
@@ -56,14 +58,14 @@ public class MemoryManager {
                 }
                 break;
             case "JSON":
-                JSONFilePlayerDataStore(playername);
+                JSONPlayerDataStore(playername, callback);
                 break;
             default:
                 break;
         }
     }
 
-    public void GetAllBaseXrayerData(ArrayList<String> UUIDs, ArrayList<Integer> handledAmounts, ArrayList<String> firstHandledTimes) //Returns array list containing all registered xrayer UUID's
+    public void GetAllBaseXrayerData(final GetAllBaseXrayerDataCallback callback) //Returns various array lists through callback function containing all registered xrayer UUID's, handled times amount, and firstHandled time.
     {
         switch (mainClassAccess.getConfig().getString("StorageType")) {
             case "MYSQL":
@@ -71,7 +73,7 @@ public class MemoryManager {
                 try {
                     cn = dataSource.getConnection();
                     if(cn != null) {
-                        SQLGetAllBaseXrayerData(cn, UUIDs, handledAmounts, firstHandledTimes);
+                        SQLGetAllBaseXrayerData(cn, callback);
                     }
                 } catch (SQLException e) {
                     System.err.print(e);
@@ -84,14 +86,14 @@ public class MemoryManager {
                 }
                 break;
             case "JSON":
-                JSONGetAllBaseXrayerData(UUIDs ,handledAmounts, firstHandledTimes);
+                JSONGetAllBaseXrayerData(callback);
                 break;
             default:
                 break;
         }
     }
 
-    public ItemStack[] GetXrayerBelongings(String xrayerUUID) //Returns ItemStack array containing all confiscated ItemStacks from the specified player by UUID
+    public void GetXrayerBelongings(String xrayerUUID, final GetXrayerBelongingsCallback callback) //Returns ItemStack array through callback function containing all confiscated ItemStacks from the specified player by UUID
     {
         switch (mainClassAccess.getConfig().getString("StorageType")) {
             case "MYSQL":
@@ -99,7 +101,7 @@ public class MemoryManager {
                 try {
                     cn = dataSource.getConnection();
                     if(cn != null) {
-                        return SQLGetXrayerBelongings(cn, xrayerUUID);
+                        SQLGetXrayerBelongings(cn, xrayerUUID, callback);
                     }
                 } catch (SQLException e) {
                     System.err.print(e);
@@ -112,11 +114,10 @@ public class MemoryManager {
                 }
                 break;
             case "JSON":
-                return JSONGetXrayerBelongings(xrayerUUID);
+                JSONGetXrayerBelongings(xrayerUUID, callback);
             default:
                 break;
         }
-        return null;
     }
 
     public void DeleteXrayer(String xrayerUUID) //Deletes xrayer with specified UUID from memory
@@ -189,7 +190,6 @@ public class MemoryManager {
 
         dataSource = basicDataSource;
     }
-
     void CloseDataSource()
     {
         try {
@@ -221,7 +221,6 @@ public class MemoryManager {
             }
         }
     }
-
     private boolean SQLFindUUID(java.sql.Connection connection, String n) throws SQLException //Returns true if UUID was found in the database
     {
         PreparedStatement query = connection.prepareStatement("SELECT COUNT(1) FROM Xrayers WHERE UUID = ?");
@@ -232,8 +231,7 @@ public class MemoryManager {
         result.next();
         return result.getInt(1) == 1;
     }
-
-    private void SQLPlayerDataStore(java.sql.Connection connection, String playername) throws SQLException //Stores player name as xrayer and some other info (+ player belongings if configured), ONLY IF there isn't information already stored.
+    private void SQLPlayerDataStore(java.sql.Connection connection, String playername, final StorePlayerDataCallback callback) throws SQLException //Stores player name as xrayer and some other info (+ player belongings if configured), ONLY IF there isn't information already stored.
     {
         Player p = Bukkit.getServer().getPlayer(playername);
         assert p != null;
@@ -271,13 +269,17 @@ public class MemoryManager {
 
             update.executeUpdate();
         }
+        callback.onInsertDone();
     }
-
-    private void SQLGetAllBaseXrayerData(java.sql.Connection connection, ArrayList<String> UUIDs, ArrayList<Integer> handledAmounts, ArrayList<String> firstHandledTimes) throws SQLException //Returns all of the basic xrayer information (pretty much everything except for the inventory)
+    private void SQLGetAllBaseXrayerData(java.sql.Connection connection, final GetAllBaseXrayerDataCallback callback) throws SQLException //Returns all of the basic xrayer information (pretty much everything except for the inventory)
     {
         PreparedStatement entry = connection.prepareStatement("SELECT UUID, Handled, FirstHandleTime FROM Xrayers");
 
         ResultSet result = entry.executeQuery();
+
+        ArrayList<String> UUIDs = new ArrayList<String>();
+        ArrayList<Integer> handledAmounts = new ArrayList<Integer>();
+        ArrayList<String> firstHandledTimes = new ArrayList<String>();
 
         while(result.next())
         {
@@ -285,9 +287,15 @@ public class MemoryManager {
             handledAmounts.add(result.getInt("Handled"));
             firstHandledTimes.add(result.getString("FirstHandleTime"));
         }
-    }
 
-    private ItemStack[] SQLGetXrayerBelongings(java.sql.Connection connection, String xrayerUUID) throws SQLException //Gets an xrayer player's (by UUID) confiscated belongings
+        Bukkit.getScheduler().runTask(mainClassAccess, new Runnable() { //Callback to main thread returns extracted data
+            @Override
+            public void run() {
+                callback.onQueryDone(UUIDs, handledAmounts, firstHandledTimes);
+            }
+        });
+    }
+    private void SQLGetXrayerBelongings(java.sql.Connection connection, String xrayerUUID, GetXrayerBelongingsCallback callback) throws SQLException //Gets an xrayer player's (by UUID) confiscated belongings
     {
         PreparedStatement query = connection.prepareStatement("SELECT Belongings FROM Xrayers WHERE UUID = ?");
         query.setString(1, xrayerUUID);
@@ -297,10 +305,17 @@ public class MemoryManager {
         result.next();
 
         try {
-            return BukkitSerializer.itemStackArrayFromBase64(result.getString("Belongings"));
+            //Something's wrong, no items are read from database. Try testing if itemStackArrayFromBase64() can actually process from a string asincronously?
+            //The problem is probably that no items are actually being serialized into database, thus inventory is already stored empty. Check on that.
+            final ItemStack[] belongings = BukkitSerializer.itemStackArrayFromBase64(result.getString("Belongings"));
+            Bukkit.getScheduler().runTask(mainClassAccess, new Runnable() { //Callback to main thread returns extracted data
+                @Override
+                public void run() {
+                    callback.onQueryDone(belongings);
+                }
+            });
         } catch (IOException e){
             System.err.print(e);
-            return null;
         }
     }
 
@@ -374,12 +389,12 @@ public class MemoryManager {
         storedXrayersFromJSON = JSONDeserializeXrayersData(JSONGetFromFile());
     }
 
-    public void JSONFlushLoadedXrayerData() //Removes the loaded xrayer data from memory. Used for when nothing is actually using it.
+    public void JSONFlushLoadedXrayerData() //Removes the loaded xrayer data from memory. Used for when nothing is actually using it (no one's reading it, definitely).
     {
         storedXrayersFromJSON.clear();
     }
 
-    private void JSONFilePlayerDataStore(String playername) //Stores player name as xrayer and some other info (+ player belongings if configured), ONLY IF there isn't information already stored.
+    private void JSONPlayerDataStore(String playername, final StorePlayerDataCallback callback) //Stores player name as xrayer and some other info (+ player belongings if configured), ONLY IF there isn't information already stored. Also notifies through callback on finish
     {
         Player p = Bukkit.getServer().getPlayer(playername);
         if (p != null) //Just a check to avoid null player errors
@@ -423,20 +438,32 @@ public class MemoryManager {
                 }
             }
         }
+        callback.onInsertDone();
     }
-    private void JSONGetAllBaseXrayerData(ArrayList<String> UUIDs, ArrayList<Integer> handledAmounts, ArrayList<String> firstHandledTimes)
+    private void JSONGetAllBaseXrayerData(GetAllBaseXrayerDataCallback callback)
     {
         //Refresh loaded xrayers in RAM Stack:
         JSONRefreshLoadedXrayerData();
         //Extract information from storedXrayersFromJSON:
+
+        ArrayList<String> UUIDs = new ArrayList<String>();
+        ArrayList<Integer> handledAmounts = new ArrayList<Integer>();
+        ArrayList<String> firstHandledTimes = new ArrayList<String>();
+
         for(Xrayer xrayer : storedXrayersFromJSON)
         {
             UUIDs.add(xrayer.UUID);
             handledAmounts.add(xrayer.Handled);
             firstHandledTimes.add(xrayer.FirstHandleTime);
         }
+        Bukkit.getScheduler().runTask(mainClassAccess, new Runnable() { //Callback to main thread returns extracted data
+            @Override
+            public void run() {
+                callback.onQueryDone(UUIDs, handledAmounts, firstHandledTimes);
+            }
+        });
     }
-    private ItemStack[] JSONGetXrayerBelongings(String xrayerUUID)
+    private void JSONGetXrayerBelongings(String xrayerUUID, GetXrayerBelongingsCallback callback)
     {
         //Refresh loaded xrayers in RAM Stack:
         JSONRefreshLoadedXrayerData();
@@ -444,15 +471,19 @@ public class MemoryManager {
         for(Xrayer xrayer : storedXrayersFromJSON)
         {
             if(xrayer.UUID.equals(xrayerUUID)) {
-                try{
-                return BukkitSerializer.itemStackArrayFromBase64(xrayer.Belongings);
+                try {
+                    final ItemStack[] belongings = BukkitSerializer.itemStackArrayFromBase64(xrayer.Belongings);
+                    Bukkit.getScheduler().runTask(mainClassAccess, new Runnable() { //Callback to main thread returns extracted data
+                        @Override
+                        public void run() {
+                            callback.onQueryDone(belongings);
+                        }
+                    });
                 } catch (IOException e){
                     System.err.print(e);
-                    return null;
                 }
             }
         }
-        return null;
     }
     private void JSONDeleteXrayer(String xrayerUUID)
     {

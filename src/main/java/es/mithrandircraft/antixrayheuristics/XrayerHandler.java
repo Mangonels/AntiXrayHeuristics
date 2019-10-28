@@ -4,6 +4,7 @@
 
 package es.mithrandircraft.antixrayheuristics;
 
+import es.mithrandircraft.antixrayheuristics.callbacks.StorePlayerDataCallback;
 import es.mithrandircraft.antixrayheuristics.files.LocaleManager;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -20,7 +21,7 @@ public class XrayerHandler {
     private static void XrayerWarn(String xrayername) //Sends a warning message to an xrayer by name
     {
         for (Player player : Bukkit.getOnlinePlayers()) {
-            if(player.hasPermission("AXH.XrayerWarning")) player.sendMessage(PlaceholderManager.SubstitutePlaceholders(LocaleManager.get().getString("MessagesPrefix") + " " + LocaleManager.get().getString("AutoHandledPlayer"), xrayername));
+            if(player.hasPermission("AXH.XrayerWarning")) player.sendMessage(PlaceholderManager.SubstitutePlayerNamePlaceholders(LocaleManager.get().getString("MessagesPrefix") + " " + LocaleManager.get().getString("AutoHandledPlayer"), xrayername));
         }
     }
 
@@ -39,31 +40,37 @@ public class XrayerHandler {
             }
 
             //Store xrayer's data (and inventory only if configured):
-            mainClass.mm.StorePlayerData(xrayername);
+            final String name = xrayername;
+            Bukkit.getScheduler().runTaskAsynchronously(mainClass, () -> mainClass.mm.StorePlayerData(name, new StorePlayerDataCallback(){
+                @Override
+                public void onInsertDone() {
+                    //It's better if the following occur AFTER xrayer data storing is done asincronously:
 
-            //Remove all of the xrayer's belongings if configured:
-            if (mainClass.getConfig().getBoolean("ClensePlayerItems")) {
-                try{player.getInventory().clear();
-                    player.getEquipment().clear(); } catch(Exception e){ if(mainClass.getConfig().getBoolean("Debug")) System.out.println("Failed to remove player " + xrayername + "'s equipment while attempting to handle as Xrayer."); }
-            }
+                    //Remove all of the xrayer's belongings if configured:
+                    if (mainClass.getConfig().getBoolean("ClensePlayerItems")) {
+                        try{player.getInventory().clear();
+                            player.getEquipment().clear(); } catch(Exception e){ if(mainClass.getConfig().getBoolean("Debug")) System.out.println("Failed to remove player " + xrayername + "'s equipment while attempting to handle as Xrayer."); }
+                    }
+
+                    //Execute configured commands:
+                    for (int i = 0; i < mainClass.getConfig().getStringList("CommandsExecuted").size(); i++) {
+                        Bukkit.getServer().dispatchCommand(Bukkit.getServer().getConsoleSender(), PlaceholderManager.SubstitutePlayerNamePlaceholders(mainClass.getConfig().getStringList("CommandsExecuted").get(i), xrayername));
+                    }
+                }
+            }));
 
             //Delete xrayer mining session if configured:
             if (mainClass.getConfig().getBoolean("NullifySuspicionAferPunish")) {
                 AntiXrayHeuristics.sessions.remove(player.getName());
             }
 
-            //Execute configured commands:
-            for (int i = 0; i < mainClass.getConfig().getStringList("CommandsExecuted").size(); i++) {
-                Bukkit.getServer().dispatchCommand(Bukkit.getServer().getConsoleSender(), PlaceholderManager.SubstitutePlaceholders(mainClass.getConfig().getStringList("CommandsExecuted").get(i), xrayername));
-            }
-
             //Console message:
-            System.out.println(PlaceholderManager.SubstitutePlaceholders("[AntiXrayHeuristics] {PlayerName} was automatically registered and handled for xraying.", xrayername));
+            System.out.println(LocaleManager.get().getString("MessagesPrefix") + " " + PlaceholderManager.SubstitutePlayerNamePlaceholders(LocaleManager.get().getString("AutoHandledPlayer") , xrayername));
 
             //Warn players with permission:
             if(mainClass.getConfig().getBoolean("TellPlayersWithPermission")) XrayerWarn(xrayername);
         }
-        else{ System.out.println("Player named " + xrayername + " was not found while attempting to handle as Xrayer. Player must be online."); }
+        else{ System.out.println(LocaleManager.get().getString("MessagesPrefix") + " " + PlaceholderManager.SubstitutePlayerNamePlaceholders(LocaleManager.get().getString("PlayerNotOnlineOnHandle") , xrayername)); }
     }
 
     private static void DropItemAtPlayerLocation(ItemStack item, Player p) //Drops items at player location
@@ -98,7 +105,7 @@ public class XrayerHandler {
             if(target.getEquipment().getHelmet() == null) target.getEquipment().setHelmet(possessions[37]);
             else DropItemAtPlayerLocation(possessions[37], target);
 
-            System.out.print("[AntiXrayHeuristics] Player " + target.getName() + "has been absolved from the Xrayer Vault by a player with permission, and his items have been returned.");
+            System.out.print(LocaleManager.get().getString("MessagesPrefix") + target.getName() + LocaleManager.get().getString("AbsolvedPlayer"));
             return true;
         }
         else return false; //Player offline

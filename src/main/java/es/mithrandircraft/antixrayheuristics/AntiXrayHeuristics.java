@@ -12,6 +12,7 @@ import es.mithrandircraft.antixrayheuristics.events.InventoryCloseEv;
 import es.mithrandircraft.antixrayheuristics.events.ItemDragEv;
 import es.mithrandircraft.antixrayheuristics.files.LocaleManager;
 import es.mithrandircraft.antixrayheuristics.gui.XrayerVault;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
@@ -83,11 +84,13 @@ public final class AntiXrayHeuristics extends JavaPlugin implements Listener {
         if(getConfig().getString("StorageType").equals("MYSQL"))
         {
             mm.InitializeDataSource();
-            try {
+            Bukkit.getScheduler().runTaskAsynchronously(this, () -> {
+                try {
                 mm.SQLCreateTableIfNotExists();
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            });
         }
 
         //Create json file if not exists?:
