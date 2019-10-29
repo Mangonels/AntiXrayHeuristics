@@ -130,6 +130,7 @@ public class XrayerVault {
                 firstHandledTimes.addAll(firsthandledtimes);
 
                 OpenVault(player, page);
+                player.sendMessage(LocaleManager.get().getString("MessagesPrefix") + " " + LocaleManager.get().getString("VaultRefreshed"));
             }
         })); //This single async function fills up the 3 lists with xrayer information.
     }

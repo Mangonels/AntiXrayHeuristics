@@ -34,7 +34,7 @@ public class MemoryManager {
     private List<Xrayer> storedXrayersFromJSON = new ArrayList<Xrayer>(); //Used for loading xrayer data from JSON
 
     //The following functions manage persistent memory resources depending on plugin configuration
-    //They are designed to be called asynchronously through Bukkit's scheduler, and return data with a callback function:
+    //They are designed to be called asynchronously through Bukkit's scheduler, and return data through a callback function:
 
     void StorePlayerData(String playername, final StorePlayerDataCallback callback)
     {
@@ -185,7 +185,7 @@ public class MemoryManager {
         basicDataSource.setDriverClassName("org.gjt.mm.mysql.Driver");
         basicDataSource.setUsername(mainClassAccess.getConfig().getString("SQLUsername"));
         basicDataSource.setPassword(mainClassAccess.getConfig().getString("SQLPassword"));
-        basicDataSource.setUrl("jdbc:mysql://" + mainClassAccess.getConfig().getString("SQLHost") + ":" + mainClassAccess.getConfig().getString("SQLPort") + "/" + mainClassAccess.getConfig().getString("SQLDatabaseName") + "?useSSL=false");
+        basicDataSource.setUrl("jdbc:mysql://" + mainClassAccess.getConfig().getString("SQLHost") + ":" + mainClassAccess.getConfig().getString("SQLPort") + "/" + mainClassAccess.getConfig().getString("SQLDatabaseName") + "?useSSL=false&testOnBorrow=true&validationQuery=true");
         basicDataSource.setMaxActive(mainClassAccess.getConfig().getInt("SQLMaxActiveConnections"));
 
         dataSource = basicDataSource;

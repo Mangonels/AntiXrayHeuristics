@@ -61,7 +61,7 @@ public class XrayerHandler {
 
             //Delete xrayer mining session if configured:
             if (mainClass.getConfig().getBoolean("NullifySuspicionAferPunish")) {
-                AntiXrayHeuristics.sessions.remove(player.getName());
+                mainClass.sessions.remove(player.getName());
             }
 
             //Console message:

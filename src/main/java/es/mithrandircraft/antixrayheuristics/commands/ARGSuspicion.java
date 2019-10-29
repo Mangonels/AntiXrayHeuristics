@@ -11,26 +11,26 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 public class ARGSuspicion {
-    public static void S(CommandSender sender) {//Non-parametrized
+    public static void S(CommandSender sender, AntiXrayHeuristics mainClass) {//Non-parametrized
         if (sender instanceof Player) { //Is player
             Player player = (Player) sender;
-            MiningSession tempMS = AntiXrayHeuristics.sessions.get(player.getName());
+            MiningSession tempMS = mainClass.sessions.get(player.getName());
             if (tempMS != null) player.sendMessage("Your suspicion level: " + tempMS.GetSuspicionLevel());
             else player.sendMessage("You are not suspicious of Xray usage. No suspicion level available.");
         }
         else System.out.println(LocaleManager.get().getString("PlayerOnlyCommand")); //Is console
     }
-    public static void S(CommandSender sender, String arg) //Parametrized
+    public static void S(CommandSender sender, String arg, AntiXrayHeuristics mainClass) //Parametrized
     {
         if (sender instanceof Player) { //Is player
             Player player = (Player) sender;
-            MiningSession tempMS = AntiXrayHeuristics.sessions.get(arg);
+            MiningSession tempMS = mainClass.sessions.get(arg);
             if (tempMS != null)
                 player.sendMessage(arg + "'s suspicion level: " + tempMS.GetSuspicionLevel());
             else
                 player.sendMessage(arg + " Is not suspicious of Xray usage. No suspicion level available.");
         } else { //Is console
-            MiningSession tempMS = AntiXrayHeuristics.sessions.get(arg);
+            MiningSession tempMS = mainClass.sessions.get(arg);
             if (tempMS != null)
                 System.out.println(arg + "'s suspicion level: " + tempMS.GetSuspicionLevel());
             else

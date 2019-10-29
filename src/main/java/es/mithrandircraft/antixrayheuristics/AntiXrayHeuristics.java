@@ -27,7 +27,7 @@ import java.util.Set;
 public final class AntiXrayHeuristics extends JavaPlugin implements Listener {
 
     //Mining sessions HashMap:
-    public static HashMap<String, MiningSession> sessions = new HashMap<String, MiningSession>();
+    public HashMap<String, MiningSession> sessions = new HashMap<String, MiningSession>();
 
     //Persistent memory storage manager:
     public MemoryManager mm = new MemoryManager(this);

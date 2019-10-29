@@ -40,7 +40,8 @@ public class LocaleManager {
 
         //Plugin Actions:
         localeConfiguration.addDefault("AutoHandledPlayer", "{PlayerName} was automatically registered and handled for xraying.");
-        localeConfiguration.addDefault("ForcedPageZero", "You where automatically sent and refreshed to XrayerVault page 0 since one or various players where either purged or absolved.");
+        localeConfiguration.addDefault("ForcedPageZero", "You where automatically sent to XrayerVault page 0 since one or various players where either purged or absolved.");
+        localeConfiguration.addDefault("VaultRefreshed", "Showing latest xrayer information.");
 
         //Persistent memory:
         localeConfiguration.addDefault("SQLDisconError", "There was an error when attempting to disconnect from SQL database.");
