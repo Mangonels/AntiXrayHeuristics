@@ -31,7 +31,7 @@ public class ARGAbsolvePlayer {
                             if (XrayerHandler.PlayerAbsolver(targetUUID, belongings)) {
                                 sender.sendMessage(LocaleManager.get().getString("MessagesPrefix") + " " + LocaleManager.get().getString("PlayerAbsolved"));
                                 //purge player from database:
-                                mainClass.vault.ClearRegisteredXrayerAndRefreshVault(arg, false);
+                                mainClass.vault.XrayerDataRemover(arg, false);
                             } else sender.sendMessage(LocaleManager.get().getString("MessagesPrefix") + " " + LocaleManager.get().getString("PlayerNotOnlineOnAbsolution"));
                         }
                     }));
@@ -50,7 +50,7 @@ public class ARGAbsolvePlayer {
                     public void onQueryDone(ItemStack[] belongings)
                     {
                         if (XrayerHandler.PlayerAbsolver(targetUUID, belongings)) {
-                            mainClass.vault.ClearRegisteredXrayerAndRefreshVault(arg, false);
+                            mainClass.vault.XrayerDataRemover(arg, false);
                         } else
                             System.out.print(LocaleManager.get().getString("MessagesPrefix") + " " + LocaleManager.get().getString("PlayerNotOnlineOnAbsolution"));
                     }

@@ -19,7 +19,7 @@ public class ARGPurgePlayer {
                 //purge xrayer from database:
                 Player target = Bukkit.getServer().getPlayer(arg);
                 if (target != null) { //Player online
-                    mainClass.vault.ClearRegisteredXrayerAndRefreshVault(arg, false);
+                    mainClass.vault.XrayerDataRemover(arg, false);
                     sender.sendMessage(LocaleManager.get().getString("PlayerDataPurged"));
                 }
                 else player.sendMessage(LocaleManager.get().getString("MessagesPrefix") + " " + LocaleManager.get().getString("PurgeCommandLimit"));
@@ -27,7 +27,7 @@ public class ARGPurgePlayer {
         } else { //Is console
             Player target = Bukkit.getServer().getPlayer(arg);
             if (target != null) {
-                mainClass.vault.ClearRegisteredXrayerAndRefreshVault(arg, false);
+                mainClass.vault.XrayerDataRemover(arg, false);
             }
             else System.out.print(LocaleManager.get().getString("MessagesPrefix") + " " + LocaleManager.get().getString("PurgeCommandLimit"));
         }

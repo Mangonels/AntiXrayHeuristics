@@ -72,7 +72,7 @@ public class ClickEv implements Listener {
                 else if(e.getCurrentItem().equals(mainClassAccess.vault.GetPurgePlayerButtonFormat())) //Clicked purge player button
                 {
                     if(e.getWhoClicked().hasPermission("AXH.Commands.PurgePlayer")) {
-                        mainClassAccess.vault.ClearRegisteredXrayerAndRefreshVault(e.getWhoClicked().getName(), true);
+                        mainClassAccess.vault.XrayerDataRemover(e.getWhoClicked().getName(), true);
                     }
                     else e.getView().getPlayer().sendMessage(LocaleManager.get().getString("NoPermissionForCommand"));
                 }
@@ -88,7 +88,7 @@ public class ClickEv implements Listener {
                             public void onQueryDone(ItemStack[] belongings)
                             {
                                 if (XrayerHandler.PlayerAbsolver(xrayerUUID, belongings)) {
-                                    mainClassAccess.vault.ClearRegisteredXrayerAndRefreshVault(viewerName, true);
+                                    mainClassAccess.vault.XrayerDataRemover(viewerName, true);
                                 }
                                 else e.getWhoClicked().sendMessage(LocaleManager.get().getString("MessagesPrefix") + " " + LocaleManager.get().getString("PlayerNotOnlineOnAbsolution"));
                             }

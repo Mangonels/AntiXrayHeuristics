@@ -93,7 +93,7 @@ public class XrayerVault {
         SendAllToPageZero();
     }
 
-    public void ClearRegisteredXrayerAndRefreshVault(String name, Boolean nameIsSolicitor) //Clears the inspected xrayer that solicitor name is watching (or explicitly defined if nameIsSolicitor = false), and refreshes vault, sending everyone back to page 0 for safety
+    public void XrayerDataRemover(String name, Boolean nameIsSolicitor) //Can clear the inspected xrayer that solicitor name is watching (or explicitly defined if nameIsSolicitor = false) from both persistent data storage and data loaded in RAM for vault, and refresh vault, sending everyone back to page 0 for safety
     {
         final String xrayerUUID;
         if(nameIsSolicitor) //Inputted name is the solicitor viewing xrayer through gui. We can get the xrayer's name since it's stored in this same vault
@@ -110,7 +110,6 @@ public class XrayerVault {
             xrayerUUID = Bukkit.getServer().getPlayer(name).getUniqueId().toString();
             Bukkit.getScheduler().runTaskAsynchronously(mainClassAccess, () -> mainClassAccess.mm.DeleteXrayer(xrayerUUID));
             //remove absolved uuid from being listed in vault:
-            System.out.print(xrayerUUID);
             RemoveXrayerDataByUUIDFromList(xrayerUUID);
         }
         //recalculate pages length:
@@ -135,7 +134,7 @@ public class XrayerVault {
         })); //This single async function fills up the 3 lists with xrayer information.
     }
 
-    private void ClearXrayerInfoLists() //clears all xrayer information arraylists
+    public void ClearXrayerInfoLists() //clears all xrayer information arraylists
     {
         UUIDs.clear();
         handledAmounts.clear();
@@ -252,10 +251,14 @@ public class XrayerVault {
 
     private void RemoveXrayerDataByUUIDFromList(String uuid) //Removes all xrayer data in xrayer vault by uuid
     {
-        int UUIDindex = UUIDs.indexOf(uuid); //Rest of xrayer data is in the same index, so we can use this index to delete all xrayer data in all parallel array lists
-        UUIDs.remove(UUIDindex);
-        handledAmounts.remove(UUIDindex);
-        firstHandledTimes.remove(UUIDindex);
+        //Check if uuid exists:
+        for (int i = 0; i < UUIDs.size(); i++) if(UUIDs.get(i).equals(uuid)) {
+            //All xrayer data is in the same index, so we can use this index to delete all xrayer data in all parallel array lists
+            UUIDs.remove(i);
+            handledAmounts.remove(i);
+            firstHandledTimes.remove(i);
+            break;
+        }
     }
     public void RemovePlayerAsViewer(String name) { viewers.remove(name); } //Removes a player and it's data from the viewers hashmap
 

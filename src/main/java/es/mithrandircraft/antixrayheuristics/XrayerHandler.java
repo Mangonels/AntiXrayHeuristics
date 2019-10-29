@@ -44,7 +44,7 @@ public class XrayerHandler {
             Bukkit.getScheduler().runTaskAsynchronously(mainClass, () -> mainClass.mm.StorePlayerData(name, new StorePlayerDataCallback(){
                 @Override
                 public void onInsertDone() {
-                    //It's better if the following occur AFTER xrayer data storing is done asincronously:
+                    //The following are beter occuring AFTER xrayer data storing is done asynchronously, that's why they're in this callback:
 
                     //Remove all of the xrayer's belongings if configured:
                     if (mainClass.getConfig().getBoolean("ClensePlayerItems")) {
