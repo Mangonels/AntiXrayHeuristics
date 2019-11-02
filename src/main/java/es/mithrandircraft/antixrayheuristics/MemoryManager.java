@@ -185,8 +185,10 @@ public class MemoryManager {
         basicDataSource.setDriverClassName("org.gjt.mm.mysql.Driver");
         basicDataSource.setUsername(mainClassAccess.getConfig().getString("SQLUsername"));
         basicDataSource.setPassword(mainClassAccess.getConfig().getString("SQLPassword"));
-        basicDataSource.setUrl("jdbc:mysql://" + mainClassAccess.getConfig().getString("SQLHost") + ":" + mainClassAccess.getConfig().getString("SQLPort") + "/" + mainClassAccess.getConfig().getString("SQLDatabaseName") + "?useSSL=false&testOnBorrow=true&validationQuery=true");
+        basicDataSource.setUrl("jdbc:mysql://" + mainClassAccess.getConfig().getString("SQLHost") + ":" + mainClassAccess.getConfig().getString("SQLPort") + "/" + mainClassAccess.getConfig().getString("SQLDatabaseName") + "?useSSL=false");
         basicDataSource.setMaxActive(mainClassAccess.getConfig().getInt("SQLMaxActiveConnections"));
+        basicDataSource.setTestOnBorrow(true);
+        basicDataSource.setValidationQuery("SELECT 1");
 
         dataSource = basicDataSource;
     }

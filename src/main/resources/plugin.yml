@@ -6,9 +6,6 @@ authors: [__Mithrandir__]
 description: An heuristically based monitor designed to stop and/or punish xray usage.
 website: www.mithrandircraft.es
 commands:
-  AntiXrayHeuristics:
-    description: If executed without further arguments, it will show plugin help.
-    aliases: axh
   AXH Reload:
     description: Will reload the plugin's configuration when specified as axh argument.
     aliases: r

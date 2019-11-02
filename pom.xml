@@ -6,7 +6,7 @@
 
     <groupId>es.mithrandircraft</groupId>
     <artifactId>AntiXrayHeuristics</artifactId>
-    <version>1.1</version>
+    <version>1.1.1</version>
     <packaging>jar</packaging>
 
     <name>AntiXrayHeuristics</name>
