@@ -70,7 +70,7 @@ public final class AntiXrayHeuristics extends JavaPlugin implements Listener {
         saveDefaultConfig();
 
         //Locale load:
-        LocaleManager.setup();
+        LocaleManager.setup(getName());
         LocaleManager.get().options().copyDefaults(true);
         LocaleManager.save();
 

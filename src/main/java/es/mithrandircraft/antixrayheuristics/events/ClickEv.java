@@ -87,7 +87,7 @@ public class ClickEv implements Listener {
                             @Override
                             public void onQueryDone(ItemStack[] belongings)
                             {
-                                if (XrayerHandler.PlayerAbsolver(xrayerUUID, belongings)) {
+                                if (XrayerHandler.PlayerAbsolver(xrayerUUID, belongings, mainClassAccess)) {
                                     mainClassAccess.vault.XrayerDataRemover(viewerName, true);
                                 }
                                 else e.getWhoClicked().sendMessage(LocaleManager.get().getString("MessagesPrefix") + " " + LocaleManager.get().getString("PlayerNotOnlineOnAbsolution"));

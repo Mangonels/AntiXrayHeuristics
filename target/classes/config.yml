@@ -35,7 +35,7 @@ ConsiderAdjacentWithinDistance: 10
 #For further efficiency, let AXH know how many blocks a player would have to mine at very least, in order to
 #encounter another ore vein. This value should be more or less the average minimum distance between veins on your
 #server's map, default should be ok for default vanilla ore generation. Setting this to a lower value than default
-#is not recomended at all (and your server shouldn't even have a higher ore density than vanilla, else you wouldn't
+#is not recommended at all (and your server shouldn't even have a higher ore density than vanilla, else you wouldn't
 #be using this plugin), but you can if you're crazy enough.
 MinimumBlocksMinedToNextVein: 10
 
@@ -57,17 +57,38 @@ ClensePlayerItems: true
 
 #Following options allow you to send a message right when the player is punished for Xraying.
 SendMessageToPlayer: false
-MessageToSend: '[Xray] You where punished for Xraying, uninstall xrays inmediately. Resume your gameplay only after you have uninstalled Xrays.'
+MessageToSend: '[Xray] You where punished for Xraying, uninstall Xrays immediately. Resume your gameplay only after you have uninstalled Xrays.'
 
 #Recommended true. If so, will nullify the player's suspicion after being punished:
 NullifySuspicionAferPunish: true
 
-#The following commands are to be executed from console when a player must be punished for certain xraying.
-#Set it like this: 'CommandsExecuted: []', if you wish to disable command executions.
-#If you wish to add commands, remove the [] and add them on each following line like this (without the # ofc):
-#  - 'say {PlayerName} is probably Xraying'
-#Available placeholders (Caps sensitive): {PlayerName}
-CommandsExecuted: []
+#The following command arrays are to be executed from console in different (specified for each) moments.
+
+#Commands that will be executed when an xrayer is detected.
+#In the following example, the first number represents the amount of consecutive detections necessary for the command
+#to be executed, and within it, the commands to execute in order, for example:
+#    1:
+#        1: 'say {PlayerName} was detected Xraying'
+#        2: 'say proceeding to automatically handle as Xrayer'
+#    2:
+#        1: 'say {PlayerName} was detected Xraying {TimesDetected} times'
+#Will execute the first two say commands the first time that the xrayer is detected only, and the third say command
+#on the second detection only.
+#Set the array of commands to empty like this: CommandsExecutedOnXrayerDetected: [] , if you wish to disable command
+#executions for the case.
+#Available placeholders for following arrays and strings (Caps sensitive): {PlayerName}, {TimesDetected}
+CommandsExecutedOnXrayerDetected: []
+
+#Commands that will be executed when an xrayer is absolved, If you wish to add commands, remove the [] and add them
+#on each following line:
+#    - 'say {PlayerName} was absolved from being considered an Xrayer'
+#Will execute the say command when any xrayer is absolved.
+#As you can see, commands for this single array do not require a preceding number, since the amount of times detected is
+#irrelevant.
+#Set the array of commands to empty like this: CommandsExecutedOnPlayerAbsolved: [] , if you wish to disable command
+#executions for the case.
+#Available placeholders for this array (Case sensitive): {PlayerName}
+CommandsExecutedOnPlayerAbsolved: []
 
 #If set to true, players with the permission AXH.XrayerWarning will be notified if an xrayer was found and dealt with
 TellPlayersWithPermission: true

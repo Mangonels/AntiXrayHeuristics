@@ -8,12 +8,14 @@ import es.mithrandircraft.antixrayheuristics.callbacks.StorePlayerDataCallback;
 import es.mithrandircraft.antixrayheuristics.files.LocaleManager;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.util.Vector;
 
+import java.util.Map;
 import java.util.UUID;
 
 public class XrayerHandler {
@@ -30,7 +32,7 @@ public class XrayerHandler {
         AntiXrayHeuristics mainClass = JavaPlugin.getPlugin(AntiXrayHeuristics.class);
 
         mainClass.getConfig();
-        Player player = Bukkit.getServer().getPlayer(xrayername); //Reference to player
+        Player player = Bukkit.getPlayer(xrayername); //Reference to player
         if(player != null)
         {
             //Send message to xrayer if configured:
@@ -43,7 +45,7 @@ public class XrayerHandler {
             final String name = xrayername;
             Bukkit.getScheduler().runTaskAsynchronously(mainClass, () -> mainClass.mm.StorePlayerData(name, new StorePlayerDataCallback(){
                 @Override
-                public void onInsertDone() {
+                public void onInsertDone(int handleTimes) {
                     //The following are beter occuring AFTER xrayer data storing is done asynchronously, that's why they're in this callback:
 
                     //Remove all of the xrayer's belongings if configured:
@@ -52,9 +54,16 @@ public class XrayerHandler {
                             player.getEquipment().clear(); } catch(Exception e){ if(mainClass.getConfig().getBoolean("Debug")) System.out.println("Failed to remove player " + xrayername + "'s equipment while attempting to handle as Xrayer."); }
                     }
 
-                    //Execute configured commands:
-                    for (int i = 0; i < mainClass.getConfig().getStringList("CommandsExecuted").size(); i++) {
-                        Bukkit.getServer().dispatchCommand(Bukkit.getServer().getConsoleSender(), PlaceholderManager.SubstitutePlayerNamePlaceholders(mainClass.getConfig().getStringList("CommandsExecuted").get(i), xrayername));
+                    //Compare the handled time, and see if there's an action to be executed from config:
+                    ConfigurationSection section = mainClass.getConfig().getConfigurationSection("CommandsExecutedOnXrayerDetected"); //Gets the whole hierarchical config section with commands to execute according to times detected
+                    if(section != null && section.contains(String.valueOf(handleTimes))) {
+                        ConfigurationSection subSection = mainClass.getConfig().getConfigurationSection("CommandsExecutedOnXrayerDetected." + String.valueOf(handleTimes)); //Gets the specific commands to execute if coinciding with amount of times detected
+                        if(subSection != null) {
+                            Map<String, Object> commandsToExecute = subSection.getValues(false); //Will contain all the configured commands to execute this time
+                            for (Map.Entry<String, Object> pair : commandsToExecute.entrySet()) {
+                                Bukkit.dispatchCommand(Bukkit.getConsoleSender(), PlaceholderManager.SubstitutePlayerNameAndHandleTimesPlaceholders((String) pair.getValue(), xrayername, Integer.toString(handleTimes))); //Executes the command and also replaces any placeholders within it
+                            }
+                        }
                     }
                 }
             }));
@@ -82,9 +91,9 @@ public class XrayerHandler {
         }
     }
 
-    public static boolean PlayerAbsolver(String uuid, ItemStack[] possessions) //Currently returns confiscated items to an absolved player. If the player isn't online, function returns false.
+    public static boolean PlayerAbsolver(String uuid, ItemStack[] possessions, AntiXrayHeuristics mainClassAccess) //Currently returns confiscated items to an absolved player. If the player isn't online, function returns false.
     {
-        Player target = Bukkit.getServer().getPlayer(UUID.fromString(uuid));
+        Player target = Bukkit.getPlayer(UUID.fromString(uuid));
         if (target != null) { //Player online
             //Return inventory
             for(int i = 0; i < 36; i++)
@@ -106,6 +115,12 @@ public class XrayerHandler {
             else DropItemAtPlayerLocation(possessions[37], target);
 
             System.out.print(LocaleManager.get().getString("MessagesPrefix") + target.getName() + LocaleManager.get().getString("AbsolvedPlayer"));
+
+            //Execute configured commands:
+            for (int i = 0; i < mainClassAccess.getConfig().getStringList("CommandsExecutedOnPlayerAbsolved").size(); i++) {
+                Bukkit.dispatchCommand(Bukkit.getConsoleSender(), PlaceholderManager.SubstitutePlayerNamePlaceholders(mainClassAccess.getConfig().getStringList("CommandsExecutedOnPlayerAbsolved").get(i), target.getName()));
+            }
+
             return true;
         }
         else return false; //Player offline

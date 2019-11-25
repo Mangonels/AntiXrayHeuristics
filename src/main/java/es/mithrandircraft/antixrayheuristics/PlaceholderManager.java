@@ -14,6 +14,14 @@ public class PlaceholderManager {
         return toReplace;
     }
 
+    public static String SubstitutePlayerNameAndHandleTimesPlaceholders(String toReplace, String player, String handleTimes)
+    {
+        toReplace = toReplace.replaceAll("\\{PlayerName}", player);
+        toReplace = toReplace.replaceAll("\\{TimesDetected}", handleTimes);
+
+        return toReplace;
+    }
+
     public static List<String> SubstituteXrayerDataPlaceholders(List<String> toReplace, String handledTimesAmount, String firstHandleTime)
     {
         for(int i = 0; i < toReplace.size(); i++)

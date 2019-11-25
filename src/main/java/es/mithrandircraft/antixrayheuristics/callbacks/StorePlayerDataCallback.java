@@ -1,5 +1,5 @@
 package es.mithrandircraft.antixrayheuristics.callbacks;
 
 public interface StorePlayerDataCallback {
-    void onInsertDone();
+    void onInsertDone(int handleTimes);
 }

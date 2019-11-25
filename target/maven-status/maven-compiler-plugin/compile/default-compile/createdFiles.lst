@@ -2,6 +2,7 @@ es\mithrandircraft\antixrayheuristics\callbacks\GetAllBaseXrayerDataCallback.cla
 es\mithrandircraft\antixrayheuristics\XrayerHandler$1.class
 es\mithrandircraft\antixrayheuristics\math\MathFunctions.class
 es\mithrandircraft\antixrayheuristics\events\ClickEv$1.class
+es\mithrandircraft\antixrayheuristics\MemoryManager$9.class
 es\mithrandircraft\antixrayheuristics\files\LocaleManager.class
 es\mithrandircraft\antixrayheuristics\MemoryManager$2.class
 es\mithrandircraft\antixrayheuristics\commands\ARGXrayer.class
@@ -15,6 +16,7 @@ es\mithrandircraft\antixrayheuristics\commands\ARGAbsolvePlayer.class
 es\mithrandircraft\antixrayheuristics\events\ItemDragEv.class
 es\mithrandircraft\antixrayheuristics\commands\AXH.class
 es\mithrandircraft\antixrayheuristics\MemoryManager$4.class
+es\mithrandircraft\antixrayheuristics\MemoryManager$7.class
 es\mithrandircraft\antixrayheuristics\commands\ARGAbsolvePlayer$2.class
 es\mithrandircraft\antixrayheuristics\events\ClickEv.class
 es\mithrandircraft\antixrayheuristics\files\Xrayer.class
@@ -23,6 +25,7 @@ es\mithrandircraft\antixrayheuristics\gui\XrayerVault$1.class
 es\mithrandircraft\antixrayheuristics\callbacks\GetXrayerBelongingsCallback.class
 es\mithrandircraft\antixrayheuristics\commands\ARGSuspicion.class
 es\mithrandircraft\antixrayheuristics\commands\ARGReload.class
+es\mithrandircraft\antixrayheuristics\MemoryManager$8.class
 es\mithrandircraft\antixrayheuristics\BukkitSerializer.class
 es\mithrandircraft\antixrayheuristics\events\BlockBreakEv.class
 es\mithrandircraft\antixrayheuristics\commands\ARGPurgePlayer.class
@@ -33,6 +36,7 @@ es\mithrandircraft\antixrayheuristics\MemoryManager$5.class
 es\mithrandircraft\antixrayheuristics\MemoryManager.class
 es\mithrandircraft\antixrayheuristics\commands\ARGVault.class
 es\mithrandircraft\antixrayheuristics\PlaceholderManager.class
+es\mithrandircraft\antixrayheuristics\MemoryManager$6.class
 es\mithrandircraft\antixrayheuristics\gui\XrayerVault.class
 es\mithrandircraft\antixrayheuristics\commands\ARGAbsolvePlayer$1.class
 es\mithrandircraft\antixrayheuristics\MiningSession.class

@@ -13,6 +13,7 @@ import java.io.IOException;
 import java.util.Arrays;
 
 public class LocaleManager {
+
     private static File localeFile;
     private static FileConfiguration localeConfiguration;
 
@@ -65,9 +66,9 @@ public class LocaleManager {
 
     }
 
-    public static void setup() //Finds or generates custom config file
+    public static void setup(String pluginName) //Finds or generates custom config file
     {
-        localeFile = new File(Bukkit.getServer().getPluginManager().getPlugin("AntiXrayHeuristics").getDataFolder(), "locale.yml");
+        localeFile = new File(Bukkit.getServer().getPluginManager().getPlugin(pluginName).getDataFolder(), "locale.yml");
 
         if(!localeFile.exists())
         {

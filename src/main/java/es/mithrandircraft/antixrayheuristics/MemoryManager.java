@@ -263,15 +263,37 @@ public class MemoryManager {
 
                 entry.executeUpdate();
             }
+
+            Bukkit.getScheduler().runTask(mainClassAccess, new Runnable() { //Callback to main thread returns extracted data
+                @Override
+                public void run() {
+                    callback.onInsertDone(1);
+                }
+            });
         }
         else{ //Primary key (player UUID) already exists
-            //Just add +1 to Handled column
+            //Add +1 to Handled column
             PreparedStatement update = connection.prepareStatement("UPDATE Xrayers SET Handled = Handled + 1 WHERE UUID = ?");
             update.setString(1, p.getUniqueId().toString());
 
             update.executeUpdate();
+
+            //Get Handled column value
+            PreparedStatement query = connection.prepareStatement("SELECT Handled FROM Xrayers WHERE UUID = ?");
+            query.setString(1, p.getUniqueId().toString());
+
+            ResultSet result = query.executeQuery();
+
+            result.next();
+
+            final int timesHandledFinal = result.getInt("Handled");
+            Bukkit.getScheduler().runTask(mainClassAccess, new Runnable() { //Callback to main thread returns extracted data
+                @Override
+                public void run() {
+                    callback.onInsertDone(timesHandledFinal);
+                }
+            });
         }
-        callback.onInsertDone();
     }
     private void SQLGetAllBaseXrayerData(java.sql.Connection connection, final GetAllBaseXrayerDataCallback callback) throws SQLException //Returns all of the basic xrayer information (pretty much everything except for the inventory)
     {
@@ -399,6 +421,8 @@ public class MemoryManager {
     private void JSONPlayerDataStore(String playername, final StorePlayerDataCallback callback) //Stores player name as xrayer and some other info (+ player belongings if configured), ONLY IF there isn't information already stored. Also notifies through callback on finish
     {
         Player p = Bukkit.getServer().getPlayer(playername);
+        //Handled times for returning:
+        int timesHandled = 0;
         if (p != null) //Just a check to avoid null player errors
         {
             //Refresh loaded xrayers in RAM Stack:
@@ -411,6 +435,7 @@ public class MemoryManager {
                     exists = true;
                     //Also add +1 to handled:
                     xrayer.Handled += 1;
+                    timesHandled = xrayer.Handled;
                     //Store List back to file:
                     String serial = JSONSerializeXrayersData(storedXrayersFromJSON);
                     JSONStoreInFile(serial);
@@ -438,9 +463,23 @@ public class MemoryManager {
                     //Store List back to file:
                     JSONStoreInFile(JSONSerializeXrayersData(storedXrayersFromJSON));
                 }
+
+                Bukkit.getScheduler().runTask(mainClassAccess, new Runnable() { //Callback to main thread returns extracted data
+                    @Override
+                    public void run() {
+                        callback.onInsertDone(1);
+                    }
+                });
+            } else {
+                final int timesHandledFinal = timesHandled;
+                Bukkit.getScheduler().runTask(mainClassAccess, new Runnable() { //Callback to main thread returns extracted data
+                    @Override
+                    public void run() {
+                        callback.onInsertDone(timesHandledFinal);
+                    }
+                });
             }
         }
-        callback.onInsertDone();
     }
     private void JSONGetAllBaseXrayerData(GetAllBaseXrayerDataCallback callback)
     {
@@ -458,6 +497,7 @@ public class MemoryManager {
             handledAmounts.add(xrayer.Handled);
             firstHandledTimes.add(xrayer.FirstHandleTime);
         }
+
         Bukkit.getScheduler().runTask(mainClassAccess, new Runnable() { //Callback to main thread returns extracted data
             @Override
             public void run() {
