@@ -19,14 +19,15 @@ TrackWorlds:
 
 #The following values are to be balanced depending on the world's mineral density. Default values should be ok for
 #regular mineral generation. Set to 0 to ignore. Negative values will reduce player suspicion (not recommended).
+#There are various internal factors that may increment or ignore these weights depending on certain player behaviour.
 QuartzWeight: 9.0
 CoalWeight: 9.0
 IronWeight: 9.0
-GoldWeight: 15.0
-LapisWeight: 15.0
-RedstoneWeight: 15.0
-EmeraldWeight: 30.0
-DiamondWeight: 30.0
+GoldWeight: 10.0
+LapisWeight: 10.0
+RedstoneWeight: 10.0
+EmeraldWeight: 22.0
+DiamondWeight: 22.0
 
 #For further efficiency, let AXH know how many adjacent blocks in any direction should be considered as part of
 #a same ore vein. Default should be ok for default vanilla ore generation, set to 0 or less to disable:

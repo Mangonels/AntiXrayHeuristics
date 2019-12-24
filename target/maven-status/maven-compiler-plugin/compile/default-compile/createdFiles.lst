@@ -9,6 +9,7 @@ es\mithrandircraft\antixrayheuristics\commands\ARGXrayer.class
 es\mithrandircraft\antixrayheuristics\gui\PlayerViewInfo.class
 es\mithrandircraft\antixrayheuristics\XrayerHandler.class
 es\mithrandircraft\antixrayheuristics\commands\ARGResetSuspicion.class
+es\mithrandircraft\antixrayheuristics\math\IntVector3.class
 es\mithrandircraft\antixrayheuristics\events\DelayedInventoryCloseExecution.class
 es\mithrandircraft\antixrayheuristics\AntiXrayHeuristics.class
 es\mithrandircraft\antixrayheuristics\AntiXrayHeuristics$1.class

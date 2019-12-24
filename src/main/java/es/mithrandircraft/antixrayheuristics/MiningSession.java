@@ -4,35 +4,45 @@
 
 package es.mithrandircraft.antixrayheuristics;
 
+import es.mithrandircraft.antixrayheuristics.math.IntVector3;
 import org.bukkit.Location;
 import org.bukkit.Material;
 
+import java.util.Arrays;
+
 public class MiningSession { //Contains heuristics tracked per player
 
+    //General distance/time algorithm variables:
     private float suspicionLevel = 0.0f; //Level of suspicion for the player
 
-    public Material lastMinedOre = null; //Last mined Material ore name
+    Material lastMinedOre = null; //Last mined Material ore name
 
-    public Location lastMinedOreLocation = null; //Last mined Material ore location
+    Location lastMinedOreLocation = null; //Last mined Material ore location
 
     int minedNonOreBlocksStreak = 0; //Tracks how many non-ore blocks have been mined in streak.
 
     int foundAtZeroSuspicionStreak = 0; //Tracks how many times this mining session has been found at suspicion level 0 during Runnable tasks.
 
-//    public int lastMinedOreTime; //Time since a last ore was mined
-//
-//    public int sameMinedOreVeinStreak = 0; //Ammount of times the same last mined ore has been mined
-//
-//    public int descentBlockMiningStreak = 0; //Streak ammount of blocks dug downwards, (?)resets if digging any other angle for a substantial period of time.
-//
-//    public int diagonalBlockMiningStreak = 0; //Streak ammount of blocks dug diagonally, (?)resets if digging any other angle, allthough harder to make reset due to the nature of an imperfect minecraft diagonal
-//
-//    public int straightBlockMiningStreak = 0; //Streak ammount of blocks dug horizontally, (?)resets if digging any other angle for a substantial period of time.
+    //Mined blocks trail tracking algorithm variables:
+    private IntVector3[] minedBlocksTrailCoords = new IntVector3[10];
+    private int nextCoordsStorePos = 0; //Position where next mined block coordinates will be stored
+    private int counterSinceLastBlockCoordsStore = 0; //Counts how many blocks we've mined since last mined block coordinates storing
 
+    //General distance/time algorithm methods:
     public float GetSuspicionLevel() { return suspicionLevel; }
-    public void SetSuspicionLevel(float l)
+    void SetSuspicionLevel(float l)
     {
         suspicionLevel = l;
     }
-    public void AddSuspicionLevel(float i) { suspicionLevel += i; }
+    void AddSuspicionLevel(float i) { suspicionLevel += i; }
+
+    //Mined blocks trail tracking algorithm methods:
+    int GetLastBlockCoordsStoreCounter(){ return counterSinceLastBlockCoordsStore; }
+    void CycleBlockCoordsStoreCounter(){ counterSinceLastBlockCoordsStore = (counterSinceLastBlockCoordsStore + 1) % 4; }
+    void CycleNextCoordsStorePos(){ nextCoordsStorePos = (nextCoordsStorePos + 1) % 10; }
+    int GetNextCoordsStorePos(){ return nextCoordsStorePos; }
+    IntVector3 GetMinedBlocksTrailArrayPos(int pos) { return minedBlocksTrailCoords[pos]; }
+    //void SetMinedBlocksTrailArrayPos(int pos, int x, int y, int z) { minedBlocksTrailCoords[pos] = new IntVector3(x, y, z); }
+    void SetMinedBlocksTrailArrayPos(int pos, Location l) { minedBlocksTrailCoords[pos] = new IntVector3(l); }
+    void ResetBlocksTrailArray() { Arrays.fill(minedBlocksTrailCoords, null); }
 }
