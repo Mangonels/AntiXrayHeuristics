@@ -26,8 +26,8 @@ IronWeight: 9.0
 GoldWeight: 14.0
 LapisWeight: 14.0
 RedstoneWeight: 12.0
-EmeraldWeight: 22.0
-DiamondWeight: 22.0
+EmeraldWeight: 20.0
+DiamondWeight: 20.0
 
 #For further efficiency, let AXH know how many adjacent blocks in any direction should be considered as part of
 #a same ore vein. Default should be ok for default vanilla ore generation, set to 0 or less to disable:

@@ -183,7 +183,7 @@ public final class AntiXrayHeuristics extends JavaPlugin implements Listener {
                     }
                 }
 
-                iterations++; //Slot had IntVector3 content, and we did two separate axis checks on it.
+                iterations++; //Slot had IntVector3 content, and we did two separate axis checks on it. Iteration complete.
             }
         }
 

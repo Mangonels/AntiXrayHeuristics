@@ -7,10 +7,12 @@ package es.mithrandircraft.antixrayheuristics.gui;
 import es.mithrandircraft.antixrayheuristics.PlaceholderManager;
 import es.mithrandircraft.antixrayheuristics.callbacks.GetAllBaseXrayerDataCallback;
 import es.mithrandircraft.antixrayheuristics.callbacks.GetXrayerBelongingsCallback;
+import es.mithrandircraft.antixrayheuristics.callbacks.GetXrayerHandleLocationCallback;
 import es.mithrandircraft.antixrayheuristics.files.LocaleManager;
 import es.mithrandircraft.antixrayheuristics.math.MathFunctions;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
@@ -18,13 +20,16 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 public class XrayerVault {
 
     private final es.mithrandircraft.antixrayheuristics.AntiXrayHeuristics mainClassAccess;
 
-    private ArrayList<String> UUIDs = new ArrayList<String>(); //These 3 list's values are parallel, and represent xrayer information.
+    //These 3 list's values are parallel, and represent xrayer information.
+    private ArrayList<String> UUIDs = new ArrayList<String>();
     private ArrayList<Integer> handledAmounts = new ArrayList<Integer>();
     private ArrayList<String> firstHandledTimes = new ArrayList<String>();
 
@@ -182,7 +187,9 @@ public class XrayerVault {
             currentUUID = UUID.fromString(iter.next());
             meta.setOwningPlayer(Bukkit.getServer().getOfflinePlayer(currentUUID)); //Assigns player to head owner
             meta.setDisplayName(Bukkit.getServer().getOfflinePlayer(currentUUID).getName()); //Head name editing
-            meta.setLore(PlaceholderManager.SubstituteXrayerDataPlaceholders(LocaleManager.get().getStringList("PlayerHeadDesc"), String.valueOf(handledAmounts.get(iteration)), firstHandledTimes.get(iteration))); //Head lore editing
+            Date lastSeenDate = new Date(Bukkit.getServer().getPlayer(currentUUID).getLastPlayed()); //Getting the last played date as Date object, and then formatting it...
+            DateFormat df = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+            meta.setLore(PlaceholderManager.SubstituteXrayerDataPlaceholders(LocaleManager.get().getStringList("PlayerHeadDesc"), String.valueOf(handledAmounts.get(iteration)), firstHandledTimes.get(iteration), df.format(lastSeenDate))); //Head lore editing
             skull.setItemMeta(meta);
             gui.setItem(iteration, skull);
             iteration++;
@@ -238,11 +245,27 @@ public class XrayerVault {
                 SkullMeta meta = (SkullMeta) skull.getItemMeta();
                 meta.setOwningPlayer(Bukkit.getServer().getOfflinePlayer(UUID.fromString(UUIDs.get(xrayerUUIDIndex)))); //Assigns player to head owner
                 meta.setDisplayName(Bukkit.getServer().getOfflinePlayer(UUID.fromString(UUIDs.get(xrayerUUIDIndex))).getName()); //Head name editing
+                Date lastSeenDate = new Date(Bukkit.getServer().getPlayer(UUIDs.get(xrayerUUIDIndex)).getLastPlayed()); //Getting the last played date as Date object, and then formatting it...
+                DateFormat df = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
                 meta.setLore(Arrays.asList("Times handled: " + handledAmounts.get(xrayerUUIDIndex), "First detected: " + firstHandledTimes.get(xrayerUUIDIndex))); //Head lore editing
+                meta.setLore(PlaceholderManager.SubstituteXrayerDataPlaceholders(LocaleManager.get().getStringList("PlayerHeadDescInspector"), String.valueOf(handledAmounts.get(xrayerUUIDIndex)), firstHandledTimes.get(xrayerUUIDIndex), df.format(lastSeenDate))); //Head lore editing
                 skull.setItemMeta(meta);
                 inv.setItem(49, skull);
 
                 player.openInventory(inv);
+            }
+        }));
+    }
+
+    public void TeleportToDetectionCoordinates(Player player, int xrayerUUIDIndex)
+    {
+        Bukkit.getScheduler().runTaskAsynchronously(mainClassAccess, () -> mainClassAccess.mm.GetXrayerHandleLocation(UUIDs.get(xrayerUUIDIndex), new GetXrayerHandleLocationCallback()
+        {
+            @Override
+            public void onQueryDone(Location handlelocation)
+            {
+
+                player.teleport(handlelocation);
             }
         }));
     }

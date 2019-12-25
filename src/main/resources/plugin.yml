@@ -11,22 +11,13 @@ commands:
     aliases: axh
   AXH Reload:
     description: Will reload the plugin's configuration when specified as axh argument.
-    aliases: r
-#  AXH Suspicion:
-#    description: Shows your own, or specified player's suspicion level when specified as axh argument. (Development intended)
-#    aliases: s
   AXH ResetSuspicion:
     description: Resets your own, or specified player's suspicion level back to 0.
-    aliases: rs
   AXH Xrayer:
     description: Handles a player as xrayer. Should be used on someone you are sure is xraying, or for testing.
-    aliases: x
   AXH Vault:
     description: Opens the Xray Vault GUI showing players registered as xrayers, and, if configured, confiscated inventories when specified as axh argument.
-    aliases: v
   AXH Absolve:
     description: Removes xrayer from xrayer vault and restores belongings.
-    aliases: a
   AXH Purge:
     description: Removes xrayer from xrayer vault.
-    aliases: p

@@ -2,21 +2,30 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="2876e9f1-3d67-41cc-8b94-448fa827feed" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/src/main/java/es/mithrandircraft/antixrayheuristics/math/IntVector3.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_spigotmc_spigot_api_1_14_4_R0_1_SNAPSHOT.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_spigotmc_spigot_api_1_14_4_R0_1_SNAPSHOT.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/es/mithrandircraft/antixrayheuristics/callbacks/GetXrayerHandleLocationCallback.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/es/mithrandircraft/antixrayheuristics/AntiXrayHeuristics.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/es/mithrandircraft/antixrayheuristics/AntiXrayHeuristics.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/es/mithrandircraft/antixrayheuristics/MiningSession.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/es/mithrandircraft/antixrayheuristics/MiningSession.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/es/mithrandircraft/antixrayheuristics/MemoryManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/es/mithrandircraft/antixrayheuristics/MemoryManager.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/es/mithrandircraft/antixrayheuristics/PlaceholderManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/es/mithrandircraft/antixrayheuristics/PlaceholderManager.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/es/mithrandircraft/antixrayheuristics/XrayerHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/es/mithrandircraft/antixrayheuristics/XrayerHandler.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/es/mithrandircraft/antixrayheuristics/events/ClickEv.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/es/mithrandircraft/antixrayheuristics/events/ClickEv.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/es/mithrandircraft/antixrayheuristics/files/LocaleManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/es/mithrandircraft/antixrayheuristics/files/LocaleManager.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/es/mithrandircraft/antixrayheuristics/files/Xrayer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/es/mithrandircraft/antixrayheuristics/files/Xrayer.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/es/mithrandircraft/antixrayheuristics/gui/XrayerVault.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/es/mithrandircraft/antixrayheuristics/gui/XrayerVault.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/resources/config.yml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/config.yml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/resources/plugin.yml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/plugin.yml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/classes/config.yml" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/config.yml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/es/mithrandircraft/antixrayheuristics/AntiXrayHeuristics$1.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/es/mithrandircraft/antixrayheuristics/AntiXrayHeuristics$1.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/classes/es/mithrandircraft/antixrayheuristics/AntiXrayHeuristics.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/es/mithrandircraft/antixrayheuristics/AntiXrayHeuristics.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/es/mithrandircraft/antixrayheuristics/MiningSession.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/es/mithrandircraft/antixrayheuristics/MiningSession.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/es/mithrandircraft/antixrayheuristics/MemoryManager$1.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/es/mithrandircraft/antixrayheuristics/MemoryManager$1.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/es/mithrandircraft/antixrayheuristics/MemoryManager.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/es/mithrandircraft/antixrayheuristics/MemoryManager.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/es/mithrandircraft/antixrayheuristics/PlaceholderManager.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/es/mithrandircraft/antixrayheuristics/PlaceholderManager.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/es/mithrandircraft/antixrayheuristics/XrayerHandler.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/es/mithrandircraft/antixrayheuristics/XrayerHandler.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/classes/es/mithrandircraft/antixrayheuristics/commands/AXH.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/es/mithrandircraft/antixrayheuristics/commands/AXH.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/es/mithrandircraft/antixrayheuristics/events/ClickEv.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/es/mithrandircraft/antixrayheuristics/events/ClickEv.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/es/mithrandircraft/antixrayheuristics/files/LocaleManager.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/es/mithrandircraft/antixrayheuristics/files/LocaleManager.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/es/mithrandircraft/antixrayheuristics/files/Xrayer.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/es/mithrandircraft/antixrayheuristics/files/Xrayer.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/es/mithrandircraft/antixrayheuristics/gui/XrayerVault.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/es/mithrandircraft/antixrayheuristics/gui/XrayerVault.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/classes/plugin.yml" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/plugin.yml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/maven-archiver/pom.properties" beforeDir="false" afterPath="$PROJECT_DIR$/target/maven-archiver/pom.properties" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/maven-status/maven-compiler-plugin/compile/default-compile/createdFiles.lst" beforeDir="false" afterPath="$PROJECT_DIR$/target/maven-status/maven-compiler-plugin/compile/default-compile/createdFiles.lst" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -28,8 +37,8 @@
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
-        <option value="Interface" />
         <option value="Class" />
+        <option value="Interface" />
       </list>
     </option>
   </component>

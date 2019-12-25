@@ -22,12 +22,13 @@ public class PlaceholderManager {
         return toReplace;
     }
 
-    public static List<String> SubstituteXrayerDataPlaceholders(List<String> toReplace, String handledTimesAmount, String firstHandleTime)
+    public static List<String> SubstituteXrayerDataPlaceholders(List<String> toReplace, String handledTimesAmount, String firstHandleTime, String lastSeenTime)
     {
         for(int i = 0; i < toReplace.size(); i++)
         {
             toReplace.set(i, toReplace.get(i).replaceAll("\\{HandledTimesAmount}", handledTimesAmount));
             toReplace.set(i, toReplace.get(i).replaceAll("\\{FirstTimeDetected}", firstHandleTime));
+            toReplace.set(i, toReplace.get(i).replaceAll("\\{LastSeenTime}", lastSeenTime));
         }
 
         return toReplace;

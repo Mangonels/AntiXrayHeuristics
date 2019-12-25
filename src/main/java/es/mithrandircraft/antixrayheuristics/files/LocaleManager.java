@@ -62,7 +62,8 @@ public class LocaleManager {
         localeConfiguration.addDefault("PurgePlayerButtonDesc", Arrays.asList("This will delete this specific", "xrayer entry and inventory.", "Entries are irrecoverable", "after they have been purged."));
         localeConfiguration.addDefault("AbsolvePlayerButtonTitle", "&eAbsolve player");
         localeConfiguration.addDefault("AbsolvePlayerButtonDesc", Arrays.asList("Absolve this player,", "returning all confiscated", "items. If they don't fit in", "player's inventory, they", "will be dropped nearby.", "This also purges the player's", "entry in this vault."));
-        localeConfiguration.addDefault("PlayerHeadDesc", Arrays.asList("Consecutive times handled: {HandledTimesAmount}", "First time detected: {FirstTimeDetected}"));
+        localeConfiguration.addDefault("PlayerHeadDesc", Arrays.asList("Consecutive times handled: {HandledTimesAmount}", "First time detected: {FirstTimeDetected}", "Last seen: {LastSeenTime}"));
+        localeConfiguration.addDefault("PlayerHeadDescInspector", Arrays.asList("CLICK TO TELEPORT to detected location","Consecutive times handled: {HandledTimesAmount}", "First time detected: {FirstTimeDetected}", "Last seen: {LastSeenTime}"));
 
     }
 

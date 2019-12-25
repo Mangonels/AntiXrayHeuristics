@@ -37,10 +37,15 @@ public class ClickEv implements Listener {
                 {
                     return;
                 }
-                else if(e.getCurrentItem().getType() == Material.PLAYER_HEAD && e.getSlot() != 49) //Clicked on player head, and it wasn't located at slot 49 (which shows up in xrayer confiscated belongings inspector)
+                else if(e.getCurrentItem().getType() == Material.PLAYER_HEAD && e.getSlot() != 49) //Clicked on player head, and it WASN'T located at slot 49 (which shows up in xrayer confiscated belongings inspector)
                 {
                     //Open xrayer's confiscated inventory: The slot the item we clicked is on + the page we're on multiplied by the entry slots range (45 player heads) is equal to the xrayer's UUID position in the vault's XrayerUUID's array:
-                    mainClassAccess.vault.OpenXrayerConfiscatedInventory((Player) e.getView().getPlayer(), e.getRawSlot() + mainClassAccess.vault.GetPage(e.getWhoClicked().getName()) * 45);
+                    mainClassAccess.vault.OpenXrayerConfiscatedInventory((Player) e.getWhoClicked(), e.getRawSlot() + mainClassAccess.vault.GetPage(e.getWhoClicked().getName()) * 45);
+                }
+                else if(e.getCurrentItem().getType() == Material.PLAYER_HEAD && e.getSlot() == 49) //Clicked on player head, and it WAS located at slot 49 (which shows up in xrayer confiscated belongings inspector)
+                {
+                    //Teleport to player detection coordinates
+                    mainClassAccess.vault.TeleportToDetectionCoordinates((Player) e.getWhoClicked(),e.getRawSlot() + mainClassAccess.vault.GetPage(e.getWhoClicked().getName()) * 45);
                 }
                 else if(e.getCurrentItem().equals(mainClassAccess.vault.GetNextButtonFormat())) //Clicked next button
                 {

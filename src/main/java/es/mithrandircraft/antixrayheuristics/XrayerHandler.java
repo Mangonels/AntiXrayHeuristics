@@ -42,11 +42,10 @@ public class XrayerHandler {
             }
 
             //Store xrayer's data (and inventory only if configured):
-            final String name = xrayername;
-            Bukkit.getScheduler().runTaskAsynchronously(mainClass, () -> mainClass.mm.StorePlayerData(name, new StorePlayerDataCallback(){
+            Bukkit.getScheduler().runTaskAsynchronously(mainClass, () -> mainClass.mm.StorePlayerData(player, new StorePlayerDataCallback(){
                 @Override
                 public void onInsertDone(int handleTimes) {
-                    //The following are beter occuring AFTER xrayer data storing is done asynchronously, that's why they're in this callback:
+                    //The following are better occurring AFTER xrayer data storing is done asynchronously, that's why they're in this callback:
 
                     //Remove all of the xrayer's belongings if configured:
                     if (mainClass.getConfig().getBoolean("ClensePlayerItems")) {
