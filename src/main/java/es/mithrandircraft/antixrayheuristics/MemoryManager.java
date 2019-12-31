@@ -383,7 +383,7 @@ public class MemoryManager {
 
         //Deserialize obtained location string:
         String[] serializedPlayerLocation = result.getString("HandleLocation").split(",");
-        final Location deserializedHandleLocation = new Location(Bukkit.getWorld(serializedPlayerLocation[0]), Double.parseDouble(serializedPlayerLocation[1]), Double.parseDouble(serializedPlayerLocation[2]), Double.parseDouble(serializedPlayerLocation[3]));
+        final Location deserializedHandleLocation = new Location(Bukkit.getWorld(serializedPlayerLocation[0]), Double.parseDouble(serializedPlayerLocation[1]), Double.parseDouble(serializedPlayerLocation[2]), Double.parseDouble(serializedPlayerLocation[3]), Float.parseFloat(serializedPlayerLocation[4]), Float.parseFloat(serializedPlayerLocation[5]));
         Bukkit.getScheduler().runTask(mainClassAccess, new Runnable() { //Callback to main thread returns extracted data
             @Override
             public void run() {
@@ -589,7 +589,7 @@ public class MemoryManager {
 
                 //Deserialize obtained location string:
                 String[] serializedPlayerLocation = xrayer.HandleLocation.split(",");
-                final Location deserializedHandleLocation = new Location(Bukkit.getWorld(serializedPlayerLocation[0]), Double.parseDouble(serializedPlayerLocation[1]), Double.parseDouble(serializedPlayerLocation[2]), Double.parseDouble(serializedPlayerLocation[3]));
+                final Location deserializedHandleLocation = new Location(Bukkit.getWorld(serializedPlayerLocation[0]), Double.parseDouble(serializedPlayerLocation[1]), Double.parseDouble(serializedPlayerLocation[2]), Double.parseDouble(serializedPlayerLocation[3]), Float.parseFloat(serializedPlayerLocation[4]), Float.parseFloat(serializedPlayerLocation[5]));
                 Bukkit.getScheduler().runTask(mainClassAccess, new Runnable() { //Callback to main thread returns extracted data
                     @Override
                     public void run() {

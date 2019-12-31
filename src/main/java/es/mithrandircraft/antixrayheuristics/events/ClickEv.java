@@ -44,8 +44,10 @@ public class ClickEv implements Listener {
                 }
                 else if(e.getCurrentItem().getType() == Material.PLAYER_HEAD && e.getSlot() == 49) //Clicked on player head, and it WAS located at slot 49 (which shows up in xrayer confiscated belongings inspector)
                 {
-                    //Teleport to player detection coordinates
-                    mainClassAccess.vault.TeleportToDetectionCoordinates((Player) e.getWhoClicked(),e.getRawSlot() + mainClassAccess.vault.GetPage(e.getWhoClicked().getName()) * 45);
+                    //Teleport to player detection (HandleLocation) coordinates
+                    String viewerName = e.getWhoClicked().getName();
+                    String xrayerUUID = mainClassAccess.vault.GetInspectedXrayer(viewerName);
+                    mainClassAccess.vault.TeleportToDetectionCoordinates((Player) e.getWhoClicked(), xrayerUUID);
                 }
                 else if(e.getCurrentItem().equals(mainClassAccess.vault.GetNextButtonFormat())) //Clicked next button
                 {

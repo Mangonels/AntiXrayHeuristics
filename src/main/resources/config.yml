@@ -20,14 +20,20 @@ TrackWorlds:
 #The following values are to be balanced depending on the world's mineral density. Default values should be ok for
 #regular mineral generation. Set to 0 to ignore. Negative values will reduce player suspicion (not recommended).
 #There are various internal factors that may increment or ignore these weights depending on certain player behaviour.
-QuartzWeight: 9.0
-CoalWeight: 9.0
-IronWeight: 9.0
-GoldWeight: 14.0
-LapisWeight: 14.0
-RedstoneWeight: 12.0
+QuartzWeight: 5.0
+CoalWeight: 5.0
+IronWeight: 5.0
+GoldWeight: 7.0
+LapisWeight: 8.0
+RedstoneWeight: 7.0
 EmeraldWeight: 20.0
-DiamondWeight: 20.0
+DiamondWeight: 18.0
+
+#You can use these reducers for certain biomes where ores are more abundant. They are used internally in order to
+#reduce the total amount of suspicion applied according to the algorithm, when an ore is mined in a biome where it's
+#more frequent (Example: Gold (Mesa), Emerald (ExtremeHills)), the higher, the more weight is reduced:
+FinalEmeraldWeightDivisionReducer: 2
+FinalGoldWeightDivisionReducer: 4
 
 #For further efficiency, let AXH know how many adjacent blocks in any direction should be considered as part of
 #a same ore vein. Default should be ok for default vanilla ore generation, set to 0 or less to disable:

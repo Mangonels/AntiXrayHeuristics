@@ -11,9 +11,11 @@ C:\Users\dylan\Desktop\LocalRepo\AntiXrayHeuristics\src\main\java\es\mithrandirc
 C:\Users\dylan\Desktop\LocalRepo\AntiXrayHeuristics\src\main\java\es\mithrandircraft\antixrayheuristics\commands\ARGResetSuspicion.java
 C:\Users\dylan\Desktop\LocalRepo\AntiXrayHeuristics\src\main\java\es\mithrandircraft\antixrayheuristics\callbacks\GetXrayerBelongingsCallback.java
 C:\Users\dylan\Desktop\LocalRepo\AntiXrayHeuristics\src\main\java\es\mithrandircraft\antixrayheuristics\events\BlockBreakEv.java
+C:\Users\dylan\Desktop\LocalRepo\AntiXrayHeuristics\src\main\java\es\mithrandircraft\antixrayheuristics\callbacks\GetXrayerHandleLocationCallback.java
 C:\Users\dylan\Desktop\LocalRepo\AntiXrayHeuristics\src\main\java\es\mithrandircraft\antixrayheuristics\events\ClickEv.java
 C:\Users\dylan\Desktop\LocalRepo\AntiXrayHeuristics\src\main\java\es\mithrandircraft\antixrayheuristics\gui\PlayerViewInfo.java
 C:\Users\dylan\Desktop\LocalRepo\AntiXrayHeuristics\src\main\java\es\mithrandircraft\antixrayheuristics\MiningSession.java
+C:\Users\dylan\Desktop\LocalRepo\AntiXrayHeuristics\src\main\java\es\mithrandircraft\antixrayheuristics\math\IntVector3.java
 C:\Users\dylan\Desktop\LocalRepo\AntiXrayHeuristics\src\main\java\es\mithrandircraft\antixrayheuristics\commands\ARGAbsolvePlayer.java
 C:\Users\dylan\Desktop\LocalRepo\AntiXrayHeuristics\src\main\java\es\mithrandircraft\antixrayheuristics\commands\ARGReload.java
 C:\Users\dylan\Desktop\LocalRepo\AntiXrayHeuristics\src\main\java\es\mithrandircraft\antixrayheuristics\MemoryManager.java

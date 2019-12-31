@@ -43,6 +43,7 @@ public class LocaleManager {
         localeConfiguration.addDefault("AutoHandledPlayer", "{PlayerName} was automatically registered and handled for xraying.");
         localeConfiguration.addDefault("ForcedPageZero", "You where automatically sent to XrayerVault page 0 since one or various players where either purged or absolved.");
         localeConfiguration.addDefault("VaultRefreshed", "Showing latest xrayer information.");
+        localeConfiguration.addDefault("TeleportToHandleLocation", "You where teleported to the location where the player was handled for xrays.");
 
         //Persistent memory:
         localeConfiguration.addDefault("SQLDisconError", "There was an error when attempting to disconnect from SQL database.");
@@ -62,8 +63,8 @@ public class LocaleManager {
         localeConfiguration.addDefault("PurgePlayerButtonDesc", Arrays.asList("This will delete this specific", "xrayer entry and inventory.", "Entries are irrecoverable", "after they have been purged."));
         localeConfiguration.addDefault("AbsolvePlayerButtonTitle", "&eAbsolve player");
         localeConfiguration.addDefault("AbsolvePlayerButtonDesc", Arrays.asList("Absolve this player,", "returning all confiscated", "items. If they don't fit in", "player's inventory, they", "will be dropped nearby.", "This also purges the player's", "entry in this vault."));
-        localeConfiguration.addDefault("PlayerHeadDesc", Arrays.asList("Consecutive times handled: {HandledTimesAmount}", "First time detected: {FirstTimeDetected}", "Last seen: {LastSeenTime}"));
-        localeConfiguration.addDefault("PlayerHeadDescInspector", Arrays.asList("CLICK TO TELEPORT to detected location","Consecutive times handled: {HandledTimesAmount}", "First time detected: {FirstTimeDetected}", "Last seen: {LastSeenTime}"));
+        localeConfiguration.addDefault("PlayerHeadDesc", Arrays.asList("&aConsecutive times handled: &b{HandledTimesAmount}", "&aFirst time detected: &b{FirstTimeDetected}", "&aLast seen: &b{LastSeenTime}"));
+        localeConfiguration.addDefault("PlayerHeadDescInspector", Arrays.asList("&aCLICK TO TELEPORT to detected location","&aConsecutive times handled: &b{HandledTimesAmount}", "&aFirst time detected: &b{FirstTimeDetected}", "&aLast seen: &b{LastSeenTime}"));
 
     }
 

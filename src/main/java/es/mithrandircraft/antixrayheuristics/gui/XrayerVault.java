@@ -187,9 +187,9 @@ public class XrayerVault {
             currentUUID = UUID.fromString(iter.next());
             meta.setOwningPlayer(Bukkit.getServer().getOfflinePlayer(currentUUID)); //Assigns player to head owner
             meta.setDisplayName(Bukkit.getServer().getOfflinePlayer(currentUUID).getName()); //Head name editing
-            Date lastSeenDate = new Date(Bukkit.getServer().getPlayer(currentUUID).getLastPlayed()); //Getting the last played date as Date object, and then formatting it...
+            Date lastSeenDate = new Date(Bukkit.getServer().getOfflinePlayer(currentUUID).getLastPlayed()); //Getting the last played date as Date object, and then formatting it...
             DateFormat df = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
-            meta.setLore(PlaceholderManager.SubstituteXrayerDataPlaceholders(LocaleManager.get().getStringList("PlayerHeadDesc"), String.valueOf(handledAmounts.get(iteration)), firstHandledTimes.get(iteration), df.format(lastSeenDate))); //Head lore editing
+            meta.setLore(PlaceholderManager.SubstituteXrayerDataAndColorCodePlaceholders(LocaleManager.get().getStringList("PlayerHeadDesc"), String.valueOf(handledAmounts.get(iteration)), firstHandledTimes.get(iteration), df.format(lastSeenDate))); //Head lore editing
             skull.setItemMeta(meta);
             gui.setItem(iteration, skull);
             iteration++;
@@ -245,10 +245,9 @@ public class XrayerVault {
                 SkullMeta meta = (SkullMeta) skull.getItemMeta();
                 meta.setOwningPlayer(Bukkit.getServer().getOfflinePlayer(UUID.fromString(UUIDs.get(xrayerUUIDIndex)))); //Assigns player to head owner
                 meta.setDisplayName(Bukkit.getServer().getOfflinePlayer(UUID.fromString(UUIDs.get(xrayerUUIDIndex))).getName()); //Head name editing
-                Date lastSeenDate = new Date(Bukkit.getServer().getPlayer(UUIDs.get(xrayerUUIDIndex)).getLastPlayed()); //Getting the last played date as Date object, and then formatting it...
+                Date lastSeenDate = new Date(Bukkit.getServer().getOfflinePlayer(UUID.fromString(UUIDs.get(xrayerUUIDIndex))).getLastPlayed()); //Getting the last played date as Date object, and then formatting it...
                 DateFormat df = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
-                meta.setLore(Arrays.asList("Times handled: " + handledAmounts.get(xrayerUUIDIndex), "First detected: " + firstHandledTimes.get(xrayerUUIDIndex))); //Head lore editing
-                meta.setLore(PlaceholderManager.SubstituteXrayerDataPlaceholders(LocaleManager.get().getStringList("PlayerHeadDescInspector"), String.valueOf(handledAmounts.get(xrayerUUIDIndex)), firstHandledTimes.get(xrayerUUIDIndex), df.format(lastSeenDate))); //Head lore editing
+                meta.setLore(PlaceholderManager.SubstituteXrayerDataAndColorCodePlaceholders(LocaleManager.get().getStringList("PlayerHeadDescInspector"), String.valueOf(handledAmounts.get(xrayerUUIDIndex)), firstHandledTimes.get(xrayerUUIDIndex), df.format(lastSeenDate))); //Head lore editing
                 skull.setItemMeta(meta);
                 inv.setItem(49, skull);
 
@@ -257,15 +256,15 @@ public class XrayerVault {
         }));
     }
 
-    public void TeleportToDetectionCoordinates(Player player, int xrayerUUIDIndex)
+    public void TeleportToDetectionCoordinates(Player player, String xrayerUUID)
     {
-        Bukkit.getScheduler().runTaskAsynchronously(mainClassAccess, () -> mainClassAccess.mm.GetXrayerHandleLocation(UUIDs.get(xrayerUUIDIndex), new GetXrayerHandleLocationCallback()
+        Bukkit.getScheduler().runTaskAsynchronously(mainClassAccess, () -> mainClassAccess.mm.GetXrayerHandleLocation(xrayerUUID, new GetXrayerHandleLocationCallback()
         {
             @Override
             public void onQueryDone(Location handlelocation)
             {
-
                 player.teleport(handlelocation);
+                player.sendMessage(LocaleManager.get().getString("MessagesPrefix") + " " + LocaleManager.get().getString("TeleportToHandleLocation"));
             }
         }));
     }
