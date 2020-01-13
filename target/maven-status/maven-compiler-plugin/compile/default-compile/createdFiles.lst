@@ -15,6 +15,7 @@ es\mithrandircraft\antixrayheuristics\events\ClickEv.class
 es\mithrandircraft\antixrayheuristics\files\Xrayer.class
 es\mithrandircraft\antixrayheuristics\events\BlockBreakEv.class
 es\mithrandircraft\antixrayheuristics\events\InventoryCloseEv.class
+es\mithrandircraft\antixrayheuristics\events\PlayerChangedWorldEv.class
 es\mithrandircraft\antixrayheuristics\MemoryManager$11.class
 es\mithrandircraft\antixrayheuristics\PlaceholderManager.class
 es\mithrandircraft\antixrayheuristics\MemoryManager$6.class

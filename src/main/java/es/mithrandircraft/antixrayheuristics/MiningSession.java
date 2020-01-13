@@ -15,9 +15,9 @@ public class MiningSession { //Contains heuristics tracked per player
     //General distance/time algorithm variables:
     private float suspicionLevel = 0.0f; //Level of suspicion for the player
 
-    Material lastMinedOre = null; //Last mined Material ore name
+    private Material lastMinedOre = null; //Last mined Material ore name
 
-    Location lastMinedOreLocation = null; //Last mined Material ore location
+    private Location lastMinedOreLocation = null; //Last mined Material ore location
 
     int minedNonOreBlocksStreak = 0; //Tracks how many non-ore blocks have been mined in streak.
 
@@ -35,14 +35,23 @@ public class MiningSession { //Contains heuristics tracked per player
         suspicionLevel = l;
     }
     void AddSuspicionLevel(float i) { suspicionLevel += i; }
+    public void SetLastMinedOreData(Material m, Location l)
+    {
+        lastMinedOre = m;
+        lastMinedOreLocation = l;
+    }
+    Material GetLastMinedOre() { return lastMinedOre; }
+    Location GetLastMinedOreLocation() { return lastMinedOreLocation; }
 
     //Mined blocks trail tracking algorithm methods:
     int GetLastBlockCoordsStoreCounter(){ return counterSinceLastBlockCoordsStore; }
     void CycleBlockCoordsStoreCounter(){ counterSinceLastBlockCoordsStore = (counterSinceLastBlockCoordsStore + 1) % 4; }
+    public void ResetBlockCoordsStoreCounter(){ counterSinceLastBlockCoordsStore = 0; }
     void CycleNextCoordsStorePos(){ nextCoordsStorePos = (nextCoordsStorePos + 1) % 10; }
     int GetNextCoordsStorePos(){ return nextCoordsStorePos; }
     IntVector3 GetMinedBlocksTrailArrayPos(int pos) { return minedBlocksTrailCoords[pos]; }
     //void SetMinedBlocksTrailArrayPos(int pos, int x, int y, int z) { minedBlocksTrailCoords[pos] = new IntVector3(x, y, z); }
     void SetMinedBlocksTrailArrayPos(int pos, Location l) { minedBlocksTrailCoords[pos] = new IntVector3(l); }
-    void ResetBlocksTrailArray() { Arrays.fill(minedBlocksTrailCoords, null); }
+    public void ResetBlocksTrailArray() { Arrays.fill(minedBlocksTrailCoords, null); }
+
 }

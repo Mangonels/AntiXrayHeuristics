@@ -6,10 +6,7 @@ package es.mithrandircraft.antixrayheuristics;
 
 import es.mithrandircraft.antixrayheuristics.commands.AXH;
 
-import es.mithrandircraft.antixrayheuristics.events.BlockBreakEv;
-import es.mithrandircraft.antixrayheuristics.events.ClickEv;
-import es.mithrandircraft.antixrayheuristics.events.InventoryCloseEv;
-import es.mithrandircraft.antixrayheuristics.events.ItemDragEv;
+import es.mithrandircraft.antixrayheuristics.events.*;
 import es.mithrandircraft.antixrayheuristics.files.LocaleManager;
 import es.mithrandircraft.antixrayheuristics.gui.XrayerVault;
 import org.bukkit.Bukkit;
@@ -97,6 +94,7 @@ public final class AntiXrayHeuristics extends JavaPlugin implements Listener {
         getServer().getPluginManager().registerEvents(new ClickEv(this), this);
         getServer().getPluginManager().registerEvents(new ItemDragEv(), this);
         getServer().getPluginManager().registerEvents(new InventoryCloseEv(this), this);
+        getServer().getPluginManager().registerEvents(new PlayerChangedWorldEv(this), this);
 
         //Runnables:
         MainRunnable();
@@ -242,59 +240,53 @@ public final class AntiXrayHeuristics extends JavaPlugin implements Listener {
             //Relevant ores mining triggers:
             else if (m == Material.COAL_ORE) {
                 //Check that it's not the same block ore material as the last mined block's. If it is, it will execute "||" statement which will verify the distance from last same mined block material to new mined block is not less than configured vein size:
-                if(s.lastMinedOre != m || s.lastMinedOreLocation.distance(ev.getBlock().getLocation()) > getConfig().getInt("ConsiderAdjacentWithinDistance"))
+                if(s.GetLastMinedOre() != m || s.GetLastMinedOreLocation().distance(ev.getBlock().getLocation()) > getConfig().getInt("ConsiderAdjacentWithinDistance"))
                     //Check if enough non-ore blocks have been previously mined in order to account for this ore (exposed ores fp prevention):
                     if(s.minedNonOreBlocksStreak > getConfig().getInt("MinimumBlocksMinedToNextVein")) {
                         //We got to an ore over threshold, so we analyze our non-ores mined trail and get weight based on that:
                         s.AddSuspicionLevel(GetWeightFromAnalyzingTrail(ev, s, getConfig().getLong("CoalWeight")));
                         s.minedNonOreBlocksStreak = 0; //Resets previously mined blocks counter
                     }
-                s.lastMinedOre = m;
-                s.lastMinedOreLocation = ev.getBlock().getLocation();
+                s.SetLastMinedOreData(m, ev.getBlock().getLocation());
             } else if (m == Material.REDSTONE_ORE) {
-                if (s.lastMinedOre != m || s.lastMinedOreLocation.distance(ev.getBlock().getLocation()) > getConfig().getInt("ConsiderAdjacentWithinDistance"))
+                if (s.GetLastMinedOre() != m || s.GetLastMinedOreLocation().distance(ev.getBlock().getLocation()) > getConfig().getInt("ConsiderAdjacentWithinDistance"))
                     if(s.minedNonOreBlocksStreak > getConfig().getInt("MinimumBlocksMinedToNextVein")) {
                         s.AddSuspicionLevel(GetWeightFromAnalyzingTrail(ev, s, getConfig().getLong("RedstoneWeight")));
                         s.minedNonOreBlocksStreak = 0;
                     }
-                s.lastMinedOre = m;
-                s.lastMinedOreLocation = ev.getBlock().getLocation();
+                s.SetLastMinedOreData(m, ev.getBlock().getLocation());
             } else if (m == Material.IRON_ORE) {
-                if (s.lastMinedOre != m || s.lastMinedOreLocation.distance(ev.getBlock().getLocation()) > getConfig().getInt("ConsiderAdjacentWithinDistance"))
+                if (s.GetLastMinedOre() != m || s.GetLastMinedOreLocation().distance(ev.getBlock().getLocation()) > getConfig().getInt("ConsiderAdjacentWithinDistance"))
                     if(s.minedNonOreBlocksStreak > getConfig().getInt("MinimumBlocksMinedToNextVein")) {
                         s.AddSuspicionLevel(GetWeightFromAnalyzingTrail(ev, s, getConfig().getLong("IronWeight")));
                         s.minedNonOreBlocksStreak = 0;
                     }
-                s.lastMinedOre = m;
-                s.lastMinedOreLocation = ev.getBlock().getLocation();
+                s.SetLastMinedOreData(m, ev.getBlock().getLocation());
             } else if (m == Material.GOLD_ORE) {
-                if (s.lastMinedOre != m || s.lastMinedOreLocation.distance(ev.getBlock().getLocation()) > getConfig().getInt("ConsiderAdjacentWithinDistance"))
+                if (s.GetLastMinedOre() != m || s.GetLastMinedOreLocation().distance(ev.getBlock().getLocation()) > getConfig().getInt("ConsiderAdjacentWithinDistance"))
                     if (s.minedNonOreBlocksStreak > getConfig().getInt("MinimumBlocksMinedToNextVein")) {
                         //Weight according to biome frequency:
                         if(CheckGoldBiome(ev)) s.AddSuspicionLevel(GetWeightFromAnalyzingTrail(ev, s, getConfig().getLong("GoldWeight")) / getConfig().getLong("FinalGoldWeightDivisionReducer") );
                         else s.AddSuspicionLevel(GetWeightFromAnalyzingTrail(ev, s, getConfig().getLong("GoldWeight")));
                         s.minedNonOreBlocksStreak = 0;
                     }
-                s.lastMinedOre = m;
-                s.lastMinedOreLocation = ev.getBlock().getLocation();
+                s.SetLastMinedOreData(m, ev.getBlock().getLocation());
             } else if (m == Material.NETHER_QUARTZ_ORE) {
-                if (s.lastMinedOre != m || s.lastMinedOreLocation.distance(ev.getBlock().getLocation()) > getConfig().getInt("ConsiderAdjacentWithinDistance"))
+                if (s.GetLastMinedOre() != m || s.GetLastMinedOreLocation().distance(ev.getBlock().getLocation()) > getConfig().getInt("ConsiderAdjacentWithinDistance"))
                     if (s.minedNonOreBlocksStreak > getConfig().getInt("MinimumBlocksMinedToNextVein")) {
                         s.AddSuspicionLevel(GetWeightFromAnalyzingTrail(ev, s, getConfig().getLong("QuartzWeight")));
                         s.minedNonOreBlocksStreak = 0;
                     }
-                s.lastMinedOre = m;
-                s.lastMinedOreLocation = ev.getBlock().getLocation();
+                s.SetLastMinedOreData(m, ev.getBlock().getLocation());
             } else if (m == Material.LAPIS_ORE) {
-                if (s.lastMinedOre != m || s.lastMinedOreLocation.distance(ev.getBlock().getLocation()) > getConfig().getInt("ConsiderAdjacentWithinDistance"))
+                if (s.GetLastMinedOre() != m || s.GetLastMinedOreLocation().distance(ev.getBlock().getLocation()) > getConfig().getInt("ConsiderAdjacentWithinDistance"))
                     if(s.minedNonOreBlocksStreak > getConfig().getInt("MinimumBlocksMinedToNextVein")) {
                         s.AddSuspicionLevel(GetWeightFromAnalyzingTrail(ev, s, getConfig().getLong("LapisWeight")));
                         s.minedNonOreBlocksStreak = 0;
                     }
-                s.lastMinedOre = m;
-                s.lastMinedOreLocation = ev.getBlock().getLocation();
+                s.SetLastMinedOreData(m, ev.getBlock().getLocation());
             } else if (m == Material.DIAMOND_ORE) {
-                if (s.lastMinedOre != m || s.lastMinedOreLocation.distance(ev.getBlock().getLocation()) > getConfig().getInt("ConsiderAdjacentWithinDistance"))
+                if (s.GetLastMinedOre() != m || s.GetLastMinedOreLocation().distance(ev.getBlock().getLocation()) > getConfig().getInt("ConsiderAdjacentWithinDistance"))
                     if (s.minedNonOreBlocksStreak > getConfig().getInt("MinimumBlocksMinedToNextVein")) {
                         if (s.minedNonOreBlocksStreak > usualEncounterThreshold)
                             s.AddSuspicionLevel(GetWeightFromAnalyzingTrail(ev, s, getConfig().getLong("DiamondWeight"))); //Updates suspicion level normally.
@@ -302,10 +294,9 @@ public final class AntiXrayHeuristics extends JavaPlugin implements Listener {
 
                         s.minedNonOreBlocksStreak = 0;
                     }
-                s.lastMinedOre = m;
-                s.lastMinedOreLocation = ev.getBlock().getLocation();
+                s.SetLastMinedOreData(m, ev.getBlock().getLocation());
             } else if (m == Material.EMERALD_ORE) {
-                if(s.lastMinedOre != m || s.lastMinedOreLocation.distance(ev.getBlock().getLocation()) > getConfig().getInt("ConsiderAdjacentWithinDistance"))
+                if(s.GetLastMinedOre() != m || s.GetLastMinedOreLocation().distance(ev.getBlock().getLocation()) > getConfig().getInt("ConsiderAdjacentWithinDistance"))
                     if(s.minedNonOreBlocksStreak > getConfig().getInt("MinimumBlocksMinedToNextVein")) {
                         if(s.minedNonOreBlocksStreak > usualEncounterThreshold) {
                             //Weight according to biome frequency:
@@ -320,8 +311,7 @@ public final class AntiXrayHeuristics extends JavaPlugin implements Listener {
 
                         s.minedNonOreBlocksStreak = 0;
                     }
-                s.lastMinedOre = m;
-                s.lastMinedOreLocation = ev.getBlock().getLocation();
+                s.SetLastMinedOreData(m, ev.getBlock().getLocation());
 
             } else { //Any other block during mining session
                 s.minedNonOreBlocksStreak++;
