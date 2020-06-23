@@ -5,7 +5,6 @@
 package es.mithrandircraft.antixrayheuristics.gui;
 
 import es.mithrandircraft.antixrayheuristics.PlaceholderManager;
-import es.mithrandircraft.antixrayheuristics.SpigotVersion;
 import es.mithrandircraft.antixrayheuristics.callbacks.GetAllBaseXrayerDataCallback;
 import es.mithrandircraft.antixrayheuristics.callbacks.GetXrayerBelongingsCallback;
 import es.mithrandircraft.antixrayheuristics.callbacks.GetXrayerHandleLocationCallback;
@@ -50,29 +49,14 @@ public class XrayerVault {
     {
         this.mainClassAccess = main;
 
-        SpigotVersion.Versions version = SpigotVersion.Versions.VERSION_1_13;
-        if(mainClassAccess.vc.version.GetValue() >= version.GetValue()) //Post 1.13 item ID's ("Modern")
-        {
-            separator = new ItemStack(Material.GRAY_STAINED_GLASS_PANE);
-            nextButton = new ItemStack(Material.GREEN_STAINED_GLASS_PANE);
-            prevButton = new ItemStack(Material.GREEN_STAINED_GLASS_PANE);
-            purgeButton = new ItemStack(Material.RED_STAINED_GLASS_PANE);
-            refreshButton = new ItemStack(Material.BLUE_STAINED_GLASS_PANE);
-            backButton = new ItemStack(Material.GREEN_STAINED_GLASS_PANE);
-            purgePlayerButton = new ItemStack(Material.RED_STAINED_GLASS_PANE);
-            absolvePlayerButton = new ItemStack(Material.YELLOW_STAINED_GLASS_PANE);
-        } //Pre 1.13 item ID's ("Legacy")
-        else
-        {
-/*          separator = new ItemStack(Material. GRAY_STAINED_GLASS_PANE);
-            nextButton = new ItemStack(Material.GREEN_STAINED_GLASS_PANE);
-            prevButton = new ItemStack(Material.GREEN_STAINED_GLASS_PANE);
-            purgeButton = new ItemStack(Material.RED_STAINED_GLASS_PANE);
-            refreshButton = new ItemStack(Material.BLUE_STAINED_GLASS_PANE);
-            backButton = new ItemStack(Material.GREEN_STAINED_GLASS_PANE);
-            purgePlayerButton = new ItemStack(Material.RED_STAINED_GLASS_PANE);
-            absolvePlayerButton = new ItemStack(Material.YELLOW_STAINED_GLASS_PANE);*/
-        }
+        separator = new ItemStack(Material.GRAY_STAINED_GLASS_PANE);
+        nextButton = new ItemStack(Material.GREEN_STAINED_GLASS_PANE);
+        prevButton = new ItemStack(Material.GREEN_STAINED_GLASS_PANE);
+        purgeButton = new ItemStack(Material.RED_STAINED_GLASS_PANE);
+        refreshButton = new ItemStack(Material.BLUE_STAINED_GLASS_PANE);
+        backButton = new ItemStack(Material.GREEN_STAINED_GLASS_PANE);
+        purgePlayerButton = new ItemStack(Material.RED_STAINED_GLASS_PANE);
+        absolvePlayerButton = new ItemStack(Material.YELLOW_STAINED_GLASS_PANE);
 
         ItemMeta separator_meta = separator.getItemMeta();
         separator_meta.setDisplayName(" ");

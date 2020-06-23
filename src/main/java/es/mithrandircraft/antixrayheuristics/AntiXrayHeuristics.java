@@ -32,9 +32,6 @@ public final class AntiXrayHeuristics extends JavaPlugin implements Listener {
     //Persistent memory storage manager:
     public MemoryManager mm = new MemoryManager(this);
 
-    //Spigot version checker:
-    public SpigotVersion vc = new SpigotVersion();
-
     //Hardcoded heuristics:
 
     private final float suspicionLevelThreshold = 100f; //Suspicion Threshold value above which we consider a player as Xraying.

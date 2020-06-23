@@ -2,6 +2,7 @@
 // Copyright © Dylan Calaf 2019 - AntiXrayHeuristics
 //--------------------------------------------------------------------
 
+/*
 package es.mithrandircraft.antixrayheuristics;
 
 import org.bukkit.Bukkit;
@@ -11,14 +12,13 @@ import java.util.Map;
 
 
 public class SpigotVersion {
-    /* Getting Versions enum from a representing integer:
-    Versions version = Versions.valueOf(112); // version = Versions.VERSION_1_12
-    */
+    //Getting Versions enum from a representing integer:
+    //Versions version = Versions.valueOf(112); // version = Versions.VERSION_1_12
 
-    /* Getting Versions integer ID from a representing enum:
-    Versions version = Versions.VERSION_1_12;
-    int versionInt = version.getValue(); // versionInt = 112
-    */
+    //Getting Versions integer ID from a representing enum:
+    //Versions version = Versions.VERSION_1_12;
+    //int versionInt = version.getValue(); // versionInt = 112
+
     public enum Versions { VERSION_UNKNOWN(0), VERSION_1_12(112), VERSION_1_13(113), VERSION_1_14(114), VERSION_1_15(115), VERSION_1_16(116);
 
         private int value;
@@ -92,3 +92,4 @@ public class SpigotVersion {
         else return Versions.VERSION_UNKNOWN;
     }
 }
+*/
