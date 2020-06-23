@@ -11,6 +11,7 @@ import es.mithrandircraft.antixrayheuristics.files.LocaleManager;
 import es.mithrandircraft.antixrayheuristics.files.Xrayer;
 import org.apache.commons.dbcp.BasicDataSource;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -239,7 +240,7 @@ public class MemoryManager {
 
                 create.executeUpdate();
 
-                System.out.println(LocaleManager.get().getString("MessagesPrefix") + " " + LocaleManager.get().getString("SQLTableFoundOrCreated"));
+                System.out.println(ChatColor.translateAlternateColorCodes('&',LocaleManager.get().getString("MessagesPrefix")) + " " + ChatColor.translateAlternateColorCodes('&', LocaleManager.get().getString("SQLTableFoundOrCreated")));
             }
         } catch (SQLException e) {
             System.err.print(e);

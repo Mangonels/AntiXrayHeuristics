@@ -7,6 +7,7 @@ package es.mithrandircraft.antixrayheuristics;
 import es.mithrandircraft.antixrayheuristics.callbacks.StorePlayerDataCallback;
 import es.mithrandircraft.antixrayheuristics.files.LocaleManager;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Item;
@@ -23,7 +24,7 @@ public class XrayerHandler {
     private static void XrayerWarn(String xrayername) //Sends a warning message to an xrayer by name
     {
         for (Player player : Bukkit.getOnlinePlayers()) {
-            if(player.hasPermission("AXH.XrayerWarning")) player.sendMessage(PlaceholderManager.SubstitutePlayerNamePlaceholders(LocaleManager.get().getString("MessagesPrefix") + " " + LocaleManager.get().getString("AutoHandledPlayer"), xrayername));
+            if(player.hasPermission("AXH.XrayerWarning")) player.sendMessage(ChatColor.translateAlternateColorCodes('&', LocaleManager.get().getString("MessagesPrefix") + " " + PlaceholderManager.SubstitutePlayerNameAndColorCodePlaceholders(LocaleManager.get().getString("AutoHandledPlayer"), xrayername)));
         }
     }
 
@@ -37,7 +38,7 @@ public class XrayerHandler {
         {
             //Send message to xrayer if configured:
             if (mainClass.getConfig().getBoolean("SendMessageToPlayer")) {
-                String m = mainClass.getConfig().getString("MessageToSend");
+                String m = mainClass.getConfig().getString(ChatColor.translateAlternateColorCodes('&', "MessageToSend"));
                 if (m != null) player.sendMessage(m);
             }
 
@@ -73,12 +74,12 @@ public class XrayerHandler {
             }
 
             //Console message:
-            System.out.println(LocaleManager.get().getString("MessagesPrefix") + " " + PlaceholderManager.SubstitutePlayerNamePlaceholders(LocaleManager.get().getString("AutoHandledPlayer") , xrayername));
+            System.out.println(ChatColor.translateAlternateColorCodes('&', LocaleManager.get().getString("MessagesPrefix")) + " " + PlaceholderManager.SubstitutePlayerNameAndColorCodePlaceholders(LocaleManager.get().getString("AutoHandledPlayer") , xrayername));
 
             //Warn players with permission:
             if(mainClass.getConfig().getBoolean("TellPlayersWithPermission")) XrayerWarn(xrayername);
         }
-        else{ System.out.println(LocaleManager.get().getString("MessagesPrefix") + " " + PlaceholderManager.SubstitutePlayerNamePlaceholders(LocaleManager.get().getString("PlayerNotOnlineOnHandle") , xrayername)); }
+        else{ System.out.println(ChatColor.translateAlternateColorCodes('&', LocaleManager.get().getString("MessagesPrefix")) + " " + PlaceholderManager.SubstitutePlayerNameAndColorCodePlaceholders(LocaleManager.get().getString("PlayerNotOnlineOnHandle") , xrayername)); }
     }
 
     private static void DropItemAtPlayerLocation(ItemStack item, Player p) //Drops items at player location
@@ -113,11 +114,11 @@ public class XrayerHandler {
             if(target.getEquipment().getHelmet() == null) target.getEquipment().setHelmet(possessions[37]);
             else DropItemAtPlayerLocation(possessions[37], target);
 
-            System.out.print(LocaleManager.get().getString("MessagesPrefix") + target.getName() + LocaleManager.get().getString("AbsolvedPlayer"));
+            System.out.print(ChatColor.translateAlternateColorCodes('&', LocaleManager.get().getString("MessagesPrefix")) + target.getName() + LocaleManager.get().getString("AbsolvedPlayer"));
 
             //Execute configured commands:
             for (int i = 0; i < mainClassAccess.getConfig().getStringList("CommandsExecutedOnPlayerAbsolved").size(); i++) {
-                Bukkit.dispatchCommand(Bukkit.getConsoleSender(), PlaceholderManager.SubstitutePlayerNamePlaceholders(mainClassAccess.getConfig().getStringList("CommandsExecutedOnPlayerAbsolved").get(i), target.getName()));
+                Bukkit.dispatchCommand(Bukkit.getConsoleSender(), PlaceholderManager.SubstitutePlayerNameAndColorCodePlaceholders(mainClassAccess.getConfig().getStringList("CommandsExecutedOnPlayerAbsolved").get(i), target.getName()));
             }
 
             return true;

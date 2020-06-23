@@ -8,6 +8,7 @@ import es.mithrandircraft.antixrayheuristics.XrayerHandler;
 import es.mithrandircraft.antixrayheuristics.callbacks.GetXrayerBelongingsCallback;
 import es.mithrandircraft.antixrayheuristics.files.LocaleManager;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -64,7 +65,7 @@ public class ClickEv implements Listener {
                     if(e.getWhoClicked().hasPermission("AXH.Vault.Purge")) {
                         mainClassAccess.vault.PurgeAllXrayersAndRefreshVault();
                     }
-                    else e.getView().getPlayer().sendMessage(LocaleManager.get().getString("NoPermissionForCommand"));
+                    else e.getView().getPlayer().sendMessage(ChatColor.translateAlternateColorCodes('&', LocaleManager.get().getString("NoPermissionForCommand")));
                 }
                 else if(e.getCurrentItem().equals(mainClassAccess.vault.GetRefreshButtonFormat())) //Clicked refresh vault button
                 {
@@ -81,7 +82,7 @@ public class ClickEv implements Listener {
                     if(e.getWhoClicked().hasPermission("AXH.Commands.PurgePlayer")) {
                         mainClassAccess.vault.XrayerDataRemover(e.getWhoClicked().getName(), true);
                     }
-                    else e.getView().getPlayer().sendMessage(LocaleManager.get().getString("NoPermissionForCommand"));
+                    else e.getView().getPlayer().sendMessage(ChatColor.translateAlternateColorCodes('&', LocaleManager.get().getString("NoPermissionForCommand")));
                 }
                 else if(e.getCurrentItem().equals(mainClassAccess.vault.GetAbsolvePlayerButtonFormat())) //Clicked absolve player button
                 {
@@ -97,11 +98,11 @@ public class ClickEv implements Listener {
                                 if (XrayerHandler.PlayerAbsolver(xrayerUUID, belongings, mainClassAccess)) {
                                     mainClassAccess.vault.XrayerDataRemover(viewerName, true);
                                 }
-                                else e.getWhoClicked().sendMessage(LocaleManager.get().getString("MessagesPrefix") + " " + LocaleManager.get().getString("PlayerNotOnlineOnAbsolution"));
+                                else e.getWhoClicked().sendMessage(ChatColor.translateAlternateColorCodes('&',LocaleManager.get().getString("MessagesPrefix")) + " " + ChatColor.translateAlternateColorCodes('&', LocaleManager.get().getString("PlayerNotOnlineOnAbsolution")));
                             }
                         }));
                     }
-                    else e.getView().getPlayer().sendMessage(LocaleManager.get().getString("NoPermissionForCommand"));
+                    else e.getView().getPlayer().sendMessage(ChatColor.translateAlternateColorCodes('&', LocaleManager.get().getString("NoPermissionForCommand")));
                 }
             }
             else if (e.getAction().equals(InventoryAction.MOVE_TO_OTHER_INVENTORY)) //This check stops item stack movement with shift between inventories

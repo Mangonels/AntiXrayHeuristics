@@ -6,10 +6,12 @@ package es.mithrandircraft.antixrayheuristics;
 
 import es.mithrandircraft.antixrayheuristics.commands.AXH;
 
+import es.mithrandircraft.antixrayheuristics.commands.AXHAutoCompleter;
 import es.mithrandircraft.antixrayheuristics.events.*;
 import es.mithrandircraft.antixrayheuristics.files.LocaleManager;
 import es.mithrandircraft.antixrayheuristics.gui.XrayerVault;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.block.Biome;
 import org.bukkit.event.Listener;
@@ -29,6 +31,9 @@ public final class AntiXrayHeuristics extends JavaPlugin implements Listener {
 
     //Persistent memory storage manager:
     public MemoryManager mm = new MemoryManager(this);
+
+    //Spigot version checker:
+    public SpigotVersion vc = new SpigotVersion();
 
     //Hardcoded heuristics:
 
@@ -69,6 +74,8 @@ public final class AntiXrayHeuristics extends JavaPlugin implements Listener {
 
         //Commands:
         getCommand("AXH").setExecutor(new AXH(this));
+        //Tab completer:
+        getCommand("AXH").setTabCompleter(new AXHAutoCompleter());
 
         //Sql connection?:
         if(getConfig().getString("StorageType").equals("MYSQL"))
@@ -86,7 +93,7 @@ public final class AntiXrayHeuristics extends JavaPlugin implements Listener {
         //Create json file if not exists?:
         else if(getConfig().getString("StorageType").equals("JSON"))
         {
-            if(mm.JSONFileCreateIfNotExists()) System.out.println(LocaleManager.get().getString("MessagesPrefix") + " " + LocaleManager.get().getString("JSONFileCreated"));
+            if(mm.JSONFileCreateIfNotExists()) System.out.println(ChatColor.translateAlternateColorCodes('&', LocaleManager.get().getString("MessagesPrefix")) + " " + ChatColor.translateAlternateColorCodes('&', LocaleManager.get().getString("JSONFileCreated")));
         }
 
         //Event registring:

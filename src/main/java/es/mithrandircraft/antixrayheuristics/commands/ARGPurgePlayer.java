@@ -7,6 +7,7 @@ package es.mithrandircraft.antixrayheuristics.commands;
 import es.mithrandircraft.antixrayheuristics.AntiXrayHeuristics;
 import es.mithrandircraft.antixrayheuristics.files.LocaleManager;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -20,16 +21,16 @@ public class ARGPurgePlayer {
                 Player target = Bukkit.getServer().getPlayer(arg);
                 if (target != null) { //Player online
                     mainClass.vault.XrayerDataRemover(arg, false);
-                    sender.sendMessage(LocaleManager.get().getString("PlayerDataPurged"));
+                    sender.sendMessage(ChatColor.translateAlternateColorCodes('&', LocaleManager.get().getString("PlayerDataPurged")));
                 }
-                else player.sendMessage(LocaleManager.get().getString("MessagesPrefix") + " " + LocaleManager.get().getString("PurgeCommandLimit"));
-            } else player.sendMessage(LocaleManager.get().getString("NoPermissionForCommand"));
+                else player.sendMessage(ChatColor.translateAlternateColorCodes('&',LocaleManager.get().getString("MessagesPrefix")) + " " + ChatColor.translateAlternateColorCodes('&', LocaleManager.get().getString("PurgeCommandLimit")));
+            } else player.sendMessage(ChatColor.translateAlternateColorCodes('&', LocaleManager.get().getString("NoPermissionForCommand")));
         } else { //Is console
             Player target = Bukkit.getServer().getPlayer(arg);
             if (target != null) {
                 mainClass.vault.XrayerDataRemover(arg, false);
             }
-            else System.out.print(LocaleManager.get().getString("MessagesPrefix") + " " + LocaleManager.get().getString("PurgeCommandLimit"));
+            else System.out.print(ChatColor.translateAlternateColorCodes('&',LocaleManager.get().getString("MessagesPrefix")) + " " + ChatColor.translateAlternateColorCodes('&', LocaleManager.get().getString("PurgeCommandLimit")));
         }
     }
 }

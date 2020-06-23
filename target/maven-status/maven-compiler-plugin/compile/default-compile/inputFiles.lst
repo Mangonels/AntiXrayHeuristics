@@ -16,6 +16,7 @@ C:\Users\dylan\Desktop\LocalRepo\AntiXrayHeuristics\src\main\java\es\mithrandirc
 C:\Users\dylan\Desktop\LocalRepo\AntiXrayHeuristics\src\main\java\es\mithrandircraft\antixrayheuristics\events\ClickEv.java
 C:\Users\dylan\Desktop\LocalRepo\AntiXrayHeuristics\src\main\java\es\mithrandircraft\antixrayheuristics\gui\PlayerViewInfo.java
 C:\Users\dylan\Desktop\LocalRepo\AntiXrayHeuristics\src\main\java\es\mithrandircraft\antixrayheuristics\MiningSession.java
+C:\Users\dylan\Desktop\LocalRepo\AntiXrayHeuristics\src\main\java\es\mithrandircraft\antixrayheuristics\commands\AXHAutoCompleter.java
 C:\Users\dylan\Desktop\LocalRepo\AntiXrayHeuristics\src\main\java\es\mithrandircraft\antixrayheuristics\math\IntVector3.java
 C:\Users\dylan\Desktop\LocalRepo\AntiXrayHeuristics\src\main\java\es\mithrandircraft\antixrayheuristics\commands\ARGAbsolvePlayer.java
 C:\Users\dylan\Desktop\LocalRepo\AntiXrayHeuristics\src\main\java\es\mithrandircraft\antixrayheuristics\commands\ARGReload.java
@@ -25,6 +26,7 @@ C:\Users\dylan\Desktop\LocalRepo\AntiXrayHeuristics\src\main\java\es\mithrandirc
 C:\Users\dylan\Desktop\LocalRepo\AntiXrayHeuristics\src\main\java\es\mithrandircraft\antixrayheuristics\PlaceholderManager.java
 C:\Users\dylan\Desktop\LocalRepo\AntiXrayHeuristics\src\main\java\es\mithrandircraft\antixrayheuristics\commands\ARGXrayer.java
 C:\Users\dylan\Desktop\LocalRepo\AntiXrayHeuristics\src\main\java\es\mithrandircraft\antixrayheuristics\files\LocaleManager.java
+C:\Users\dylan\Desktop\LocalRepo\AntiXrayHeuristics\src\main\java\es\mithrandircraft\antixrayheuristics\SpigotVersion.java
 C:\Users\dylan\Desktop\LocalRepo\AntiXrayHeuristics\src\main\java\es\mithrandircraft\antixrayheuristics\events\InventoryCloseEv.java
 C:\Users\dylan\Desktop\LocalRepo\AntiXrayHeuristics\src\main\java\es\mithrandircraft\antixrayheuristics\gui\XrayerVault.java
 C:\Users\dylan\Desktop\LocalRepo\AntiXrayHeuristics\src\main\java\es\mithrandircraft\antixrayheuristics\BukkitSerializer.java

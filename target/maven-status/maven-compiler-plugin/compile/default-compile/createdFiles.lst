@@ -1,5 +1,6 @@
 es\mithrandircraft\antixrayheuristics\callbacks\GetAllBaseXrayerDataCallback.class
 es\mithrandircraft\antixrayheuristics\XrayerHandler$1.class
+es\mithrandircraft\antixrayheuristics\commands\AXHAutoCompleter.class
 es\mithrandircraft\antixrayheuristics\math\MathFunctions.class
 es\mithrandircraft\antixrayheuristics\events\ClickEv$1.class
 es\mithrandircraft\antixrayheuristics\MemoryManager$9.class
@@ -32,6 +33,7 @@ es\mithrandircraft\antixrayheuristics\commands\ARGAbsolvePlayer.class
 es\mithrandircraft\antixrayheuristics\commands\AXH.class
 es\mithrandircraft\antixrayheuristics\MemoryManager$4.class
 es\mithrandircraft\antixrayheuristics\MemoryManager$7.class
+es\mithrandircraft\antixrayheuristics\SpigotVersion$Versions.class
 es\mithrandircraft\antixrayheuristics\callbacks\StorePlayerDataCallback.class
 es\mithrandircraft\antixrayheuristics\gui\XrayerVault$1.class
 es\mithrandircraft\antixrayheuristics\MemoryManager$10.class
@@ -46,4 +48,5 @@ es\mithrandircraft\antixrayheuristics\MemoryManager$1.class
 es\mithrandircraft\antixrayheuristics\MemoryManager$5.class
 es\mithrandircraft\antixrayheuristics\MemoryManager.class
 es\mithrandircraft\antixrayheuristics\commands\ARGVault.class
+es\mithrandircraft\antixrayheuristics\SpigotVersion.class
 es\mithrandircraft\antixrayheuristics\MiningSession.class

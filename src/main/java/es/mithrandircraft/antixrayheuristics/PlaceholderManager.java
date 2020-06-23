@@ -9,9 +9,10 @@ import org.bukkit.ChatColor;
 import java.util.List;
 
 public class PlaceholderManager {
-    public static String SubstitutePlayerNamePlaceholders(String toReplace, String player)
+    public static String SubstitutePlayerNameAndColorCodePlaceholders(String toReplace, String player)
     {
         toReplace = toReplace.replaceAll("\\{PlayerName}", player);
+        toReplace = ChatColor.translateAlternateColorCodes('&', toReplace);
 
         return toReplace;
     }
@@ -20,6 +21,16 @@ public class PlaceholderManager {
     {
         toReplace = toReplace.replaceAll("\\{PlayerName}", player);
         toReplace = toReplace.replaceAll("\\{TimesDetected}", handleTimes);
+
+        return toReplace;
+    }
+
+    public static List<String> SubstituteColorCodePlaceholders(List<String> toReplace)
+    {
+        for(int i = 0; i < toReplace.size(); i++)
+        {
+            toReplace.set(i, ChatColor.translateAlternateColorCodes('&', toReplace.get(i)));
+        }
 
         return toReplace;
     }

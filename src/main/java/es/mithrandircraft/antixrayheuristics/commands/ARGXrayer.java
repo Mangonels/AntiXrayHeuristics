@@ -6,6 +6,7 @@ package es.mithrandircraft.antixrayheuristics.commands;
 
 import es.mithrandircraft.antixrayheuristics.XrayerHandler;
 import es.mithrandircraft.antixrayheuristics.files.LocaleManager;
+import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -16,7 +17,7 @@ public class ARGXrayer{
             Player player = (Player) sender;
             if (player.hasPermission("AXH.Commands.Xrayer")) {
                 XrayerHandler.HandleXrayer(arg);
-            } else player.sendMessage(LocaleManager.get().getString("NoPermissionForCommand"));
+            } else player.sendMessage(ChatColor.translateAlternateColorCodes('&', LocaleManager.get().getString("NoPermissionForCommand")));
         } else { //Is console
             XrayerHandler.HandleXrayer(arg);
         }

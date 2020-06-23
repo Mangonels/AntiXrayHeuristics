@@ -5,6 +5,7 @@
 package es.mithrandircraft.antixrayheuristics.gui;
 
 import es.mithrandircraft.antixrayheuristics.PlaceholderManager;
+import es.mithrandircraft.antixrayheuristics.SpigotVersion;
 import es.mithrandircraft.antixrayheuristics.callbacks.GetAllBaseXrayerDataCallback;
 import es.mithrandircraft.antixrayheuristics.callbacks.GetXrayerBelongingsCallback;
 import es.mithrandircraft.antixrayheuristics.callbacks.GetXrayerHandleLocationCallback;
@@ -19,7 +20,6 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
-
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -37,18 +37,42 @@ public class XrayerVault {
 
     private HashMap<String, PlayerViewInfo> viewers = new HashMap<String, PlayerViewInfo>(); //Stores who's viewing the GUI and info on what's being looked at.
 
-    private ItemStack separator = new ItemStack(Material.GRAY_STAINED_GLASS_PANE);
-    private ItemStack nextButton = new ItemStack(Material.GREEN_STAINED_GLASS_PANE);
-    private ItemStack prevButton = new ItemStack(Material.GREEN_STAINED_GLASS_PANE);
-    private ItemStack purgeButton = new ItemStack(Material.RED_STAINED_GLASS_PANE);
-    private ItemStack refreshButton = new ItemStack(Material.BLUE_STAINED_GLASS_PANE);
-    private ItemStack backButton = new ItemStack(Material.GREEN_STAINED_GLASS_PANE);
-    private ItemStack purgePlayerButton = new ItemStack(Material.RED_STAINED_GLASS_PANE);
-    private ItemStack absolvePlayerButton = new ItemStack(Material.YELLOW_STAINED_GLASS_PANE);
+    private ItemStack separator;
+    private ItemStack nextButton;
+    private ItemStack prevButton;
+    private ItemStack purgeButton;
+    private ItemStack refreshButton;
+    private ItemStack backButton;
+    private ItemStack purgePlayerButton;
+    private ItemStack absolvePlayerButton;
 
     public XrayerVault(es.mithrandircraft.antixrayheuristics.AntiXrayHeuristics main)
     {
         this.mainClassAccess = main;
+
+        SpigotVersion.Versions version = SpigotVersion.Versions.VERSION_1_13;
+        if(mainClassAccess.vc.version.GetValue() >= version.GetValue()) //Post 1.13 item ID's ("Modern")
+        {
+            separator = new ItemStack(Material.GRAY_STAINED_GLASS_PANE);
+            nextButton = new ItemStack(Material.GREEN_STAINED_GLASS_PANE);
+            prevButton = new ItemStack(Material.GREEN_STAINED_GLASS_PANE);
+            purgeButton = new ItemStack(Material.RED_STAINED_GLASS_PANE);
+            refreshButton = new ItemStack(Material.BLUE_STAINED_GLASS_PANE);
+            backButton = new ItemStack(Material.GREEN_STAINED_GLASS_PANE);
+            purgePlayerButton = new ItemStack(Material.RED_STAINED_GLASS_PANE);
+            absolvePlayerButton = new ItemStack(Material.YELLOW_STAINED_GLASS_PANE);
+        } //Pre 1.13 item ID's ("Legacy")
+        else
+        {
+/*          separator = new ItemStack(Material. GRAY_STAINED_GLASS_PANE);
+            nextButton = new ItemStack(Material.GREEN_STAINED_GLASS_PANE);
+            prevButton = new ItemStack(Material.GREEN_STAINED_GLASS_PANE);
+            purgeButton = new ItemStack(Material.RED_STAINED_GLASS_PANE);
+            refreshButton = new ItemStack(Material.BLUE_STAINED_GLASS_PANE);
+            backButton = new ItemStack(Material.GREEN_STAINED_GLASS_PANE);
+            purgePlayerButton = new ItemStack(Material.RED_STAINED_GLASS_PANE);
+            absolvePlayerButton = new ItemStack(Material.YELLOW_STAINED_GLASS_PANE);*/
+        }
 
         ItemMeta separator_meta = separator.getItemMeta();
         separator_meta.setDisplayName(" ");
@@ -64,12 +88,12 @@ public class XrayerVault {
 
         ItemMeta purge_meta = purgeButton.getItemMeta();
         purge_meta.setDisplayName(ChatColor.translateAlternateColorCodes('&',LocaleManager.get().getString("PurgeButtonTitle")));
-        purge_meta.setLore(LocaleManager.get().getStringList("PurgeButtonDesc"));
+        purge_meta.setLore(PlaceholderManager.SubstituteColorCodePlaceholders(LocaleManager.get().getStringList("PurgeButtonDesc")));
         purgeButton.setItemMeta(purge_meta);
 
         ItemMeta refresh_meta = refreshButton.getItemMeta();
         refresh_meta.setDisplayName(ChatColor.translateAlternateColorCodes('&',LocaleManager.get().getString("RefreshButtonTitle")));
-        refresh_meta.setLore(LocaleManager.get().getStringList("RefreshButtonDesc"));
+        refresh_meta.setLore(PlaceholderManager.SubstituteColorCodePlaceholders(LocaleManager.get().getStringList("RefreshButtonDesc")));
         refreshButton.setItemMeta(refresh_meta);
 
         ItemMeta back_meta = backButton.getItemMeta();
@@ -78,12 +102,12 @@ public class XrayerVault {
 
         ItemMeta purgeplayer_meta = purgePlayerButton.getItemMeta();
         purgeplayer_meta.setDisplayName(ChatColor.translateAlternateColorCodes('&',LocaleManager.get().getString("PurgePlayerButtonTitle")));
-        purgeplayer_meta.setLore(LocaleManager.get().getStringList("PurgePlayerButtonDesc"));
+        purgeplayer_meta.setLore(PlaceholderManager.SubstituteColorCodePlaceholders(LocaleManager.get().getStringList("PurgePlayerButtonDesc")));
         purgePlayerButton.setItemMeta(purgeplayer_meta);
 
         ItemMeta absolveplayer_meta = absolvePlayerButton.getItemMeta();
         absolveplayer_meta.setDisplayName(ChatColor.translateAlternateColorCodes('&',LocaleManager.get().getString("AbsolvePlayerButtonTitle")));
-        absolveplayer_meta.setLore(LocaleManager.get().getStringList("AbsolvePlayerButtonDesc"));
+        absolveplayer_meta.setLore(PlaceholderManager.SubstituteColorCodePlaceholders(LocaleManager.get().getStringList("AbsolvePlayerButtonDesc")));
         absolvePlayerButton.setItemMeta(absolveplayer_meta);
     }
 
@@ -135,7 +159,7 @@ public class XrayerVault {
                 firstHandledTimes.addAll(firsthandledtimes);
 
                 OpenVault(player, page);
-                player.sendMessage(LocaleManager.get().getString("MessagesPrefix") + " " + LocaleManager.get().getString("VaultRefreshed"));
+                player.sendMessage(ChatColor.translateAlternateColorCodes('&', LocaleManager.get().getString("MessagesPrefix")) + " " + ChatColor.translateAlternateColorCodes('&', LocaleManager.get().getString("VaultRefreshed")));
             }
         })); //This single async function fills up the 3 lists with xrayer information.
     }
@@ -157,7 +181,7 @@ public class XrayerVault {
         for(Map.Entry<String, PlayerViewInfo> entry : viewers.entrySet())
         {
             OpenVault(Bukkit.getServer().getPlayer(entry.getKey()) ,0);
-            Bukkit.getServer().getPlayer(entry.getKey()).sendMessage(LocaleManager.get().getString("MessagesPrefix") + " " + LocaleManager.get().getString("ForcedPageZero"));
+            Bukkit.getServer().getPlayer(entry.getKey()).sendMessage(ChatColor.translateAlternateColorCodes('&',LocaleManager.get().getString("MessagesPrefix")) + " " + ChatColor.translateAlternateColorCodes('&', LocaleManager.get().getString("ForcedPageZero")));
         }
     }
 
@@ -264,7 +288,7 @@ public class XrayerVault {
             public void onQueryDone(Location handlelocation)
             {
                 player.teleport(handlelocation);
-                player.sendMessage(LocaleManager.get().getString("MessagesPrefix") + " " + LocaleManager.get().getString("TeleportToHandleLocation"));
+                player.sendMessage(ChatColor.translateAlternateColorCodes('&',LocaleManager.get().getString("MessagesPrefix")) + " " + ChatColor.translateAlternateColorCodes('&', LocaleManager.get().getString("TeleportToHandleLocation")));
             }
         }));
     }
