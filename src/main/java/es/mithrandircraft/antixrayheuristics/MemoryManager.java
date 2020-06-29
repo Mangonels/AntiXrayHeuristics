@@ -30,13 +30,13 @@ public class MemoryManager {
     MemoryManager(es.mithrandircraft.antixrayheuristics.AntiXrayHeuristics main) { this.mainClassAccess = main; }
 
     //SQL Data:
-    public BasicDataSource dataSource; //Stores a pool of sql connections
+    private BasicDataSource dataSource; //Stores a pool of sql connections
 
     //JSON Data:
     private List<Xrayer> storedXrayersFromJSON = new ArrayList<Xrayer>(); //Used for loading xrayer data from JSON
 
-    //The following functions manage persistent memory resources depending on plugin configuration
-    //They are designed to be called asynchronously through Bukkit's scheduler, and return data through a callback function:
+    //The following methods manage persistent memory resources (SQL or JSON is managed depending on plugin config.yml)
+    //The methods are designed to be called asynchronously through Bukkit's scheduler, and return data through a callback function:
 
     void StorePlayerData(Player player, final StorePlayerDataCallback callback)
     {
@@ -236,7 +236,7 @@ public class MemoryManager {
         try {
             cn = dataSource.getConnection();
             if(cn != null) {
-                PreparedStatement create = cn.prepareStatement("CREATE TABLE IF NOT EXISTS Xrayers(UUID VARCHAR(36) NOT NULL, Handled INT NOT NULL, FirstHandleTime VARCHAR(36) NOT NULL, HandleLocation VARCHAR(36) NOT NULL, Belongings TEXT NULL, PRIMARY KEY(UUID))");
+                PreparedStatement create = cn.prepareStatement("CREATE TABLE IF NOT EXISTS Xrayers(UUID VARCHAR(36) NOT NULL, Handled INT NOT NULL, FirstHandleTime VARCHAR(32) NOT NULL, HandleLocation VARCHAR(128) NOT NULL, Belongings TEXT NULL, PRIMARY KEY(UUID))");
 
                 create.executeUpdate();
 

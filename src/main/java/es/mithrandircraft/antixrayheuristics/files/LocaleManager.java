@@ -41,6 +41,7 @@ public class LocaleManager {
 
         //Plugin Actions:
         localeConfiguration.addDefault("AutoHandledPlayer", "&a{PlayerName} &bwas automatically registered and handled for xraying.");
+        localeConfiguration.addDefault("PlayerMessageOnXray", "&bYou where punished for Xraying, uninstall Xrays immediately. Resume your gameplay only after you have uninstalled Xrays.");
         localeConfiguration.addDefault("ForcedPageZero", "&bYou where automatically sent to XrayerVault page 0 since one or various players where either purged or absolved.");
         localeConfiguration.addDefault("VaultRefreshed", "&bShowing latest xrayer information.");
         localeConfiguration.addDefault("TeleportToHandleLocation", "&bYou where teleported to the location where the player was handled for xrays.");

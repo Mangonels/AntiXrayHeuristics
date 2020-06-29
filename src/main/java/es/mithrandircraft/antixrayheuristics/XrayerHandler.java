@@ -31,15 +31,13 @@ public class XrayerHandler {
     public static void HandleXrayer(String xrayername) //Executes what must be done to an inputted Xrayer by name.
     {
         AntiXrayHeuristics mainClass = JavaPlugin.getPlugin(AntiXrayHeuristics.class);
-
-        mainClass.getConfig();
+        
         Player player = Bukkit.getPlayer(xrayername); //Reference to player
         if(player != null)
         {
             //Send message to xrayer if configured:
             if (mainClass.getConfig().getBoolean("SendMessageToPlayer")) {
-                String m = mainClass.getConfig().getString(ChatColor.translateAlternateColorCodes('&', "MessageToSend"));
-                if (m != null) player.sendMessage(m);
+                player.sendMessage(ChatColor.translateAlternateColorCodes('&', LocaleManager.get().getString("MessagesPrefix")) + " " + ChatColor.translateAlternateColorCodes('&', LocaleManager.get().getString("PlayerMessageOnXray")));
             }
 
             //Store xrayer's data (and inventory only if configured):

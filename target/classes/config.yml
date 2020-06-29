@@ -62,9 +62,9 @@ StoreCopy: true
 #Warning: This should be set to true if StoreCopy is true, else player absolving will result in duplications:
 ClensePlayerItems: true
 
-#Following options allow you to send a message right when the player is punished for Xraying.
+#If set to true, players punished for xraying will receive a message ("PlayerMessageOnXray" in locale.yml) when detected
+#for xraying.
 SendMessageToPlayer: false
-MessageToSend: '[Xray] You where punished for Xraying, uninstall Xrays immediately. Resume your gameplay only after you have uninstalled Xrays.'
 
 #Recommended true. If so, will nullify the player's suspicion after being punished:
 NullifySuspicionAferPunish: true
@@ -97,7 +97,8 @@ CommandsExecutedOnXrayerDetected: []
 #Available placeholders for this array (Case sensitive): {PlayerName}
 CommandsExecutedOnPlayerAbsolved: []
 
-#If set to true, players with the permission AXH.XrayerWarning will be notified if an xrayer was found and dealt with
+#If set to true, players with the permission AXH.XrayerWarning will be notified (with the message "AutoHandledPlayer"
+#in locale.yml) if an xrayer was found and dealt with.
 TellPlayersWithPermission: true
 
 #----------------------

@@ -26,7 +26,7 @@ public class AXH implements CommandExecutor {
             if (args[0].equalsIgnoreCase("vault") || args[0].equalsIgnoreCase("v")) ARGVault.V(sender, mainClassAccess);
             else if (args[0].equalsIgnoreCase("reload") || args[0].equalsIgnoreCase("r")) ARGReload.R(sender, mainClassAccess);
             else if (args[0].equalsIgnoreCase("resetsuspicion") || args[0].equalsIgnoreCase("rs")) ARGResetSuspicion.RS(sender, mainClassAccess);
-            //else if (args[0].equalsIgnoreCase("suspicion") || args[0].equalsIgnoreCase("s")) ARGSuspicion.S(sender, mainClassAccess);
+            else if (args[0].equalsIgnoreCase("suspicion") || args[0].equalsIgnoreCase("s")) ARGSuspicion.S(sender, mainClassAccess);
             else sender.sendMessage(ChatColor.translateAlternateColorCodes('&', LocaleManager.get().getString("InvalidCMDArg")));
         }
         else if(args.length == 2)
@@ -35,7 +35,7 @@ public class AXH implements CommandExecutor {
             else if (args[0].equalsIgnoreCase("absolve") || args[0].equalsIgnoreCase("a")) ARGAbsolvePlayer.A(sender, args[1], mainClassAccess);
             else if (args[0].equalsIgnoreCase("purge") || args[0].equalsIgnoreCase("p")) ARGPurgePlayer.P(sender, args[1], mainClassAccess);
             else if (args[0].equalsIgnoreCase("resetsuspicion") || args[0].equalsIgnoreCase("rs")) ARGResetSuspicion.RS(sender, args[1], mainClassAccess);
-            //else if (args[0].equalsIgnoreCase("suspicion") || args[0].equalsIgnoreCase("s")) ARGSuspicion.S(sender, args[1], mainClassAccess);
+            else if (args[0].equalsIgnoreCase("suspicion") || args[0].equalsIgnoreCase("s")) ARGSuspicion.S(sender, args[1], mainClassAccess);
             else sender.sendMessage(ChatColor.translateAlternateColorCodes('&', LocaleManager.get().getString("InvalidCMDArg")));
         }
         else //Show help
