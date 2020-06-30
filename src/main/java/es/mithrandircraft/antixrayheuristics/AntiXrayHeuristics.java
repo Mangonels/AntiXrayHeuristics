@@ -119,7 +119,8 @@ public final class AntiXrayHeuristics extends JavaPlugin implements Listener {
         if(getConfig().getString("StorageType").equals("MYSQL")) mm.CloseDataSource();
     }
 
-    private void MainRunnable() //Performs plugin updates at scheduled time
+    //Performs plugin updates at scheduled time
+    private void MainRunnable()
     {
         new BukkitRunnable()
         {
@@ -149,7 +150,8 @@ public final class AntiXrayHeuristics extends JavaPlugin implements Listener {
         }.runTaskTimer(this, MainRunnableFrequency, MainRunnableFrequency);
     }
 
-    private void UpdateTrail(BlockBreakEvent ev, MiningSession s) //Trail algorithm updating
+    //Trail algorithm updater
+    private void UpdateTrail(BlockBreakEvent ev, MiningSession s)
     {
         if(s.GetLastBlockCoordsStoreCounter() == 3) //Every 4 mined blocks
         {
@@ -159,7 +161,8 @@ public final class AntiXrayHeuristics extends JavaPlugin implements Listener {
         s.CycleBlockCoordsStoreCounter();
         s.CycleNextCoordsStorePos();
     }
-    private float GetWeightFromAnalyzingTrail(BlockBreakEvent ev, MiningSession s, float mineralWeight) //Trail algorithm analysis
+    //Trail algorithm analysis
+    private float GetWeightFromAnalyzingTrail(BlockBreakEvent ev, MiningSession s, float mineralWeight)
     {
         int unalignedMinedBlocksTimesDetected = 0; //Keeps track of how many times a block was detected as outside relative mined ore block height and or X || Z tunnel axises.
         int iteratedBlockCoordSlots = 0; //Keeps track of how many stored blocks we've iterated that weren't null. This is useful for pondering weights according to distance.
@@ -228,7 +231,8 @@ public final class AntiXrayHeuristics extends JavaPlugin implements Listener {
         } else return false;
     }
 
-    private boolean UpdateMiningSession(BlockBreakEvent ev, Material m) //Attempts at updating the mining session for a player who broke a block, with just a few arguments. If this fails, the function returns false, else returns true
+    //Attempts at updating the mining session for a player who broke a block, with just a few arguments. If this fails, the function returns false, else returns true
+    private boolean UpdateMiningSession(BlockBreakEvent ev, Material m)
     {
         MiningSession s = sessions.get(ev.getPlayer().getName());
         if (s == null) return false; //Return update unsuccessful
@@ -335,7 +339,8 @@ public final class AntiXrayHeuristics extends JavaPlugin implements Listener {
         return true; //Return update successful
     }
 
-    private Material RelevantBlockCheck(BlockBreakEvent e) //Returns block if relevant, returns Material.AIR if irrelevant
+    //Returns block if relevant, returns Material.AIR if irrelevant
+    private Material RelevantBlockCheck(BlockBreakEvent e)
     {
         if (e.getBlock().getType() == Material.STONE)
             return Material.STONE;
@@ -361,17 +366,18 @@ public final class AntiXrayHeuristics extends JavaPlugin implements Listener {
         else return Material.AIR;
     }
 
-    public void BBEventAnalyzer(BlockBreakEvent ev) //Inspects the blockbreak event further for actions
+    //Inspects the blockbreak event further for actions
+    public void BBEventAnalyzer(BlockBreakEvent ev)
     {
         if (!ev.getPlayer().hasPermission("AXH.Ignore")) {
             //Check if the block is relevant:
             Material m = RelevantBlockCheck(ev);
             if (m != Material.AIR) { //Attempt at updating player mining session:
-                if (!UpdateMiningSession(ev, m)) { //Then is the block consequently a first stone or first netherrack (while netherquartz isn't disabled in config)?
+                if (!UpdateMiningSession(ev, m)) { //Let's asume the player doesn't have a MiningSession entry. Then is the block consequently a first stone or first netherrack?
                     if (m == Material.STONE) {
                         sessions.put(ev.getPlayer().getName(), new MiningSession()); //Adds new entry to sessions HashMap for player
                     }
-                    else if (m == Material.NETHERRACK && getConfig().getInt("QuartzWeight") != 0f) {
+                    else if (m == Material.NETHERRACK) {
                         sessions.put(ev.getPlayer().getName(), new MiningSession()); //Adds new entry to sessions HashMap for player
                     }
                 }
