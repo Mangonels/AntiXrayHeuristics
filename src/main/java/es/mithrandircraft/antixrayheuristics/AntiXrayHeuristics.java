@@ -26,6 +26,9 @@ import java.util.Set;
 
 public final class AntiXrayHeuristics extends JavaPlugin implements Listener {
 
+    //Captured spigot version:
+    SpigotVersion spigotVersion;
+
     //Mining sessions HashMap <Name, MiningSession>:
     public HashMap<String, MiningSession> sessions = new HashMap<String, MiningSession>();
 
@@ -50,12 +53,16 @@ public final class AntiXrayHeuristics extends JavaPlugin implements Listener {
 
     private float extraDiamondWeight; //A higher weight value applied to MiningSessions on diamond encounter if suspicion is higher than usual
     private float extraEmeraldWeight; //A higher weight value applied to MiningSessions on emerald encounter if suspicion is higher than usual
+    private float extraAncientDebrisWeight; //A higher weight value applied to MiningSessions on ancient debris encounter if suspicion is higher than usual
 
     //GUI:
     public XrayerVault vault;
 
     @Override
     public void onEnable() {
+
+        //Spigot version capture:
+        spigotVersion = new SpigotVersion();
 
         //Config load:
         getConfig().options().copyDefaults();
@@ -110,7 +117,7 @@ public final class AntiXrayHeuristics extends JavaPlugin implements Listener {
 
         extraDiamondWeight = getConfig().getLong("DiamondWeight") + (getConfig().getLong("DiamondWeight") / 2);
         extraEmeraldWeight = getConfig().getLong("EmeraldWeight") + (getConfig().getLong("EmeraldWeight") / 2);
-
+        extraAncientDebrisWeight = getConfig().getLong("AncientDebrisWeight") + (getConfig().getLong("AncientDebrisWeight") / 2);
     }
 
     @Override
@@ -279,13 +286,6 @@ public final class AntiXrayHeuristics extends JavaPlugin implements Listener {
                         s.minedNonOreBlocksStreak = 0;
                     }
                 s.SetLastMinedOreData(m, ev.getBlock().getLocation());
-            } else if (m == Material.NETHER_QUARTZ_ORE) {
-                if (s.GetLastMinedOre() != m || s.GetLastMinedOreLocation().distance(ev.getBlock().getLocation()) > getConfig().getInt("ConsiderAdjacentWithinDistance"))
-                    if (s.minedNonOreBlocksStreak > getConfig().getInt("MinimumBlocksMinedToNextVein")) {
-                        s.AddSuspicionLevel(GetWeightFromAnalyzingTrail(ev, s, getConfig().getLong("QuartzWeight")));
-                        s.minedNonOreBlocksStreak = 0;
-                    }
-                s.SetLastMinedOreData(m, ev.getBlock().getLocation());
             } else if (m == Material.LAPIS_ORE) {
                 if (s.GetLastMinedOre() != m || s.GetLastMinedOreLocation().distance(ev.getBlock().getLocation()) > getConfig().getInt("ConsiderAdjacentWithinDistance"))
                     if(s.minedNonOreBlocksStreak > getConfig().getInt("MinimumBlocksMinedToNextVein")) {
@@ -320,8 +320,40 @@ public final class AntiXrayHeuristics extends JavaPlugin implements Listener {
                         s.minedNonOreBlocksStreak = 0;
                     }
                 s.SetLastMinedOreData(m, ev.getBlock().getLocation());
+            } else if (m == Material.NETHER_QUARTZ_ORE) {
+                if (s.GetLastMinedOre() != m || s.GetLastMinedOreLocation().distance(ev.getBlock().getLocation()) > getConfig().getInt("ConsiderAdjacentWithinDistance"))
+                    if (s.minedNonOreBlocksStreak > getConfig().getInt("MinimumBlocksMinedToNextVein")) {
+                        s.AddSuspicionLevel(GetWeightFromAnalyzingTrail(ev, s, getConfig().getLong("QuartzWeight")));
+                        s.minedNonOreBlocksStreak = 0;
+                    }
+                s.SetLastMinedOreData(m, ev.getBlock().getLocation());
 
-            } else { //Any other block during mining session
+            } else if(spigotVersion.version.GetValue() >= 116) { //Spigot for MC 1.16+
+
+                if (m == Material.NETHER_GOLD_ORE) {
+                    if(s.GetLastMinedOre() != m || s.GetLastMinedOreLocation().distance(ev.getBlock().getLocation()) > getConfig().getInt("ConsiderAdjacentWithinDistance"))
+                        if(s.minedNonOreBlocksStreak > getConfig().getInt("MinimumBlocksMinedToNextVein")) {
+                            s.AddSuspicionLevel(GetWeightFromAnalyzingTrail(ev, s, getConfig().getLong("NetherGoldWeight")));
+                            s.minedNonOreBlocksStreak = 0;
+                        }
+                    s.SetLastMinedOreData(m, ev.getBlock().getLocation());
+                } else if (m == Material.ANCIENT_DEBRIS) {
+                    if (s.GetLastMinedOre() != m || s.GetLastMinedOreLocation().distance(ev.getBlock().getLocation()) > getConfig().getInt("ConsiderAdjacentWithinDistance"))
+                        if (s.minedNonOreBlocksStreak > getConfig().getInt("MinimumBlocksMinedToNextVein")) {
+                            if (s.minedNonOreBlocksStreak > usualEncounterThreshold)
+                                s.AddSuspicionLevel(GetWeightFromAnalyzingTrail(ev, s, getConfig().getLong("AncientDebrisWeight"))); //Updates suspicion level normally.
+                            else s.AddSuspicionLevel(GetWeightFromAnalyzingTrail(ev, s, extraAncientDebrisWeight)); //Updates suspicion level with extra suspicion since the ore was quite close to last mined ore.
+
+                            s.minedNonOreBlocksStreak = 0;
+                        }
+                    s.SetLastMinedOreData(m, ev.getBlock().getLocation());
+                } else {
+                    //Any other block during mining session
+                    s.minedNonOreBlocksStreak++;
+                    UpdateTrail(ev, s); //We mined a non-ore, so we update our trail
+                }
+            } else {
+                //Any other block during mining session
                 s.minedNonOreBlocksStreak++;
                 UpdateTrail(ev, s); //We mined a non-ore, so we update our trail
             }
@@ -354,15 +386,24 @@ public final class AntiXrayHeuristics extends JavaPlugin implements Listener {
             return Material.IRON_ORE;
         else if (e.getBlock().getType() == Material.GOLD_ORE && getConfig().getLong("GoldWeight") != 0f)
             return Material.GOLD_ORE;
-        else if (e.getBlock().getType() == Material.NETHER_QUARTZ_ORE && getConfig().getLong("QuartzWeight") != 0f)
-            return Material.NETHER_QUARTZ_ORE;
         else if (e.getBlock().getType() == Material.LAPIS_ORE && getConfig().getLong("LapisWeight") != 0f)
             return Material.LAPIS_ORE;
         else if (e.getBlock().getType() == Material.DIAMOND_ORE && getConfig().getLong("DiamondWeight") != 0f)
             return Material.DIAMOND_ORE;
         else if (e.getBlock().getType() == Material.EMERALD_ORE && getConfig().getLong("EmeraldWeight") != 0f)
             return Material.EMERALD_ORE;
+        else if (e.getBlock().getType() == Material.NETHER_QUARTZ_ORE && getConfig().getLong("QuartzWeight") != 0f)
+            return Material.NETHER_QUARTZ_ORE;
 
+        else if(spigotVersion.version.GetValue() >= 116) //Spigot for MC 1.16+
+        {
+            if (e.getBlock().getType() == Material.NETHER_GOLD_ORE && getConfig().getLong("NetherGoldWeight") != 0f)
+                return Material.NETHER_GOLD_ORE;
+            else if (e.getBlock().getType() == Material.ANCIENT_DEBRIS && getConfig().getLong("AncientDebrisWeight") != 0f)
+                return Material.ANCIENT_DEBRIS;
+
+            else return Material.AIR;
+        }
         else return Material.AIR;
     }
 

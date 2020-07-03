@@ -2,7 +2,6 @@
 // Copyright © Dylan Calaf 2019 - AntiXrayHeuristics
 //--------------------------------------------------------------------
 
-/*
 package es.mithrandircraft.antixrayheuristics;
 
 import org.bukkit.Bukkit;
@@ -92,4 +91,4 @@ public class SpigotVersion {
         else return Versions.VERSION_UNKNOWN;
     }
 }
-*/
+
