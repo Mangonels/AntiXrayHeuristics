@@ -84,7 +84,9 @@ public class SpigotVersion {
             return Versions.VERSION_1_15;
         else if
         (
-            version.endsWith("(MC: 1.16)")
+            version.endsWith("(MC: 1.16)") ||
+            version.endsWith("(MC: 1.16.1)") ||
+            version.endsWith("(MC: 1.16.2)")
         )
             return Versions.VERSION_1_16;
 

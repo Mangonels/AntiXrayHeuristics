@@ -97,7 +97,7 @@ public final class AntiXrayHeuristics extends JavaPlugin implements Listener {
         //Create json file if not exists?:
         else if(getConfig().getString("StorageType").equals("JSON"))
         {
-            if(mm.JSONFileCreateIfNotExists()) System.out.println(ChatColor.translateAlternateColorCodes('&', LocaleManager.get().getString("MessagesPrefix")) + " " + ChatColor.translateAlternateColorCodes('&', LocaleManager.get().getString("JSONFileCreated")));
+            mm.JSONFileCreateIfNotExists();
         }
 
         //Event registring:
@@ -420,6 +420,12 @@ public final class AntiXrayHeuristics extends JavaPlugin implements Listener {
                     }
                     else if (m == Material.NETHERRACK) {
                         sessions.put(ev.getPlayer().getName(), new MiningSession()); //Adds new entry to sessions HashMap for player
+                    }
+
+                    else if(spigotVersion.version.GetValue() >= 116) { //Spigot for MC 1.16+
+                        if (m == Material.BASALT) {
+                            sessions.put(ev.getPlayer().getName(), new MiningSession()); //Adds new entry to sessions HashMap for player
+                        }
                     }
                 }
             }

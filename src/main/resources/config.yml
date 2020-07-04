@@ -12,15 +12,16 @@ Debug: false
 #HEURISTICALLY BASED MONITORING CONFIGURATIONS:
 #----------------------------------------------
 
-#AXH will only monitor player behaviour in order to detect xrays in the following worlds:
+#AXH will only monitor player behaviour in order to detect xrays in certain worlds. Only nether and overworld world
+#types will be considered from following lists:
 TrackWorlds:
-  - 'exampleworld1'
-  - 'exampleworld2'
+  - 'world'
+  - 'world_nether'
 
 #The following values are to be balanced depending on the world's mineral density. Default values should be ok for
-#regular mineral generation. Set to 0 to ignore. Negative values will reduce player suspicion (not recommended).
+#regular mineral generation. Set to 0 to ignore. Negative values will reduce player suspicion and/or cause unintended
+#internal calculation outputs (not recommended).
 #There are various internal factors that may increment or ignore these weights depending on certain player behaviour.
-QuartzWeight: 5.0
 CoalWeight: 5.0
 IronWeight: 5.0
 GoldWeight: 7.0
@@ -28,6 +29,9 @@ LapisWeight: 8.0
 RedstoneWeight: 7.0
 EmeraldWeight: 20.0
 DiamondWeight: 18.0
+QuartzWeight: 5.0
+NetherGoldWeight: 7.0
+AncientDebrisWeight: 20.0
 
 #You can use these reducers for certain biomes where ores are more abundant. They are used internally in order to
 #reduce the total amount of suspicion applied according to the algorithm, when an ore is mined in a biome where it's
@@ -46,8 +50,10 @@ ConsiderAdjacentWithinDistance: 10
 #be using this plugin), but you can if you're crazy enough.
 MinimumBlocksMinedToNextVein: 10
 
-#Ignore mined blocks above following altitude (default value should be ok):
-IgnoreHigherThanAltitude: 65
+#Ignore mined blocks above following altitude in the overworld (default value should be ok):
+IgnoreHigherThanOverworldAltitude: 65
+#Ignore mined blocks above following altitude in the nether (default value should be ok):
+IgnoreHigherThanNetherAltitude: 120
 
 #------------------------------------------------------
 #AUTOMATIC XRAYER HANDLING & PUNISHMENT CONFIGURATIONS:
