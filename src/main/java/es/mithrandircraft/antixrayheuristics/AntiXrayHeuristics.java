@@ -44,7 +44,7 @@ public final class AntiXrayHeuristics extends JavaPlugin implements Listener {
     public final float maxSuspicionDecreaseAmount = -10f;
     public final float minSuspicionDecreaseAmount = -0.1f;
 
-    public final int maxAccountableMillisecondDeltaForThirtyMinedBlocks = 50000; //Directly proportional to "minSuspicionDecreaseAmount"
+    public final int maxAccountableMillisecondDeltaForThirtyMinedBlocks = 20000; //Directly proportional to "minSuspicionDecreaseAmount"
     public final int minAccountableMillisecondDeltaForThirtyMinedBlocks = 0; //Directly proportional to "maxSuspicionDecreaseAmount"
 
 
@@ -120,9 +120,9 @@ public final class AntiXrayHeuristics extends JavaPlugin implements Listener {
 
         usualEncounterThreshold = getConfig().getInt("MinimumBlocksMinedToNextVein") * 4; //Calculates how many blocks till we should find diamond and/or emerald average
 
-        extraDiamondWeight = getConfig().getLong("DiamondWeight") + (getConfig().getLong("DiamondWeight") / 2);
-        extraEmeraldWeight = getConfig().getLong("EmeraldWeight") + (getConfig().getLong("EmeraldWeight") / 2);
-        extraAncientDebrisWeight = getConfig().getLong("AncientDebrisWeight") + (getConfig().getLong("AncientDebrisWeight") / 2);
+        extraDiamondWeight = getConfig().getLong("DiamondWeight") * 2.5f;
+        extraEmeraldWeight = getConfig().getLong("EmeraldWeight") * 2.5f;
+        extraAncientDebrisWeight = getConfig().getLong("AncientDebrisWeight") * 2.5f;
     }
 
     @Override
@@ -181,7 +181,7 @@ public final class AntiXrayHeuristics extends JavaPlugin implements Listener {
 
         for (int i = 0; i < 10; i++)
         {
-            if(s.GetMinedBlocksTrailArrayPos(i) != null) //Check for a possible empty traced block slot, if so skip, else analise:
+            if(s.GetMinedBlocksTrailArrayPos(i) != null) //Check for a possible empty traced block slot, if so skip, else analyze:
             {
                 //Z, X, Y check: Check if the block coordinates we're iterating are outside "3x3 horizontal Z and X axis tunnels" from mined ore. (You can imagine this as a cross with mined ore in center)
                 //Relative altitude check:

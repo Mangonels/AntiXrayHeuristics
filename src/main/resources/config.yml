@@ -22,16 +22,16 @@ TrackWorlds:
 #regular mineral generation. Set to 0 to ignore. Negative values will reduce player suspicion and/or cause unintended
 #internal calculation outputs (not recommended).
 #There are various internal factors that may increment or ignore these weights depending on certain player behaviour.
-CoalWeight: 5.0
-IronWeight: 5.0
-GoldWeight: 7.0
-LapisWeight: 8.0
-RedstoneWeight: 7.0
-EmeraldWeight: 20.0
-DiamondWeight: 18.0
-QuartzWeight: 5.0
-NetherGoldWeight: 7.0
-AncientDebrisWeight: 20.0
+CoalWeight: 9.0
+IronWeight: 9.0
+GoldWeight: 9.0
+LapisWeight: 15.0
+RedstoneWeight: 12.0
+EmeraldWeight: 30.0
+DiamondWeight: 20.0
+QuartzWeight: 9.0
+NetherGoldWeight: 9.0
+AncientDebrisWeight: 30.0
 
 #You can use these reducers for certain biomes where ores are more abundant. They are used internally in order to
 #reduce the total amount of suspicion applied according to the algorithm, when an ore is mined in a biome where it's
