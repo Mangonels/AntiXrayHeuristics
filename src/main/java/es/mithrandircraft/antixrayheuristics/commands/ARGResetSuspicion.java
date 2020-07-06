@@ -38,17 +38,17 @@ public class ARGResetSuspicion {
                 MiningSession tempMS = mainClass.sessions.get(arg);
                 if (tempMS != null) {
                     mainClass.sessions.remove(arg);
-                    player.sendMessage(ChatColor.translateAlternateColorCodes('&', LocaleManager.get().getString("MessagesPrefix") + arg + LocaleManager.get().getString("PlayerSuspicionNullified")));
+                    player.sendMessage(ChatColor.translateAlternateColorCodes('&', LocaleManager.get().getString("MessagesPrefix") + " " + arg + LocaleManager.get().getString("PlayerSuspicionNullified")));
                 } else
-                    player.sendMessage(ChatColor.translateAlternateColorCodes('&', LocaleManager.get().getString("MessagesPrefix") + arg + LocaleManager.get().getString("NoPlayerSuspicionReset")));
+                    player.sendMessage(ChatColor.translateAlternateColorCodes('&', LocaleManager.get().getString("MessagesPrefix") + " " + arg + LocaleManager.get().getString("NoPlayerSuspicionReset")));
             } else player.sendMessage(ChatColor.translateAlternateColorCodes('&', LocaleManager.get().getString("NoPermissionForCommand")));
         } else {
             MiningSession tempMS = mainClass.sessions.get(arg);
             if (tempMS != null) {
                 mainClass.sessions.remove(arg);
-                System.out.println(ChatColor.translateAlternateColorCodes('&',LocaleManager.get().getString("MessagesPrefix") + arg + LocaleManager.get().getString("PlayerSuspicionNullified")));
+                System.out.println(ChatColor.translateAlternateColorCodes('&',LocaleManager.get().getString("MessagesPrefix") + " " + arg + LocaleManager.get().getString("PlayerSuspicionNullified")));
             } else //Is console
-                System.out.println(ChatColor.translateAlternateColorCodes('&', LocaleManager.get().getString("MessagesPrefix") + arg + LocaleManager.get().getString("NoPlayerSuspicionReset")));
+                System.out.println(ChatColor.translateAlternateColorCodes('&', LocaleManager.get().getString("MessagesPrefix") + " " + arg + LocaleManager.get().getString("NoPlayerSuspicionReset")));
         }
     }
 }

@@ -12,46 +12,96 @@ import java.util.Arrays;
 
 public class MiningSession { //Contains heuristics tracked per player
 
+    private final es.mithrandircraft.antixrayheuristics.AntiXrayHeuristics mainClassAccess;
+
     //General distance/time algorithm variables:
     private float suspicionLevel = 0.0f; //Level of suspicion for the player
+
+    float suspicionDecreaseAmount = 4; //How much "suspicionLevel" to reduce for the this MiningSession every "mainRunnableFrequency" in AntiXrayHeuristics.java. This value results from a calculation based on speed.
 
     private Material lastMinedOre = null; //Last mined Material ore name
 
     private Location lastMinedOreLocation = null; //Last mined Material ore location
 
-    int minedNonOreBlocksStreak = 0; //Tracks how many non-ore blocks have been mined in streak.
+    private long shortestDeltaTimeThirtyBlocksMined = Long.MAX_VALUE; //Shortest delta time from 0 to 30 blocks mined (this value represents the speed at which the mining session owner is removing blocks)
 
-    int foundAtZeroSuspicionStreak = 0; //Tracks how many times this mining session has been found at suspicion level 0 during Runnable tasks.
+    private long lastThirtyBlocksTime; //Last time we reached 30 mined blocks
+
+    private int thirtyBlockCounter = 0; //When this value reaches 30, "thirtyBlockTimer" is compared to "lowestTimeThirtyBlocksMined". If lower, "thirtyBlockTimer" replaces "lowestTimeThirtyBlocksMined"
+
+    public int minedNonOreBlocksStreak = 0; //Tracks how many non-ore blocks have been mined in streak.
+
+    public int foundAtZeroSuspicionStreak = 0; //Tracks how many times this mining session has been found at suspicion level 0 during Runnable tasks.
 
     //Mined blocks trail tracking algorithm variables:
     private IntVector3[] minedBlocksTrailCoords = new IntVector3[10];
     private int nextCoordsStorePos = 0; //Position where next mined block coordinates will be stored
     private int counterSinceLastBlockCoordsStore = 0; //Counts how many blocks we've mined since last mined block coordinates storing
 
+    MiningSession(es.mithrandircraft.antixrayheuristics.AntiXrayHeuristics main)
+    {
+        this.mainClassAccess = main;
+        lastThirtyBlocksTime = System.currentTimeMillis();
+    }
+
     //General distance/time algorithm methods:
     public float GetSuspicionLevel() { return suspicionLevel; }
-    void SetSuspicionLevel(float l)
+    public void SetSuspicionLevel(float l)
     {
         suspicionLevel = l;
     }
-    void AddSuspicionLevel(float i) { suspicionLevel += i; }
+    public void AddSuspicionLevel(float l) { suspicionLevel += l; }
+    public void SelfSuspicionReducer() { suspicionLevel += suspicionDecreaseAmount; }
     public void SetLastMinedOreData(Material m, Location l)
     {
         lastMinedOre = m;
         lastMinedOreLocation = l;
     }
-    Material GetLastMinedOre() { return lastMinedOre; }
-    Location GetLastMinedOreLocation() { return lastMinedOreLocation; }
+    public Material GetLastMinedOre() { return lastMinedOre; }
+    public Location GetLastMinedOreLocation() { return lastMinedOreLocation; }
+
+    //Time property update methods:
+    public void UpdateTimeAccountingProperties() //Updates properties based on time, and may also modify suspicion decrease amount based on them
+    {
+        thirtyBlockCounter++;
+        if(thirtyBlockCounter >= 30)
+        {
+            //System.out.println(lastThirtyBlocksTime);
+            //System.out.println(System.currentTimeMillis());
+            //System.out.println((int)(System.currentTimeMillis() - lastThirtyBlocksTime));
+
+            int thirtyBlockDeltaTime = (int)(System.currentTimeMillis() - lastThirtyBlocksTime); //Thirty block delta time in milliseconds
+
+            //Is this new delta shorter (hence 30 blocks where mined faster at this point) than the current shortest registered delta time?
+            if(thirtyBlockDeltaTime < shortestDeltaTimeThirtyBlocksMined)
+            {
+                shortestDeltaTimeThirtyBlocksMined = thirtyBlockDeltaTime; //New highest speed
+
+                //Correlate decrease amount to current shortest delta...
+                //Example formula for range conversion x in range [a,b] to y in range [c,d]: "y = (x - a) * ((d - c) / (b - a)) + c"
+                suspicionDecreaseAmount = (shortestDeltaTimeThirtyBlocksMined - mainClassAccess.minAccountableMillisecondDeltaForThirtyMinedBlocks) *
+                    ((mainClassAccess.minSuspicionDecreaseAmount - (mainClassAccess.maxSuspicionDecreaseAmount)) /
+                    (mainClassAccess.maxAccountableMillisecondDeltaForThirtyMinedBlocks - mainClassAccess.minAccountableMillisecondDeltaForThirtyMinedBlocks)) +
+                    (mainClassAccess.maxSuspicionDecreaseAmount);
+
+
+            }
+            System.out.println("Time ms: " + thirtyBlockDeltaTime);
+            System.out.println("Decreaser: " + suspicionDecreaseAmount);
+
+            thirtyBlockCounter = 0;
+            lastThirtyBlocksTime = System.currentTimeMillis();
+        }
+    }
 
     //Mined blocks trail tracking algorithm methods:
-    int GetLastBlockCoordsStoreCounter(){ return counterSinceLastBlockCoordsStore; }
-    void CycleBlockCoordsStoreCounter(){ counterSinceLastBlockCoordsStore = (counterSinceLastBlockCoordsStore + 1) % 4; }
+    public int GetLastBlockCoordsStoreCounter(){ return counterSinceLastBlockCoordsStore; }
+    public void CycleBlockCoordsStoreCounter(){ counterSinceLastBlockCoordsStore = (counterSinceLastBlockCoordsStore + 1) % 4; }
     public void ResetBlockCoordsStoreCounter(){ counterSinceLastBlockCoordsStore = 0; }
-    void CycleNextCoordsStorePos(){ nextCoordsStorePos = (nextCoordsStorePos + 1) % 10; }
-    int GetNextCoordsStorePos(){ return nextCoordsStorePos; }
-    IntVector3 GetMinedBlocksTrailArrayPos(int pos) { return minedBlocksTrailCoords[pos]; }
+    public void CycleNextCoordsStorePos(){ nextCoordsStorePos = (nextCoordsStorePos + 1) % 10; }
+    public int GetNextCoordsStorePos(){ return nextCoordsStorePos; }
+    public IntVector3 GetMinedBlocksTrailArrayPos(int pos) { return minedBlocksTrailCoords[pos]; }
     //void SetMinedBlocksTrailArrayPos(int pos, int x, int y, int z) { minedBlocksTrailCoords[pos] = new IntVector3(x, y, z); }
-    void SetMinedBlocksTrailArrayPos(int pos, Location l) { minedBlocksTrailCoords[pos] = new IntVector3(l); }
+    public void SetMinedBlocksTrailArrayPos(int pos, Location l) { minedBlocksTrailCoords[pos] = new IntVector3(l); }
     public void ResetBlocksTrailArray() { Arrays.fill(minedBlocksTrailCoords, null); }
-
 }
