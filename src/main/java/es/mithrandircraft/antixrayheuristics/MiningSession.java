@@ -17,15 +17,15 @@ public class MiningSession { //Contains heuristics tracked per player
     //General distance/time algorithm variables:
     private float suspicionLevel = 0.0f; //Level of suspicion for the player
 
-    float suspicionDecreaseAmount = 4; //How much "suspicionLevel" to reduce for the this MiningSession every "mainRunnableFrequency" in AntiXrayHeuristics.java. This value results from a calculation based on speed.
+    float suspicionDecreaseAmount = -4; //How much "suspicionLevel" to reduce for the this MiningSession every "mainRunnableFrequency" in AntiXrayHeuristics.java. This value results from a calculation based on speed.
 
     private Material lastMinedOre = null; //Last mined Material ore name
 
     private Location lastMinedOreLocation = null; //Last mined Material ore location
 
-    private long shortestDeltaTimeThirtyBlocksMined = Long.MAX_VALUE; //Shortest delta time from 0 to 30 blocks mined (this value represents the speed at which the mining session owner is removing blocks)
+    private int shortestDeltaTimeThirtyBlocksMined = Integer.MAX_VALUE; //Shortest delta time from 0 to 30 blocks mined (this value represents the speed at which the mining session owner is removing blocks)
 
-    private long lastThirtyBlocksTime; //Last time we reached 30 mined blocks
+    private int lastThirtyBlocksTime; //Last time we reached 30 mined blocks
 
     private int thirtyBlockCounter = 0; //When this value reaches 30, "thirtyBlockTimer" is compared to "lowestTimeThirtyBlocksMined". If lower, "thirtyBlockTimer" replaces "lowestTimeThirtyBlocksMined"
 
@@ -41,7 +41,7 @@ public class MiningSession { //Contains heuristics tracked per player
     MiningSession(es.mithrandircraft.antixrayheuristics.AntiXrayHeuristics main)
     {
         this.mainClassAccess = main;
-        lastThirtyBlocksTime = System.currentTimeMillis();
+        lastThirtyBlocksTime = (int)System.currentTimeMillis();
     }
 
     //General distance/time algorithm methods:
@@ -66,11 +66,13 @@ public class MiningSession { //Contains heuristics tracked per player
         thirtyBlockCounter++;
         if(thirtyBlockCounter >= 30)
         {
-            //System.out.println(lastThirtyBlocksTime);
-            //System.out.println(System.currentTimeMillis());
-            //System.out.println((int)(System.currentTimeMillis() - lastThirtyBlocksTime));
+            int thirtyBlockDeltaTime = ((int)System.currentTimeMillis() - lastThirtyBlocksTime); //Thirty block delta time in milliseconds
 
-            int thirtyBlockDeltaTime = (int)(System.currentTimeMillis() - lastThirtyBlocksTime); //Thirty block delta time in milliseconds
+            //Clamp 30 block delta time to max and min accountable millis:
+            if(thirtyBlockDeltaTime > mainClassAccess.maxAccountableMillisecondDeltaForThirtyMinedBlocks)
+                thirtyBlockDeltaTime = mainClassAccess.maxAccountableMillisecondDeltaForThirtyMinedBlocks;
+            else if(thirtyBlockDeltaTime < mainClassAccess.minAccountableMillisecondDeltaForThirtyMinedBlocks)
+                thirtyBlockDeltaTime = mainClassAccess.minAccountableMillisecondDeltaForThirtyMinedBlocks;
 
             //Is this new delta shorter (hence 30 blocks where mined faster at this point) than the current shortest registered delta time?
             if(thirtyBlockDeltaTime < shortestDeltaTimeThirtyBlocksMined)
@@ -83,14 +85,9 @@ public class MiningSession { //Contains heuristics tracked per player
                     ((mainClassAccess.minSuspicionDecreaseAmount - (mainClassAccess.maxSuspicionDecreaseAmount)) /
                     (mainClassAccess.maxAccountableMillisecondDeltaForThirtyMinedBlocks - mainClassAccess.minAccountableMillisecondDeltaForThirtyMinedBlocks)) +
                     (mainClassAccess.maxSuspicionDecreaseAmount);
-
-
             }
-            System.out.println("Time ms: " + thirtyBlockDeltaTime);
-            System.out.println("Decreaser: " + suspicionDecreaseAmount);
-
             thirtyBlockCounter = 0;
-            lastThirtyBlocksTime = System.currentTimeMillis();
+            lastThirtyBlocksTime = (int)System.currentTimeMillis();
         }
     }
 

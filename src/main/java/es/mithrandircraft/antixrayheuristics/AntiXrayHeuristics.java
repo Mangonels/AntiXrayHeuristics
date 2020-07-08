@@ -185,16 +185,16 @@ public final class AntiXrayHeuristics extends JavaPlugin implements Listener {
             {
                 //Z, X, Y check: Check if the block coordinates we're iterating are outside "3x3 horizontal Z and X axis tunnels" from mined ore. (You can imagine this as a cross with mined ore in center)
                 //Relative altitude check:
-                if (s.GetMinedBlocksTrailArrayPos(i).GetY() < ev.getBlock().getLocation().getY() - 1 || s.GetMinedBlocksTrailArrayPos(i).GetY() > ev.getBlock().getLocation().getY() + 1)
+                if (s.GetMinedBlocksTrailArrayPos(i).GetY() < ev.getBlock().getLocation().getY() - 2 || s.GetMinedBlocksTrailArrayPos(i).GetY() > ev.getBlock().getLocation().getY() + 2)
                 {
                     //Mined block is outside Y axis width
                     unalignedMinedBlocksTimesDetected++; //If trailed block wasn't in an axis, we'll add an unalignment point.
                 }
                 //Relative X axis separation check:
-                if (s.GetMinedBlocksTrailArrayPos(i).GetZ() < ev.getBlock().getLocation().getZ() - 1 || s.GetMinedBlocksTrailArrayPos(i).GetZ() > ev.getBlock().getLocation().getZ() + 1)
+                if (s.GetMinedBlocksTrailArrayPos(i).GetZ() < ev.getBlock().getLocation().getZ() - 2 || s.GetMinedBlocksTrailArrayPos(i).GetZ() > ev.getBlock().getLocation().getZ() + 2)
                 {
                     //Relative Z axis separation check:
-                    if(s.GetMinedBlocksTrailArrayPos(i).GetX() < ev.getBlock().getLocation().getX() - 1 || s.GetMinedBlocksTrailArrayPos(i).GetX() > ev.getBlock().getLocation().getX() + 1)
+                    if(s.GetMinedBlocksTrailArrayPos(i).GetX() < ev.getBlock().getLocation().getX() - 2 || s.GetMinedBlocksTrailArrayPos(i).GetX() > ev.getBlock().getLocation().getX() + 2)
                     {
                         //Mined block is ALSO outside X axis width
                         unalignedMinedBlocksTimesDetected++; //If trailed block wasn't in an axis, we'll add an unalignment point.
@@ -251,8 +251,11 @@ public final class AntiXrayHeuristics extends JavaPlugin implements Listener {
         else {
             //MiningSession PROPERTY UPDATES:
 
-            //Relevant non-ores mining triggers:
-            if (m == Material.STONE || m == Material.NETHERRACK || m == Material.BASALT) //These are right on top of the state machine because they're very common
+            //Relevant non-ores mining triggers
+            // These are right on top of the state machine because they're very common:
+            if ((m == Material.STONE) || (m == Material.NETHERRACK)
+
+                    || (spigotVersion.version.GetValue() >= 116 && m == Material.BASALT)) //Spigot for MC 1.16+
             {
                 s.UpdateTimeAccountingProperties(); //This method updates some speed/time propeties and may influence suspicion decrease rates
                 s.minedNonOreBlocksStreak++;
