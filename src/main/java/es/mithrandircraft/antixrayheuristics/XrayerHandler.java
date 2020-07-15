@@ -112,7 +112,7 @@ public class XrayerHandler {
             if(target.getEquipment().getHelmet() == null) target.getEquipment().setHelmet(possessions[37]);
             else DropItemAtPlayerLocation(possessions[37], target);
 
-            System.out.print(ChatColor.translateAlternateColorCodes('&', LocaleManager.get().getString("MessagesPrefix")) + target.getName() + LocaleManager.get().getString("AbsolvedPlayer"));
+            System.out.print(ChatColor.translateAlternateColorCodes('&', LocaleManager.get().getString("MessagesPrefix")) + " " + target.getName() + LocaleManager.get().getString("AbsolvedPlayer"));
 
             //Execute configured commands:
             for (int i = 0; i < mainClassAccess.getConfig().getStringList("CommandsExecutedOnPlayerAbsolved").size(); i++) {
