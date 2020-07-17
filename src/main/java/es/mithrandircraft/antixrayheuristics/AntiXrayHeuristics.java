@@ -43,7 +43,7 @@ public final class AntiXrayHeuristics extends JavaPlugin implements Listener {
 
     public final float maxSuspicionDecreaseProportion = -10f;
     public final float minSuspicionDecreaseProportion = -0.1f;
-    public final float absoluteMinimumSuspicionDecrease = 1.0f; //Players mining below certain speeds should at least have this suspicion level applied, else fp's emerge
+    public final float absoluteMinimumSuspicionDecrease = -1.0f; //Players mining below certain speeds should at least have this suspicion level applied, else fp's emerge
 
     public final int maxAccountableMillisecondDeltaForThirtyMinedBlocks = 20000; //Directly proportional to "minSuspicionDecreaseProportion"
     public final int minAccountableMillisecondDeltaForThirtyMinedBlocks = 0; //Directly proportional to "maxSuspicionDecreaseProportion"
