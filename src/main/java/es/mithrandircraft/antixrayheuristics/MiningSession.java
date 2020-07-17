@@ -90,8 +90,8 @@ public class MiningSession { //Contains heuristics tracked per player
             thirtyBlockCounter = 0;
             lastThirtyBlocksTime = (int)System.currentTimeMillis();
 
-            //Minimum suspicion decrease amount should be "absoluteMinimumSuspicionDecrease", else suspicion reduction is too slow. This prevents slow mining players from receiving fp's
-            if(suspicionDecreaseAmount < mainClassAccess.absoluteMinimumSuspicionDecrease) suspicionDecreaseAmount = mainClassAccess.absoluteMinimumSuspicionDecrease;
+            //Minimum suspicion decrease amount should be at (negative) least "absoluteMinimumSuspicionDecrease", else suspicion reduction is too slow. This prevents slow mining players from receiving fp's
+            if(suspicionDecreaseAmount > mainClassAccess.absoluteMinimumSuspicionDecrease) suspicionDecreaseAmount = mainClassAccess.absoluteMinimumSuspicionDecrease;
 
             System.out.println("[AXH Debug]");
             System.out.println("Player: " + p.getName());
