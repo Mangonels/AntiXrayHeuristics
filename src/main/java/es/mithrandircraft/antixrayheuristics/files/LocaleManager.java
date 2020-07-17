@@ -33,11 +33,10 @@ public class LocaleManager {
         localeConfiguration.addDefault("PlayerDataPurged", "&bThe Xrayer's data was purged from the xrayer vault.");
         localeConfiguration.addDefault("PurgeCommandLimit", "&bPurging players through command is currently impossible for players that are not currently connected to the server. You CAN however purge individual players that are offline through the ingame XrayerVault GUI: /axh v");
         localeConfiguration.addDefault("OwnSuspicionNullified", "&bYour suspicion has been nullified.");
-        localeConfiguration.addDefault("PlayerSuspicionNullified", "&b's suspicion has been nullified.");
+        localeConfiguration.addDefault("PlayerSuspicionNullified", "&a{PlayerName} &b's suspicion has been nullified.");
         localeConfiguration.addDefault("NoOwnSuspicionReset", "&bYou are not suspicious of Xray usage. No suspicion reset applied.");
-        localeConfiguration.addDefault("NoPlayerSuspicionReset", "&b is not suspicious of Xray usage. No suspicion reset was applied.");
-        localeConfiguration.addDefault("NoPlayerSuspicionReset", "&b is not suspicious of Xray usage. No suspicion reset was applied.");
-        localeConfiguration.addDefault("AbsolvedPlayer", "&b has been absolved from being considered an Xrayer, and his items have been returned.");
+        localeConfiguration.addDefault("NoPlayerSuspicionReset", "&a{PlayerName} &bis not suspicious of Xray usage. No suspicion reset was applied.");
+        localeConfiguration.addDefault("AbsolvedPlayer", "&a{PlayerName} &bhas been absolved from being considered an Xrayer, and his items have been returned.");
 
         //Plugin Actions:
         localeConfiguration.addDefault("AutoHandledPlayer", "&a{PlayerName} &bwas automatically registered and handled for xraying.");
@@ -48,7 +47,6 @@ public class LocaleManager {
 
         //Persistent memory:
         localeConfiguration.addDefault("SQLDisconError", "&bThere was an error when attempting to disconnect from SQL database.");
-        localeConfiguration.addDefault("SQLTableFoundOrCreated", "&bSQL Xrayers table was either found or created from scratch. All seems to be in order.");
 
         //GUI:
         localeConfiguration.addDefault("BackButtonTitle", "&aBack");

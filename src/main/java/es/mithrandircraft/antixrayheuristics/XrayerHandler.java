@@ -116,7 +116,7 @@ public class XrayerHandler {
             }
 
             //Log AbsolvedPlayer in console:
-            System.out.print(ChatColor.translateAlternateColorCodes('&', LocaleManager.get().getString("MessagesPrefix")) + target.getName() + LocaleManager.get().getString("AbsolvedPlayer"));
+            System.out.print(ChatColor.translateAlternateColorCodes('&', LocaleManager.get().getString("MessagesPrefix")) + " " + PlaceholderManager.SubstitutePlayerNameAndColorCodePlaceholders(LocaleManager.get().getString("AbsolvedPlayer"), target.getName()));
 
             //Execute configured commands:
             for (int i = 0; i < mainClassAccess.getConfig().getStringList("CommandsExecutedOnPlayerAbsolved").size(); i++) {

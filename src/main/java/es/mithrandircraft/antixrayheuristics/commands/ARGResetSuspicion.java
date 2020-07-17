@@ -7,6 +7,7 @@ package es.mithrandircraft.antixrayheuristics.commands;
 import es.mithrandircraft.antixrayheuristics.AntiXrayHeuristics;
 import es.mithrandircraft.antixrayheuristics.MiningSession;
 
+import es.mithrandircraft.antixrayheuristics.PlaceholderManager;
 import es.mithrandircraft.antixrayheuristics.files.LocaleManager;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
@@ -38,17 +39,17 @@ public class ARGResetSuspicion {
                 MiningSession tempMS = mainClass.sessions.get(arg);
                 if (tempMS != null) {
                     mainClass.sessions.remove(arg);
-                    player.sendMessage(ChatColor.translateAlternateColorCodes('&', LocaleManager.get().getString("MessagesPrefix") + " " + arg + LocaleManager.get().getString("PlayerSuspicionNullified")));
+                    player.sendMessage(ChatColor.translateAlternateColorCodes('&', LocaleManager.get().getString("MessagesPrefix")) + " " + PlaceholderManager.SubstitutePlayerNameAndColorCodePlaceholders(LocaleManager.get().getString("PlayerSuspicionNullified"), arg));
                 } else
-                    player.sendMessage(ChatColor.translateAlternateColorCodes('&', LocaleManager.get().getString("MessagesPrefix") + " " + arg + LocaleManager.get().getString("NoPlayerSuspicionReset")));
+                    player.sendMessage(ChatColor.translateAlternateColorCodes('&', LocaleManager.get().getString("MessagesPrefix")) + " " + PlaceholderManager.SubstitutePlayerNameAndColorCodePlaceholders(LocaleManager.get().getString("NoPlayerSuspicionReset"), arg));
             } else player.sendMessage(ChatColor.translateAlternateColorCodes('&', LocaleManager.get().getString("NoPermissionForCommand")));
         } else {
             MiningSession tempMS = mainClass.sessions.get(arg);
             if (tempMS != null) {
                 mainClass.sessions.remove(arg);
-                System.out.println(ChatColor.translateAlternateColorCodes('&',LocaleManager.get().getString("MessagesPrefix") + " " + arg + LocaleManager.get().getString("PlayerSuspicionNullified")));
+                System.out.println(ChatColor.translateAlternateColorCodes('&',LocaleManager.get().getString("MessagesPrefix")) + " " + PlaceholderManager.SubstitutePlayerNameAndColorCodePlaceholders(LocaleManager.get().getString("PlayerSuspicionNullified"), arg));
             } else //Is console
-                System.out.println(ChatColor.translateAlternateColorCodes('&', LocaleManager.get().getString("MessagesPrefix") + " " + arg + LocaleManager.get().getString("NoPlayerSuspicionReset")));
+                System.out.println(ChatColor.translateAlternateColorCodes('&', LocaleManager.get().getString("MessagesPrefix")) + " " + PlaceholderManager.SubstitutePlayerNameAndColorCodePlaceholders(LocaleManager.get().getString("NoPlayerSuspicionReset"), arg));
         }
     }
 }
