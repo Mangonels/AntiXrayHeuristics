@@ -41,11 +41,12 @@ public final class AntiXrayHeuristics extends JavaPlugin implements Listener {
     private final int mainRunnableFrequency = 200; //(ticks)15s - Time in ticks at which suspicion decrease runnable is executed.
 
 
-    public final float maxSuspicionDecreaseAmount = -10f;
-    public final float minSuspicionDecreaseAmount = -0.1f;
+    public final float maxSuspicionDecreaseProportion = -10f;
+    public final float minSuspicionDecreaseProportion = -0.1f;
+    public final float absoluteMinimumSuspicionDecrease = 1.0f; //Players mining below certain speeds should at least have this suspicion level applied, else fp's emerge
 
-    public final int maxAccountableMillisecondDeltaForThirtyMinedBlocks = 20000; //Directly proportional to "minSuspicionDecreaseAmount"
-    public final int minAccountableMillisecondDeltaForThirtyMinedBlocks = 0; //Directly proportional to "maxSuspicionDecreaseAmount"
+    public final int maxAccountableMillisecondDeltaForThirtyMinedBlocks = 20000; //Directly proportional to "minSuspicionDecreaseProportion"
+    public final int minAccountableMillisecondDeltaForThirtyMinedBlocks = 0; //Directly proportional to "maxSuspicionDecreaseProportion"
 
 
     private final int suspicionStreakZeroThreshold = 20; //Ammount of consecutive times after which a player is considered as no longer mining.

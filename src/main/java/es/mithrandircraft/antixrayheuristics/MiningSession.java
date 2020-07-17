@@ -83,12 +83,15 @@ public class MiningSession { //Contains heuristics tracked per player
                 //Correlate decrease amount to current shortest delta...
                 //Example formula for range conversion x in range [a,b] to y in range [c,d]: "y = (x - a) * ((d - c) / (b - a)) + c"
                 suspicionDecreaseAmount = (shortestDeltaTimeThirtyBlocksMined - mainClassAccess.minAccountableMillisecondDeltaForThirtyMinedBlocks) *
-                    ((mainClassAccess.minSuspicionDecreaseAmount - (mainClassAccess.maxSuspicionDecreaseAmount)) /
+                    ((mainClassAccess.minSuspicionDecreaseProportion - (mainClassAccess.maxSuspicionDecreaseProportion)) /
                     (mainClassAccess.maxAccountableMillisecondDeltaForThirtyMinedBlocks - mainClassAccess.minAccountableMillisecondDeltaForThirtyMinedBlocks)) +
-                    (mainClassAccess.maxSuspicionDecreaseAmount);
+                    (mainClassAccess.maxSuspicionDecreaseProportion);
             }
             thirtyBlockCounter = 0;
             lastThirtyBlocksTime = (int)System.currentTimeMillis();
+
+            //Minimum suspicion decrease amount should be "absoluteMinimumSuspicionDecrease", else suspicion reduction is too slow. This prevents slow mining players from receiving fp's
+            if(suspicionDecreaseAmount < mainClassAccess.absoluteMinimumSuspicionDecrease) suspicionDecreaseAmount = mainClassAccess.absoluteMinimumSuspicionDecrease;
 
             System.out.println("[AXH Debug]");
             System.out.println("Player: " + p.getName());
