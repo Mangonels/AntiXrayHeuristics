@@ -230,10 +230,13 @@ public class XrayerVault {
             {
                 Inventory inv = Bukkit.createInventory(null, 54, "Xrayer Vault"); //Vault contents to display
 
-                //Fill up vault:
-                for (int i = 0; i < 41; i++) //Fills up the vault page with confiscated xrayer's inventory
+                if(belongings != null) //Belongings could be null when extracted from database, since StoreCopy option exists and can be false
                 {
-                    inv.setItem(i, belongings[i]);
+                    //Fill up vault:
+                    for (int i = 0; i < 41; i++) //Fills up the vault page with confiscated xrayer's inventory
+                    {
+                        inv.setItem(i, belongings[i]);
+                    }
                 }
 
                 //Separation bar for mere decoration:

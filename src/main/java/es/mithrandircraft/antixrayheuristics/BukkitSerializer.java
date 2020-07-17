@@ -1,5 +1,7 @@
 package es.mithrandircraft.antixrayheuristics;
 
+import org.bukkit.Material;
+import org.bukkit.entity.Item;
 import org.bukkit.inventory.EntityEquipment;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
@@ -46,8 +48,11 @@ public class BukkitSerializer {
             throw new IllegalStateException("Unable to save item stacks.", e);
         }
     }
-
     public static ItemStack[] itemStackArrayFromBase64(String data) throws IOException {
+        if(data == null) //Null string case returns null
+        {
+            return null;
+        }
         try {
             ByteArrayInputStream inputStream = new ByteArrayInputStream(Base64Coder.decodeLines(data));
             BukkitObjectInputStream dataInput = new BukkitObjectInputStream(inputStream);

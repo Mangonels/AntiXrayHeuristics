@@ -89,29 +89,33 @@ public class XrayerHandler {
         }
     }
 
-    public static boolean PlayerAbsolver(String uuid, ItemStack[] possessions, AntiXrayHeuristics mainClassAccess) //Currently returns confiscated items to an absolved player. If the player isn't online, function returns false.
+    public static boolean PlayerAbsolver(String uuid, ItemStack[] belongings, AntiXrayHeuristics mainClassAccess) //Currently returns confiscated items to an absolved player. If the player isn't online, function returns false.
     {
         Player target = Bukkit.getPlayer(UUID.fromString(uuid));
         if (target != null) { //Player online
-            //Return inventory
-            for(int i = 0; i < 36; i++)
+            if(belongings != null) //Belongings could be null when extracted from database, since StoreCopy option exists and can be false
             {
-                //Check if there's a free slot and place confiscated possession if so (With a bunch of error preventions):
-                if (possessions[i] != null && possessions[i].getType() != Material.AIR && target.getInventory().firstEmpty() != -1) target.getInventory().addItem(possessions[i]);
-                else if(possessions[i] != null && possessions[i].getType() != Material.AIR) DropItemAtPlayerLocation(possessions[i], target); //No space, drop on floor.
+                //Return inventory
+                for(int i = 0; i < 36; i++)
+                {
+                    //Check if there's a free slot and place confiscated possession if so (With a bunch of error preventions):
+                    if (belongings[i] != null && belongings[i].getType() != Material.AIR && target.getInventory().firstEmpty() != -1) target.getInventory().addItem(belongings[i]);
+                    else if(belongings[i] != null && belongings[i].getType() != Material.AIR) DropItemAtPlayerLocation(belongings[i], target); //No space, drop on floor.
+                }
+                //Return equipment
+                if(target.getEquipment().getItemInOffHand().getType().equals(Material.AIR)) target.getEquipment().setItemInOffHand(belongings[36]); //Check if nothing in slot
+                else DropItemAtPlayerLocation(belongings[36], target); //No space, drop on floor.
+                if(target.getEquipment().getBoots() == null) target.getEquipment().setBoots(belongings[40]); //Same with rest...
+                else DropItemAtPlayerLocation(belongings[40], target);
+                if(target.getEquipment().getLeggings() == null) target.getEquipment().setLeggings(belongings[39]);
+                else DropItemAtPlayerLocation(belongings[39], target);
+                if(target.getEquipment().getChestplate() == null) target.getEquipment().setChestplate(belongings[38]);
+                else DropItemAtPlayerLocation(belongings[38], target);
+                if(target.getEquipment().getHelmet() == null) target.getEquipment().setHelmet(belongings[37]);
+                else DropItemAtPlayerLocation(belongings[37], target);
             }
-            //Return equipment
-            if(target.getEquipment().getItemInOffHand().getType().equals(Material.AIR)) target.getEquipment().setItemInOffHand(possessions[36]); //Check if nothing in slot
-            else DropItemAtPlayerLocation(possessions[36], target); //No space, drop on floor.
-            if(target.getEquipment().getBoots() == null) target.getEquipment().setBoots(possessions[40]); //Same with rest...
-            else DropItemAtPlayerLocation(possessions[40], target);
-            if(target.getEquipment().getLeggings() == null) target.getEquipment().setLeggings(possessions[39]);
-            else DropItemAtPlayerLocation(possessions[39], target);
-            if(target.getEquipment().getChestplate() == null) target.getEquipment().setChestplate(possessions[38]);
-            else DropItemAtPlayerLocation(possessions[38], target);
-            if(target.getEquipment().getHelmet() == null) target.getEquipment().setHelmet(possessions[37]);
-            else DropItemAtPlayerLocation(possessions[37], target);
 
+            //Log AbsolvedPlayer in console:
             System.out.print(ChatColor.translateAlternateColorCodes('&', LocaleManager.get().getString("MessagesPrefix")) + target.getName() + LocaleManager.get().getString("AbsolvedPlayer"));
 
             //Execute configured commands:

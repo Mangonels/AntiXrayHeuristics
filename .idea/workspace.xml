@@ -21,11 +21,12 @@
   <component name="ChangeListManager">
     <list default="true" id="2876e9f1-3d67-41cc-8b94-448fa827feed" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/es/mithrandircraft/antixrayheuristics/AntiXrayHeuristics.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/es/mithrandircraft/antixrayheuristics/AntiXrayHeuristics.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/es/mithrandircraft/antixrayheuristics/MiningSession.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/es/mithrandircraft/antixrayheuristics/MiningSession.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/config.yml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/config.yml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/config.yml" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/config.yml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/es/mithrandircraft/antixrayheuristics/AntiXrayHeuristics.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/es/mithrandircraft/antixrayheuristics/AntiXrayHeuristics.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/es/mithrandircraft/antixrayheuristics/BukkitSerializer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/es/mithrandircraft/antixrayheuristics/BukkitSerializer.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/es/mithrandircraft/antixrayheuristics/XrayerHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/es/mithrandircraft/antixrayheuristics/XrayerHandler.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/es/mithrandircraft/antixrayheuristics/gui/XrayerVault.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/es/mithrandircraft/antixrayheuristics/gui/XrayerVault.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/es/mithrandircraft/antixrayheuristics/BukkitSerializer.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/es/mithrandircraft/antixrayheuristics/BukkitSerializer.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/es/mithrandircraft/antixrayheuristics/XrayerHandler.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/es/mithrandircraft/antixrayheuristics/XrayerHandler.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/es/mithrandircraft/antixrayheuristics/gui/XrayerVault.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/es/mithrandircraft/antixrayheuristics/gui/XrayerVault.class" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -185,46 +186,54 @@
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="778" y="403" key="FileChooserDialogImpl/0.0.1920.1040@0.0.1920.1040" timestamp="1593906005033" />
-    <state width="1877" height="188" key="GridCell.Tab.0.bottom" timestamp="1594220539354">
-      <screen x="0" y="0" width="1920" height="1040" />
+    <state width="1493" height="95" key="GridCell.Tab.0.bottom" timestamp="1594771547472">
+      <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state width="1493" height="210" key="GridCell.Tab.0.bottom/0.0.1536.824@0.0.1536.824" timestamp="1593740724734" />
+    <state width="1493" height="95" key="GridCell.Tab.0.bottom/0.0.1536.824@0.0.1536.824" timestamp="1594771547472" />
     <state width="1877" height="188" key="GridCell.Tab.0.bottom/0.0.1920.1040@0.0.1920.1040" timestamp="1594220539354" />
-    <state width="1877" height="188" key="GridCell.Tab.0.center" timestamp="1594220539354">
-      <screen x="0" y="0" width="1920" height="1040" />
+    <state width="1493" height="95" key="GridCell.Tab.0.center" timestamp="1594771547472">
+      <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state width="1493" height="210" key="GridCell.Tab.0.center/0.0.1536.824@0.0.1536.824" timestamp="1593740724734" />
+    <state width="1493" height="95" key="GridCell.Tab.0.center/0.0.1536.824@0.0.1536.824" timestamp="1594771547472" />
     <state width="1877" height="188" key="GridCell.Tab.0.center/0.0.1920.1040@0.0.1920.1040" timestamp="1594220539354" />
-    <state width="1877" height="188" key="GridCell.Tab.0.left" timestamp="1594220539354">
-      <screen x="0" y="0" width="1920" height="1040" />
+    <state width="1493" height="95" key="GridCell.Tab.0.left" timestamp="1594771547472">
+      <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state width="1493" height="210" key="GridCell.Tab.0.left/0.0.1536.824@0.0.1536.824" timestamp="1593740724734" />
+    <state width="1493" height="95" key="GridCell.Tab.0.left/0.0.1536.824@0.0.1536.824" timestamp="1594771547472" />
     <state width="1877" height="188" key="GridCell.Tab.0.left/0.0.1920.1040@0.0.1920.1040" timestamp="1594220539354" />
-    <state width="1877" height="188" key="GridCell.Tab.0.right" timestamp="1594220539354">
-      <screen x="0" y="0" width="1920" height="1040" />
+    <state width="1493" height="95" key="GridCell.Tab.0.right" timestamp="1594771547472">
+      <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state width="1493" height="210" key="GridCell.Tab.0.right/0.0.1536.824@0.0.1536.824" timestamp="1593740724734" />
+    <state width="1493" height="95" key="GridCell.Tab.0.right/0.0.1536.824@0.0.1536.824" timestamp="1594771547472" />
     <state width="1877" height="188" key="GridCell.Tab.0.right/0.0.1920.1040@0.0.1920.1040" timestamp="1594220539354" />
-    <state width="1877" height="144" key="GridCell.Tab.1.bottom" timestamp="1594219218735">
-      <screen x="0" y="0" width="1920" height="1040" />
+    <state width="1493" height="162" key="GridCell.Tab.1.bottom" timestamp="1594755372245">
+      <screen x="0" y="0" width="1536" height="824" />
     </state>
+    <state width="1493" height="162" key="GridCell.Tab.1.bottom/0.0.1536.824@0.0.1536.824" timestamp="1594755372245" />
     <state width="1877" height="144" key="GridCell.Tab.1.bottom/0.0.1920.1040@0.0.1920.1040" timestamp="1594219218735" />
-    <state width="1877" height="144" key="GridCell.Tab.1.center" timestamp="1594219218735">
-      <screen x="0" y="0" width="1920" height="1040" />
+    <state width="1493" height="162" key="GridCell.Tab.1.center" timestamp="1594755372245">
+      <screen x="0" y="0" width="1536" height="824" />
     </state>
+    <state width="1493" height="162" key="GridCell.Tab.1.center/0.0.1536.824@0.0.1536.824" timestamp="1594755372245" />
     <state width="1877" height="144" key="GridCell.Tab.1.center/0.0.1920.1040@0.0.1920.1040" timestamp="1594219218735" />
-    <state width="1877" height="144" key="GridCell.Tab.1.left" timestamp="1594219218735">
-      <screen x="0" y="0" width="1920" height="1040" />
+    <state width="1493" height="162" key="GridCell.Tab.1.left" timestamp="1594755372245">
+      <screen x="0" y="0" width="1536" height="824" />
     </state>
+    <state width="1493" height="162" key="GridCell.Tab.1.left/0.0.1536.824@0.0.1536.824" timestamp="1594755372245" />
     <state width="1877" height="144" key="GridCell.Tab.1.left/0.0.1920.1040@0.0.1920.1040" timestamp="1594219218735" />
-    <state width="1877" height="144" key="GridCell.Tab.1.right" timestamp="1594219218735">
-      <screen x="0" y="0" width="1920" height="1040" />
+    <state width="1493" height="162" key="GridCell.Tab.1.right" timestamp="1594755372245">
+      <screen x="0" y="0" width="1536" height="824" />
     </state>
+    <state width="1493" height="162" key="GridCell.Tab.1.right/0.0.1536.824@0.0.1536.824" timestamp="1594755372245" />
     <state width="1877" height="144" key="GridCell.Tab.1.right/0.0.1920.1040@0.0.1920.1040" timestamp="1594219218735" />
     <state x="342" y="140" key="new project wizard" timestamp="1593955154187">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="342" y="140" key="new project wizard/0.0.1920.1040@0.0.1920.1040" timestamp="1593955154187" />
+    <state x="431" y="145" width="672" height="678" key="search.everywhere.popup" timestamp="1594750525739">
+      <screen x="0" y="0" width="1536" height="824" />
+    </state>
+    <state x="431" y="145" width="672" height="678" key="search.everywhere.popup/0.0.1536.824@0.0.1536.824" timestamp="1594750525739" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/AntiXrayHeuristics$AntiXrayHeuristics_1_3_1_jar.ic" NAME="AntiXrayHeuristics-1.3.1.jar Coverage Results" MODIFIED="1579192181151" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
