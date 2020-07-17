@@ -7,6 +7,7 @@ package es.mithrandircraft.antixrayheuristics;
 import es.mithrandircraft.antixrayheuristics.math.IntVector3;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.entity.Player;
 
 import java.util.Arrays;
 
@@ -61,7 +62,7 @@ public class MiningSession { //Contains heuristics tracked per player
     public Location GetLastMinedOreLocation() { return lastMinedOreLocation; }
 
     //Time property update methods:
-    public void UpdateTimeAccountingProperties() //Updates properties based on time, and may also modify suspicion decrease amount based on them
+    public void UpdateTimeAccountingProperties(Player p) //Updates properties based on time, and may also modify suspicion decrease amount based on them
     {
         thirtyBlockCounter++;
         if(thirtyBlockCounter >= 30)
@@ -88,6 +89,12 @@ public class MiningSession { //Contains heuristics tracked per player
             }
             thirtyBlockCounter = 0;
             lastThirtyBlocksTime = (int)System.currentTimeMillis();
+
+            System.out.println("[AXH Debug]");
+            System.out.println("Player: " + p.getName());
+            System.out.println("Decrease amount: " + suspicionDecreaseAmount);
+            System.out.println("Suspicion level: " + suspicionLevel);
+            System.out.println("--");
         }
     }
 

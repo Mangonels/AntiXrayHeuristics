@@ -37,7 +37,7 @@ public class LocaleManager {
         localeConfiguration.addDefault("NoOwnSuspicionReset", "&bYou are not suspicious of Xray usage. No suspicion reset applied.");
         localeConfiguration.addDefault("NoPlayerSuspicionReset", "&b is not suspicious of Xray usage. No suspicion reset was applied.");
         localeConfiguration.addDefault("NoPlayerSuspicionReset", "&b is not suspicious of Xray usage. No suspicion reset was applied.");
-        localeConfiguration.addDefault("AbsolvedPlayer", "&bhas been absolved from being considered an Xrayer, and his items have been returned.");
+        localeConfiguration.addDefault("AbsolvedPlayer", "&b has been absolved from being considered an Xrayer, and his items have been returned.");
 
         //Plugin Actions:
         localeConfiguration.addDefault("AutoHandledPlayer", "&a{PlayerName} &bwas automatically registered and handled for xraying.");
