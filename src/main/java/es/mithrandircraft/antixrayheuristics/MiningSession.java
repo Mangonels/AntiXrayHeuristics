@@ -30,6 +30,8 @@ public class MiningSession { //Contains heuristics tracked per player
 
     private int thirtyBlockCounter = 0; //When this value reaches 30, "thirtyBlockTimer" is compared to "lowestTimeThirtyBlocksMined". If lower, "thirtyBlockTimer" replaces "lowestTimeThirtyBlocksMined"
 
+    private int explosivesPlacedStreak = 0; //Tracks how many explosive blocks have been placed. Used for suspicion increase inmunity above certain threshold.
+
     public int minedNonOreBlocksStreak = 0; //Tracks how many non-ore blocks have been mined in streak.
 
     public int foundAtZeroSuspicionStreak = 0; //Tracks how many times this mining session has been found at suspicion level 0 during Runnable tasks.
@@ -51,7 +53,11 @@ public class MiningSession { //Contains heuristics tracked per player
     {
         suspicionLevel = l;
     }
-    public void AddSuspicionLevel(float l) { suspicionLevel += l; }
+    public void AddSuspicionLevel(float l)
+    {
+        //Don't add suspicion if explosivesPlacedStreak above 4
+        if(explosivesPlacedStreak <= 4) suspicionLevel += l;
+    }
     public void SelfSuspicionReducer() { suspicionLevel += suspicionDecreaseAmount; }
     public void SetLastMinedOreData(Material m, Location l)
     {
@@ -102,6 +108,7 @@ public class MiningSession { //Contains heuristics tracked per player
     }
 
     //Mined blocks trail tracking algorithm methods:
+    public void IncreaseExplosivesPlaced(){ explosivesPlacedStreak++; }
     public int GetLastBlockCoordsStoreCounter(){ return counterSinceLastBlockCoordsStore; }
     public void CycleBlockCoordsStoreCounter(){ counterSinceLastBlockCoordsStore = (counterSinceLastBlockCoordsStore + 1) % 4; }
     public void ResetBlockCoordsStoreCounter(){ counterSinceLastBlockCoordsStore = 0; }

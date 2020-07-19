@@ -39,6 +39,7 @@ public class BlockBreakEv implements Listener {
                         break;
                     }
                 }
+                break;
             }
         }
     }

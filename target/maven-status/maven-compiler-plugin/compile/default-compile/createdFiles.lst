@@ -23,8 +23,10 @@ es\mithrandircraft\antixrayheuristics\MemoryManager$6.class
 es\mithrandircraft\antixrayheuristics\gui\XrayerVault.class
 es\mithrandircraft\antixrayheuristics\commands\ARGAbsolvePlayer$1.class
 es\mithrandircraft\antixrayheuristics\MemoryManager$3.class
+es\mithrandircraft\antixrayheuristics\events\BlockPlaceEv.class
 es\mithrandircraft\antixrayheuristics\XrayerHandler.class
 es\mithrandircraft\antixrayheuristics\commands\ARGResetSuspicion.class
+es\mithrandircraft\antixrayheuristics\events\BlockPlaceEv$1.class
 es\mithrandircraft\antixrayheuristics\math\IntVector3.class
 es\mithrandircraft\antixrayheuristics\callbacks\GetXrayerHandleLocationCallback.class
 es\mithrandircraft\antixrayheuristics\events\DelayedInventoryCloseExecution.class

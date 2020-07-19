@@ -26,7 +26,7 @@ import java.util.Set;
 public final class AntiXrayHeuristics extends JavaPlugin implements Listener {
 
     //Captured spigot version:
-    SpigotVersion spigotVersion;
+    public SpigotVersion spigotVersion;
 
     //Mining sessions HashMap <Name, MiningSession>:
     public HashMap<String, MiningSession> sessions = new HashMap<String, MiningSession>();
@@ -43,7 +43,7 @@ public final class AntiXrayHeuristics extends JavaPlugin implements Listener {
 
     public final float maxSuspicionDecreaseProportion = -10f;
     public final float minSuspicionDecreaseProportion = -0.1f;
-    public final float absoluteMinimumSuspicionDecrease = -1.0f; //Players mining below certain speeds should at least have this suspicion level applied, else fp's emerge
+    public final float absoluteMinimumSuspicionDecrease = -3.0f; //Players mining below certain speeds should at least have this suspicion level applied, else fp's emerge
 
     public final int maxAccountableMillisecondDeltaForThirtyMinedBlocks = 20000; //Directly proportional to "minSuspicionDecreaseProportion"
     public final int minAccountableMillisecondDeltaForThirtyMinedBlocks = 0; //Directly proportional to "maxSuspicionDecreaseProportion"
@@ -108,6 +108,7 @@ public final class AntiXrayHeuristics extends JavaPlugin implements Listener {
 
         //Event registring:
         getServer().getPluginManager().registerEvents(new BlockBreakEv(this), this);
+        getServer().getPluginManager().registerEvents(new BlockPlaceEv(this), this);
         getServer().getPluginManager().registerEvents(new ClickEv(this), this);
         getServer().getPluginManager().registerEvents(new ItemDragEv(), this);
         getServer().getPluginManager().registerEvents(new InventoryCloseEv(this), this);
@@ -121,9 +122,9 @@ public final class AntiXrayHeuristics extends JavaPlugin implements Listener {
 
         usualEncounterThreshold = getConfig().getInt("MinimumBlocksMinedToNextVein") * 4; //Calculates how many blocks till we should find diamond and/or emerald average
 
-        extraDiamondWeight = getConfig().getLong("DiamondWeight") * 2f;
-        extraEmeraldWeight = getConfig().getLong("EmeraldWeight") * 2f;
-        extraAncientDebrisWeight = getConfig().getLong("AncientDebrisWeight") * 2f;
+        extraDiamondWeight = getConfig().getLong("DiamondWeight") * 1.5f;
+        extraEmeraldWeight = getConfig().getLong("EmeraldWeight") * 1.5f;
+        extraAncientDebrisWeight = getConfig().getLong("AncientDebrisWeight") * 1.5f;
     }
 
     @Override
