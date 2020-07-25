@@ -35,13 +35,11 @@ public class BlockPlaceEv implements Listener {
             {
                 //Is it overworld?:
                 if (e.getBlock().getWorld().getEnvironment() == World.Environment.NORMAL) {
-                    System.out.println("normal world block place");
                     //Relevant explosive materials check:
                     switch(e.getBlock().getType()) {
                         case TNT:
                         case END_CRYSTAL: {
                             NotifySession(e.getPlayer().getName());
-                            System.out.println("explosive block place detected");
                             break;
                         }
                         default: {
@@ -51,7 +49,6 @@ public class BlockPlaceEv implements Listener {
                     //Spigot for MC 1.16+
                     if(mainClassAccess.spigotVersion.version.GetValue() >= 116 && e.getBlock().getType() == Material.RESPAWN_ANCHOR){
                         NotifySession(e.getPlayer().getName());
-                        System.out.println("explosive block place detected");
                         break;
                     }
                 }
