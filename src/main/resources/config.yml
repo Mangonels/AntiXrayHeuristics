@@ -25,13 +25,13 @@ TrackWorlds:
 CoalWeight: 5.0
 IronWeight: 5.0
 GoldWeight: 5.0
-LapisWeight: 12.0
+LapisWeight: 8.0
 RedstoneWeight: 9.0
-EmeraldWeight: 28.0
-DiamondWeight: 20.0
+EmeraldWeight: 22.0
+DiamondWeight: 15.0
 QuartzWeight: 5.0
 NetherGoldWeight: 5.0
-AncientDebrisWeight: 28.0
+AncientDebrisWeight: 22.0
 
 #You can use these reducers for certain biomes where ores are more abundant. They are used internally in order to
 #reduce the total amount of suspicion applied according to the algorithm, when an ore is mined in a biome where it's
