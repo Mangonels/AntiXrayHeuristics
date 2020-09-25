@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
   <component name="BranchesTreeState">
     <expand>
       <path>
@@ -21,7 +24,11 @@
   <component name="ChangeListManager">
     <list default="true" id="2876e9f1-3d67-41cc-8b94-448fa827feed" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/config.yml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/config.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/AntiXrayHeuristics.iml" beforeDir="false" afterPath="$PROJECT_DIR$/AntiXrayHeuristics.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/es/mithrandircraft/antixrayheuristics/BukkitSerializer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/es/mithrandircraft/antixrayheuristics/BukkitSerializer.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/es/mithrandircraft/antixrayheuristics/events/BlockPlaceEv.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/es/mithrandircraft/antixrayheuristics/events/BlockPlaceEv.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/config.yml" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/config.yml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -40,6 +47,11 @@
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
   <component name="MavenImportPreferences">
+    <option name="generalSettings">
+      <MavenGeneralSettings>
+        <option name="mavenHome" value="C:\Program Files\JetBrains\IntelliJ IDEA Community Edition 2020.1.2\plugins\maven\lib\maven3" />
+      </MavenGeneralSettings>
+    </option>
     <option name="importingSettings">
       <MavenImportingSettings>
         <option name="downloadDocsAutomatically" value="true" />
@@ -54,7 +66,7 @@
   </component>
   <component name="PropertiesComponent">
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/../NerfVillages" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../AntiXrayHeuristics_1.9-API" />
     <property name="project.structure.last.edited" value="Modules" />
     <property name="project.structure.proportion" value="0.15" />
     <property name="project.structure.side.proportion" value="0.2" />
@@ -151,6 +163,7 @@
       </list>
     </recent_temporary>
   </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="SvnConfiguration">
     <configuration />
   </component>
@@ -177,10 +190,10 @@
     <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="WindowStateProjectService">
-    <state x="778" y="403" key="FileChooserDialogImpl" timestamp="1593906005034">
+    <state x="778" y="403" key="FileChooserDialogImpl" timestamp="1600990770498">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="778" y="403" key="FileChooserDialogImpl/0.0.1920.1040@0.0.1920.1040" timestamp="1593906005033" />
+    <state x="778" y="403" key="FileChooserDialogImpl/0.0.1920.1040@0.0.1920.1040" timestamp="1600990770498" />
     <state width="1877" height="157" key="GridCell.Tab.0.bottom" timestamp="1595380000732">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>

@@ -6,7 +6,7 @@
 
     <groupId>es.mithrandircraft</groupId>
     <artifactId>AntiXrayHeuristics</artifactId>
-    <version>1.3.5</version>
+    <version>1.3.6</version>
     <packaging>jar</packaging>
 
     <name>AntiXrayHeuristics</name>
@@ -16,7 +16,7 @@
         <java.version>1.8</java.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
-    <url>www.mithrandircraft.es</url>
+    <url>https://www.spigotmc.org/resources/anti-xray-heuristics.72440/</url>
 
     <build>
         <defaultGoal>clean package</defaultGoal>

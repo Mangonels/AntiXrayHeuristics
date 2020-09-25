@@ -34,7 +34,8 @@ public class BlockPlaceEv implements Listener {
             if (mainClassAccess.getConfig().getStringList("TrackWorlds").get(i).equals(e.getBlock().getWorld().getName())) //It's one of the whitelisted "TrackWorlds"
             {
                 //Is it overworld?:
-                if (e.getBlock().getWorld().getEnvironment() == World.Environment.NORMAL) {
+                if (e.getBlock().getWorld().getEnvironment() == World.Environment.NORMAL)
+                {
                     //Relevant explosive materials check:
                     switch(e.getBlock().getType()) {
                         case TNT:
