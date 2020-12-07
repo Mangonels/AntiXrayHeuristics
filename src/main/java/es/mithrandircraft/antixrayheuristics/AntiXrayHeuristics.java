@@ -1,9 +1,11 @@
 //--------------------------------------------------------------------
-// Copyright © Dylan Calaf 2019 - AntiXrayHeuristics
+// Copyright © Dylan Calaf Latham 2019-2020 AntiXrayHeuristics
 //--------------------------------------------------------------------
 
 package es.mithrandircraft.antixrayheuristics;
 
+import es.mithrandircraft.antixrayheuristics.api.AntiXrayHeuristicsAPI;
+import es.mithrandircraft.antixrayheuristics.api.AntiXrayHeuristicsAPIImpl;
 import es.mithrandircraft.antixrayheuristics.commands.AXH;
 
 import es.mithrandircraft.antixrayheuristics.commands.AXHAutoCompleter;
@@ -24,6 +26,16 @@ import java.util.Iterator;
 import java.util.Set;
 
 public final class AntiXrayHeuristics extends JavaPlugin implements Listener {
+
+    //----------
+    //PROPERTIES
+    //----------
+
+    //Self plugin reference
+    private static AntiXrayHeuristics plugin;
+
+    //API
+    AntiXrayHeuristicsAPI api;
 
     //Captured spigot version:
     public SpigotVersion spigotVersion;
@@ -64,8 +76,25 @@ public final class AntiXrayHeuristics extends JavaPlugin implements Listener {
     //GUI:
     public XrayerVault vault;
 
+
+    //-------
+    //METHODS
+    //-------
+
+    //Get AXH main plugin class
+    public static AntiXrayHeuristics GetPlugin() { return plugin; }
+
+    //Get AXH API
+    public AntiXrayHeuristicsAPI GetAPI() { return api; }
+
     @Override
     public void onEnable() {
+
+        //Static self reference init:
+        plugin = this;
+
+        //API init:
+        api = new AntiXrayHeuristicsAPIImpl(this);
 
         //Spigot version capture:
         spigotVersion = new SpigotVersion();

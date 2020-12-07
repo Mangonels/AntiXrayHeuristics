@@ -1,5 +1,5 @@
 //--------------------------------------------------------------------
-// Copyright © Dylan Calaf 2019 - AntiXrayHeuristics
+// Copyright © Dylan Calaf Latham 2019-2020 AntiXrayHeuristics
 //--------------------------------------------------------------------
 
 package es.mithrandircraft.antixrayheuristics;
@@ -7,13 +7,15 @@ package es.mithrandircraft.antixrayheuristics;
 import com.google.common.reflect.TypeToken;
 import com.google.gson.Gson;
 import es.mithrandircraft.antixrayheuristics.callbacks.*;
-import es.mithrandircraft.antixrayheuristics.files.LocaleManager;
 import es.mithrandircraft.antixrayheuristics.files.Xrayer;
+import es.mithrandircraft.antixrayheuristics.misc.MadeUpEquipment;
+import es.mithrandircraft.antixrayheuristics.misc.MadeUpInventory;
 import org.apache.commons.dbcp.BasicDataSource;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.EntityEquipment;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
 import java.io.*;
@@ -22,6 +24,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 public class MemoryManager {
 
@@ -38,6 +41,7 @@ public class MemoryManager {
     //The following methods manage persistent memory resources (SQL or JSON is managed depending on plugin config.yml)
     //The methods are designed to be called asynchronously through Bukkit's scheduler, and return data through a callback function:
 
+    //Stores player as xrayer with data
     void StorePlayerData(Player player, final StorePlayerDataCallback callback)
     {
         switch (mainClassAccess.getConfig().getString("StorageType")) {
@@ -67,7 +71,38 @@ public class MemoryManager {
         }
     }
 
-    public void GetAllBaseXrayerData(final GetAllBaseXrayerDataCallback callback) //Returns various array lists through callback function containing all registered xrayer UUID's, handled times amount, and firstHandled time.
+    //Stores fake player as xrayer with fake data
+    void StoreDummyPlayerData()
+    {
+        switch (mainClassAccess.getConfig().getString("StorageType")) {
+            case "MYSQL":
+                java.sql.Connection cn = null;
+                try {
+                    cn = dataSource.getConnection();
+                    if(cn != null)
+                    {
+                        SQLPlayerDataStore(cn, null, null);
+                    }
+                } catch (SQLException e) {
+                    System.err.print(e);
+                } finally {
+                    try {
+                        cn.close();
+                    } catch (SQLException e) {
+                        System.err.print(e);
+                    }
+                }
+                break;
+            case "JSON":
+                JSONPlayerDataStore(null, null);
+                break;
+            default:
+                break;
+        }
+    }
+
+    //Returns various array lists through callback function containing all registered xrayer UUID's, handled times amount, and firstHandled time.
+    public void GetAllBaseXrayerData(final GetAllBaseXrayerDataCallback callback)
     {
         switch (mainClassAccess.getConfig().getString("StorageType")) {
             case "MYSQL":
@@ -95,7 +130,8 @@ public class MemoryManager {
         }
     }
 
-    public void GetXrayerBelongings(String xrayerUUID, final GetXrayerBelongingsCallback callback) //Returns ItemStack array through callback function containing all confiscated ItemStacks from the specified player by UUID
+    //Returns ItemStack array through callback function containing all confiscated ItemStacks from the specified player by UUID
+    public void GetXrayerBelongings(String xrayerUUID, final GetXrayerBelongingsCallback callback)
     {
         switch (mainClassAccess.getConfig().getString("StorageType")) {
             case "MYSQL":
@@ -122,7 +158,8 @@ public class MemoryManager {
         }
     }
 
-    public void GetXrayerHandleLocation(String xrayerUUID, final GetXrayerHandleLocationCallback callback) //Returns HandleLocation Location through callback function by UUID
+    //Returns HandleLocation Location through callback function by UUID
+    public void GetXrayerHandleLocation(String xrayerUUID, final GetXrayerHandleLocationCallback callback)
     {
         switch (mainClassAccess.getConfig().getString("StorageType")) {
             case "MYSQL":
@@ -149,7 +186,8 @@ public class MemoryManager {
         }
     }
 
-    public void DeleteXrayer(String xrayerUUID) //Deletes xrayer with specified UUID from memory
+    //Deletes xrayer with specified UUID from memory
+    public void DeleteXrayer(String xrayerUUID)
     {
         switch (mainClassAccess.getConfig().getString("StorageType")) {
             case "MYSQL":
@@ -177,7 +215,8 @@ public class MemoryManager {
         }
     }
 
-    public void DeleteRegisteredXrayers() //Deletes all registered xrayers (basically leaves memory empty)
+    //Deletes all registered xrayers (basically leaves memory empty)
+    public void DeleteRegisteredXrayers()
     {
         switch (mainClassAccess.getConfig().getString("StorageType")) {
             case "MYSQL":
@@ -230,7 +269,8 @@ public class MemoryManager {
         }
     }
 
-    void SQLCreateTableIfNotExists() throws SQLException //Creates the Xrayers table
+    //Creates the Xrayers table
+    void SQLCreateTableIfNotExists() throws SQLException
     {
         java.sql.Connection cn = null;
         try {
@@ -250,7 +290,9 @@ public class MemoryManager {
             }
         }
     }
-    private boolean SQLFindUUID(java.sql.Connection connection, String n) throws SQLException //Returns true if UUID was found in the database
+
+    //Returns true if UUID was found in the database
+    private boolean SQLFindUUID(java.sql.Connection connection, String n) throws SQLException
     {
         PreparedStatement query = connection.prepareStatement("SELECT COUNT(1) FROM Xrayers WHERE UUID = ?");
         query.setString(1, n);
@@ -260,12 +302,23 @@ public class MemoryManager {
         result.next();
         return result.getInt(1) == 1;
     }
-    private void SQLPlayerDataStore(java.sql.Connection connection, Player player, final StorePlayerDataCallback callback) throws SQLException //Stores player name as xrayer and some other info (+ player belongings if configured), ONLY IF there isn't information already stored.
+    //Stores player name as xrayer and some other info + player belongings if configured (or dummy data if player is null), ONLY IF there isn't UUID related information already stored.
+    private void SQLPlayerDataStore(java.sql.Connection connection, Player player, final StorePlayerDataCallback callback) throws SQLException
     {
-        assert player != null;
-        if(!SQLFindUUID(connection, player.getUniqueId().toString())){ //Primary key (player UUID) doesn't already exist
+        String playerUUID;
+        //Assign true UUID?
+        if(player != null) playerUUID = player.getUniqueId().toString();
+        //Assign a random "fake" UUID?
+        else playerUUID = UUID.randomUUID().toString();
 
-            String serializedPlayerLocation = player.getLocation().getWorld().getName() + "," + player.getLocation().getX() + "," + player.getLocation().getY() + "," + player.getLocation().getZ() + "," + player.getLocation().getPitch() + "," + player.getLocation().getYaw();
+        if(!SQLFindUUID(connection, playerUUID)) //Primary key (player UUID) doesn't already exist
+        {
+            String serializedPlayerLocation;
+            //Assign true "serialized" location
+            if(player != null) serializedPlayerLocation = player.getLocation().getWorld().getName() + "," + player.getLocation().getX() + "," + player.getLocation().getY() + "," + player.getLocation().getZ() + "," + player.getLocation().getPitch() + "," + player.getLocation().getYaw();
+            //Assign default "fake" "serialized" location
+            else if (!mainClassAccess.getConfig().getStringList("TrackWorlds").isEmpty()) serializedPlayerLocation = mainClassAccess.getConfig().getStringList("TrackWorlds").get(0) + ",0.0,0.0,0.0,0.0,0.0";
+            else serializedPlayerLocation = "world,0.0,0.0,0.0,0.0,0.0";
 
             if(mainClassAccess.getConfig().getBoolean("StoreCopy")) //Full store
             {
@@ -273,11 +326,19 @@ public class MemoryManager {
                 LocalDateTime now = LocalDateTime.now();
 
                 PreparedStatement entry = connection.prepareStatement("INSERT INTO Xrayers(UUID, Handled, FirstHandleTime, HandleLocation, Belongings) VALUES(?,?,?,?,?)");
-                entry.setString(1, player.getUniqueId().toString());
+                entry.setString(1, playerUUID);
                 entry.setInt(2, 1);
                 entry.setString(3, dtf.format(now));
                 entry.setString(4, serializedPlayerLocation);
-                entry.setString(5, BukkitSerializer.itemStackArrayToBase64(BukkitSerializer.InventoryAndEquipmentToSingleItemStackArray(player.getInventory(), player.getEquipment())));
+                //Assign true player inventory and equipment
+                if(player != null) entry.setString(5, BukkitSerializer.itemStackArrayToBase64(BukkitSerializer.InventoryAndEquipmentToSingleItemStackArray(player.getInventory(), player.getEquipment())));
+                //Assign "fake" player inventory and equipment
+                else
+                {
+                    Inventory madeUpInventory = new MadeUpInventory();
+                    EntityEquipment madeUpEquipment = new MadeUpEquipment();
+                    entry.setString(5, BukkitSerializer.itemStackArrayToBase64(BukkitSerializer.InventoryAndEquipmentToSingleItemStackArray(madeUpInventory, madeUpEquipment)));
+                }
 
                 entry.executeUpdate();
             }
@@ -287,7 +348,7 @@ public class MemoryManager {
                 LocalDateTime now = LocalDateTime.now();
 
                 PreparedStatement entry = connection.prepareStatement("INSERT INTO Xrayers(UUID, Handled, FirstHandleTime, HandleLocation) VALUES(?,?,?,?)");
-                entry.setString(1, player.getUniqueId().toString());
+                entry.setString(1, playerUUID);
                 entry.setInt(2, 1);
                 entry.setString(3, dtf.format(now));
                 entry.setString(4, serializedPlayerLocation);
@@ -295,35 +356,42 @@ public class MemoryManager {
                 entry.executeUpdate();
             }
 
-            Bukkit.getScheduler().runTask(mainClassAccess, new Runnable() { //Callback to main thread returns extracted data
-                @Override
-                public void run() {
-                    callback.onInsertDone(1);
-                }
-            });
+            if(callback != null)
+            {
+                Bukkit.getScheduler().runTask(mainClassAccess, new Runnable() { //Callback to main thread returns extracted data
+                    @Override
+                    public void run() {
+                        callback.onInsertDone(1);
+                    }
+                });
+            }
         }
-        else{ //Primary key (player UUID) already exists
+        else //Primary key (player UUID) already exists
+        {
             //Add +1 to Handled column
             PreparedStatement update = connection.prepareStatement("UPDATE Xrayers SET Handled = Handled + 1 WHERE UUID = ?");
-            update.setString(1, player.getUniqueId().toString());
+            update.setString(1, playerUUID);
 
             update.executeUpdate();
 
             //Get Handled column value
             PreparedStatement query = connection.prepareStatement("SELECT Handled FROM Xrayers WHERE UUID = ?");
-            query.setString(1, player.getUniqueId().toString());
+            query.setString(1, playerUUID);
 
             ResultSet result = query.executeQuery();
 
             result.next();
 
-            final int timesHandledFinal = result.getInt("Handled");
-            Bukkit.getScheduler().runTask(mainClassAccess, new Runnable() { //Callback to main thread returns extracted data
-                @Override
-                public void run() {
-                    callback.onInsertDone(timesHandledFinal);
-                }
-            });
+            if(callback != null)
+            {
+                final int timesHandledFinal = result.getInt("Handled");
+                Bukkit.getScheduler().runTask(mainClassAccess, new Runnable() { //Callback to main thread returns extracted data
+                    @Override
+                    public void run() {
+                        callback.onInsertDone(timesHandledFinal);
+                    }
+                });
+            }
         }
     }
     private void SQLGetAllBaseXrayerData(java.sql.Connection connection, final GetAllBaseXrayerDataCallback callback) throws SQLException //Returns all of the basic xrayer information (pretty much everything except for the inventory and handlecoordinates)
@@ -343,10 +411,12 @@ public class MemoryManager {
             firstHandledTimes.add(result.getString("FirstHandleTime"));
         }
 
-        Bukkit.getScheduler().runTask(mainClassAccess, new Runnable() { //Callback to main thread returns extracted data
+        //We send the extracted data to the vault array from here:
+        mainClassAccess.vault.SubstituteXrayerInfoLists(UUIDs, handledAmounts, firstHandledTimes);
+        Bukkit.getScheduler().runTask(mainClassAccess, new Runnable() { //Callback to main thread
             @Override
             public void run() {
-                callback.onQueryDone(UUIDs, handledAmounts, firstHandledTimes);
+                callback.onQueryDone();
             }
         });
     }
@@ -468,67 +538,85 @@ public class MemoryManager {
 
     private void JSONPlayerDataStore(Player player, final StorePlayerDataCallback callback) //Stores player name as xrayer and some other info (+ player belongings if configured), ONLY IF there isn't information already stored. Also notifies through callback on finish
     {
+        String playerUUID;
+        //Assign true UUID?
+        if(player != null) playerUUID = player.getUniqueId().toString();
+        //Assign a random "fake" UUID?
+        else playerUUID = UUID.randomUUID().toString();
+
         //Handled times for returning:
         int timesHandled = 0;
-        if (player != null) //Just a check to avoid null player errors
-        {
-            //Refresh loaded xrayers in RAM Stack:
-            JSONRefreshLoadedXrayerData();
-            //Check if xrayer is already stored?:
-            boolean exists = false;
-            for(Xrayer xrayer : storedXrayersFromJSON){
-                if(xrayer.UUID.equals(Bukkit.getServer().getPlayer(player.getName()).getUniqueId().toString()))
-                {
-                    exists = true;
-                    //Also add +1 to handled:
-                    xrayer.Handled += 1;
-                    timesHandled = xrayer.Handled;
-                    //Store List back to file:
-                    String serial = JSONSerializeXrayersData(storedXrayersFromJSON);
-                    JSONStoreInFile(serial);
-                    break;
-                }
+
+        //Refresh loaded xrayers in RAM Stack:
+        JSONRefreshLoadedXrayerData();
+        //Check if xrayer is already stored?:
+        boolean exists = false;
+        for(Xrayer xrayer : storedXrayersFromJSON){
+            if(xrayer.UUID.equals(playerUUID))
+            {
+                exists = true;
+                //Also add +1 to handled:
+                xrayer.Handled += 1;
+                timesHandled = xrayer.Handled;
+                //Store List back to file:
+                String serial = JSONSerializeXrayersData(storedXrayersFromJSON);
+                JSONStoreInFile(serial);
+                break;
             }
-            if (!exists) { //player UUID doesn't already exist in file
+        }
+        if (!exists) { //player UUID doesn't already exist in file
 
-                String serializedPlayerLocation = player.getLocation().getWorld().getName() + "," + player.getLocation().getX() + "," + player.getLocation().getY() + "," + player.getLocation().getZ() + "," + player.getLocation().getPitch() + "," + player.getLocation().getYaw();
+            String serializedPlayerLocation;
+            //Assign true "serialized" location
+            if(player != null) serializedPlayerLocation = player.getLocation().getWorld().getName() + "," + player.getLocation().getX() + "," + player.getLocation().getY() + "," + player.getLocation().getZ() + "," + player.getLocation().getPitch() + "," + player.getLocation().getYaw();
+            //Assign default "fake" "serialized" location
+            else if (!mainClassAccess.getConfig().getStringList("TrackWorlds").isEmpty()) serializedPlayerLocation = mainClassAccess.getConfig().getStringList("TrackWorlds").get(0) + ",0.0,0.0,0.0,0.0,0.0";
+            else serializedPlayerLocation = "world,0.0,0.0,0.0,0.0,0.0";
 
-                if (mainClassAccess.getConfig().getBoolean("StoreCopy")) //Full store
-                {
-                    DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
-                    LocalDateTime now = LocalDateTime.now();
+            if (mainClassAccess.getConfig().getBoolean("StoreCopy")) //Full store
+            {
+                DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
+                LocalDateTime now = LocalDateTime.now();
 
-                    //Add xrayer to List:
-                    storedXrayersFromJSON.add(new Xrayer(player.getUniqueId().toString(), 1, dtf.format(now), serializedPlayerLocation, BukkitSerializer.itemStackArrayToBase64(BukkitSerializer.InventoryAndEquipmentToSingleItemStackArray(player.getInventory(), player.getEquipment()))));
-                    //Store List back to file:
-                    String serial = JSONSerializeXrayersData(storedXrayersFromJSON);
-                    JSONStoreInFile(serial);
-                } else //Partial store
-                {
-                    DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
-                    LocalDateTime now = LocalDateTime.now();
-
-                    //Add xrayer to List:
-                    storedXrayersFromJSON.add(new Xrayer(player.getUniqueId().toString(), 1, dtf.format(now), serializedPlayerLocation, null));
-                    //Store List back to file:
-                    JSONStoreInFile(JSONSerializeXrayersData(storedXrayersFromJSON));
+                //Add xrayer to List:
+                //Existing inventory and equipment
+                if(player != null) storedXrayersFromJSON.add(new Xrayer(playerUUID, 1, dtf.format(now), serializedPlayerLocation, BukkitSerializer.itemStackArrayToBase64(BukkitSerializer.InventoryAndEquipmentToSingleItemStackArray(player.getInventory(), player.getEquipment()))));
+                //Made up inventory and equipment
+                else {
+                    Inventory madeUpInventory = new MadeUpInventory();
+                    EntityEquipment madeUpEquipment = new MadeUpEquipment();
+                    storedXrayersFromJSON.add(new Xrayer(playerUUID, 1, dtf.format(now), serializedPlayerLocation, BukkitSerializer.itemStackArrayToBase64(BukkitSerializer.InventoryAndEquipmentToSingleItemStackArray(madeUpInventory, madeUpEquipment))));
                 }
+                //Store List back to file:
+                String serial = JSONSerializeXrayersData(storedXrayersFromJSON);
+                JSONStoreInFile(serial);
+            } else //Partial store
+            {
+                DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
+                LocalDateTime now = LocalDateTime.now();
 
+                //Add xrayer to List:
+                storedXrayersFromJSON.add(new Xrayer(playerUUID, 1, dtf.format(now), serializedPlayerLocation, null));
+                //Store List back to file:
+                JSONStoreInFile(JSONSerializeXrayersData(storedXrayersFromJSON));
+            }
+
+            if(callback != null) {
                 Bukkit.getScheduler().runTask(mainClassAccess, new Runnable() { //Callback to main thread returns extracted data
                     @Override
                     public void run() {
                         callback.onInsertDone(1);
                     }
                 });
-            } else {
-                final int timesHandledFinal = timesHandled;
-                Bukkit.getScheduler().runTask(mainClassAccess, new Runnable() { //Callback to main thread returns extracted data
-                    @Override
-                    public void run() {
-                        callback.onInsertDone(timesHandledFinal);
-                    }
-                });
             }
+        } else if(callback != null) {
+            final int timesHandledFinal = timesHandled;
+            Bukkit.getScheduler().runTask(mainClassAccess, new Runnable() { //Callback to main thread returns extracted data
+                @Override
+                public void run() {
+                    callback.onInsertDone(timesHandledFinal);
+                }
+            });
         }
     }
     private void JSONGetAllBaseXrayerData(GetAllBaseXrayerDataCallback callback) //Returns all of the basic xrayer information (pretty much everything except for the inventory and handlecoordinates)
@@ -548,10 +636,12 @@ public class MemoryManager {
             firstHandledTimes.add(xrayer.FirstHandleTime);
         }
 
-        Bukkit.getScheduler().runTask(mainClassAccess, new Runnable() { //Callback to main thread returns extracted data
+        //We send the extracted data to the vault array from here:
+        mainClassAccess.vault.SubstituteXrayerInfoLists(UUIDs, handledAmounts, firstHandledTimes);
+        Bukkit.getScheduler().runTask(mainClassAccess, new Runnable() { //Callback to main thread
             @Override
             public void run() {
-                callback.onQueryDone(UUIDs, handledAmounts, firstHandledTimes);
+                callback.onQueryDone();
             }
         });
     }

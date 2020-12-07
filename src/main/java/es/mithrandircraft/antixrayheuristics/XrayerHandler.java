@@ -1,11 +1,12 @@
 //--------------------------------------------------------------------
-// Copyright © Dylan Calaf 2019 - AntiXrayHeuristics
+// Copyright © Dylan Calaf Latham 2019-2020 AntiXrayHeuristics
 //--------------------------------------------------------------------
 
 package es.mithrandircraft.antixrayheuristics;
 
 import es.mithrandircraft.antixrayheuristics.callbacks.StorePlayerDataCallback;
 import es.mithrandircraft.antixrayheuristics.files.LocaleManager;
+import es.mithrandircraft.antixrayheuristics.listeners.HandleXrayerEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -31,53 +32,71 @@ public class XrayerHandler {
     public static void HandleXrayer(String xrayername) //Executes what must be done to an inputted Xrayer by name.
     {
         AntiXrayHeuristics mainClass = JavaPlugin.getPlugin(AntiXrayHeuristics.class);
-        
+
         Player player = Bukkit.getPlayer(xrayername); //Reference to player
-        if(player != null)
+
+        //Notify XraherHandledEvent
+        HandleXrayerEvent ev = new HandleXrayerEvent(player);
+        Bukkit.getServer().getPluginManager().callEvent(ev);
+        if (!ev.isCancelled()) //Event isn't cancelled
         {
-            //Send message to xrayer if configured:
-            if (mainClass.getConfig().getBoolean("SendMessageToPlayer")) {
-                player.sendMessage(ChatColor.translateAlternateColorCodes('&', LocaleManager.get().getString("MessagesPrefix")) + " " + ChatColor.translateAlternateColorCodes('&', LocaleManager.get().getString("PlayerMessageOnXray")));
-            }
+            if (player != null) //If the player is online hence data was obtained
+            {
+                //Send message to xrayer if configured:
+                if (mainClass.getConfig().getBoolean("SendMessageToPlayer")) {
+                    player.sendMessage(ChatColor.translateAlternateColorCodes('&', LocaleManager.get().getString("MessagesPrefix")) + " " + ChatColor.translateAlternateColorCodes('&', LocaleManager.get().getString("PlayerMessageOnXray")));
+                }
 
-            //Store xrayer's data (and inventory only if configured):
-            Bukkit.getScheduler().runTaskAsynchronously(mainClass, () -> mainClass.mm.StorePlayerData(player, new StorePlayerDataCallback(){
-                @Override
-                public void onInsertDone(int handleTimes) {
-                    //The following are better occurring AFTER xrayer data storing is done asynchronously, that's why they're in this callback:
+                //Store xrayer's data (and inventory only if configured):
+                Bukkit.getScheduler().runTaskAsynchronously(mainClass, () -> mainClass.mm.StorePlayerData(player, new StorePlayerDataCallback() {
+                    @Override
+                    public void onInsertDone(int handleTimes) {
+                        //The following are better occurring AFTER xrayer data storing is done asynchronously, that's why they're in this callback:
 
-                    //Remove all of the xrayer's belongings if configured:
-                    if (mainClass.getConfig().getBoolean("ClensePlayerItems")) {
-                        try{player.getInventory().clear();
-                            player.getEquipment().clear(); } catch(Exception e){ if(mainClass.getConfig().getBoolean("Debug")) System.out.println("Failed to remove player " + xrayername + "'s equipment while attempting to handle as Xrayer."); }
-                    }
+                        //Remove all of the xrayer's belongings if configured:
+                        if (mainClass.getConfig().getBoolean("ClensePlayerItems")) {
+                            try {
+                                player.getInventory().clear();
+                                player.getEquipment().clear();
+                            } catch (Exception e) {
+                                System.out.println("Failed to remove player " + xrayername + "'s equipment while attempting to handle as Xrayer.");
+                            }
+                        }
 
-                    //Compare the handled time, and see if there's an action to be executed from config:
-                    ConfigurationSection section = mainClass.getConfig().getConfigurationSection("CommandsExecutedOnXrayerDetected"); //Gets the whole hierarchical config section with commands to execute according to times detected
-                    if(section != null && section.contains(String.valueOf(handleTimes))) {
-                        ConfigurationSection subSection = mainClass.getConfig().getConfigurationSection("CommandsExecutedOnXrayerDetected." + String.valueOf(handleTimes)); //Gets the specific commands to execute if coinciding with amount of times detected
-                        if(subSection != null) {
-                            Map<String, Object> commandsToExecute = subSection.getValues(false); //Will contain all the configured commands to execute this time
-                            for (Map.Entry<String, Object> pair : commandsToExecute.entrySet()) {
-                                Bukkit.dispatchCommand(Bukkit.getConsoleSender(), PlaceholderManager.SubstitutePlayerNameAndHandleTimesPlaceholders((String) pair.getValue(), xrayername, Integer.toString(handleTimes))); //Executes the command and also replaces any placeholders within it
+                        //Compare the handled times, and see if there's an action to be executed from config:
+                        ConfigurationSection section = mainClass.getConfig().getConfigurationSection("CommandsExecutedOnXrayerDetected"); //Gets the whole hierarchical config section with commands to execute according to times detected
+                        if (section != null && section.contains(String.valueOf(handleTimes))) {
+                            ConfigurationSection subSection = mainClass.getConfig().getConfigurationSection("CommandsExecutedOnXrayerDetected." + String.valueOf(handleTimes)); //Gets the specific commands to execute if coinciding with amount of times detected
+                            if (subSection != null) {
+                                Map<String, Object> commandsToExecute = subSection.getValues(false); //Will contain all the configured commands to execute this time
+                                for (Map.Entry<String, Object> pair : commandsToExecute.entrySet()) {
+                                    Bukkit.dispatchCommand(Bukkit.getConsoleSender(), PlaceholderManager.SubstitutePlayerNameAndHandleTimesPlaceholders((String) pair.getValue(), xrayername, Integer.toString(handleTimes))); //Executes the command and also replaces any placeholders within it
+                                }
                             }
                         }
                     }
+                }));
+
+                //Delete xrayer mining session if configured:
+                if (mainClass.getConfig().getBoolean("NullifySuspicionAferPunish")) {
+                    mainClass.sessions.remove(player.getName());
                 }
-            }));
 
-            //Delete xrayer mining session if configured:
-            if (mainClass.getConfig().getBoolean("NullifySuspicionAferPunish")) {
-                mainClass.sessions.remove(player.getName());
+                //Console message:
+                System.out.println(ChatColor.translateAlternateColorCodes('&', LocaleManager.get().getString("MessagesPrefix")) + " " + PlaceholderManager.SubstitutePlayerNameAndColorCodePlaceholders(LocaleManager.get().getString("AutoHandledPlayer"), xrayername));
+
+                //Warn players with permission:
+                if (mainClass.getConfig().getBoolean("TellPlayersWithPermission")) XrayerWarn(xrayername);
             }
-
-            //Console message:
-            System.out.println(ChatColor.translateAlternateColorCodes('&', LocaleManager.get().getString("MessagesPrefix")) + " " + PlaceholderManager.SubstitutePlayerNameAndColorCodePlaceholders(LocaleManager.get().getString("AutoHandledPlayer") , xrayername));
-
-            //Warn players with permission:
-            if(mainClass.getConfig().getBoolean("TellPlayersWithPermission")) XrayerWarn(xrayername);
+            //If the player isn't online
+            else if (mainClass.getConfig().getBoolean("AddRandomDummyIfXrayerDeclaredButNameNotOnline")) //Store dummy?
+            {
+                //Store dummy xrayer data (and inventory only if configured):
+                Bukkit.getScheduler().runTaskAsynchronously(mainClass, () -> mainClass.mm.StoreDummyPlayerData());
+                System.out.println("Specified player was not online, adding dummy player as specified in configuration.");
+            } else
+                System.out.println(ChatColor.translateAlternateColorCodes('&', LocaleManager.get().getString("MessagesPrefix")) + " " + PlaceholderManager.SubstitutePlayerNameAndColorCodePlaceholders(LocaleManager.get().getString("PlayerNotOnlineOnHandle"), xrayername));
         }
-        else{ System.out.println(ChatColor.translateAlternateColorCodes('&', LocaleManager.get().getString("MessagesPrefix")) + " " + PlaceholderManager.SubstitutePlayerNameAndColorCodePlaceholders(LocaleManager.get().getString("PlayerNotOnlineOnHandle") , xrayername)); }
     }
 
     private static void DropItemAtPlayerLocation(ItemStack item, Player p) //Drops items at player location

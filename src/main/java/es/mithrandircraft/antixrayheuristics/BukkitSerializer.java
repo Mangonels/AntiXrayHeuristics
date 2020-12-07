@@ -1,7 +1,5 @@
 package es.mithrandircraft.antixrayheuristics;
 
-import org.bukkit.Material;
-import org.bukkit.entity.Item;
 import org.bukkit.inventory.EntityEquipment;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;

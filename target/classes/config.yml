@@ -5,9 +5,6 @@
 #    terrain and ores generation.
 #------------------------------------------------------------------------------------------------------
 
-#If true, AXH will output debug messages (no need to activate this unless a developer requests it):
-Debug: false
-
 #----------------------------------------------
 #HEURISTICALLY BASED MONITORING CONFIGURATIONS:
 #----------------------------------------------
@@ -126,3 +123,14 @@ SQLDatabaseName: 'myDatabase'
 SQLUsername: 'root'
 SQLPassword: 'root'
 SQLMaxActiveConnections: 10
+
+#------
+#TOOLS:
+#------
+
+#If set to true, when an xrayer is handled (usually explicitly through /axh xrayer <playerName>), and the playerName's
+#player is offline, a dummy will be created. Used for GUI stress testing purposes, you probably really don't need to
+#enable this option unless you're testing something. It was kinda made for development testing purposes.
+#Note: dummy xrayers won't trigger any configured command executions, warn messages, or suspicion resets when added to
+#the vault. They're just dummies.
+AddRandomDummyIfXrayerDeclaredButNameNotOnline: false

@@ -1,3 +1,7 @@
+//--------------------------------------------------------------------
+// Copyright © Dylan Calaf Latham 2019-2020 AntiXrayHeuristics
+//--------------------------------------------------------------------
+
 package es.mithrandircraft.antixrayheuristics.math;
 
 import org.bukkit.Location;

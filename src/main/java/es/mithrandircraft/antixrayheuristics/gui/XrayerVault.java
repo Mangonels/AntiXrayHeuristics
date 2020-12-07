@@ -1,5 +1,5 @@
 //--------------------------------------------------------------------
-// Copyright © Dylan Calaf 2019 - AntiXrayHeuristics
+// Copyright © Dylan Calaf Latham 2019-2020 AntiXrayHeuristics
 //--------------------------------------------------------------------
 
 package es.mithrandircraft.antixrayheuristics.gui;
@@ -131,17 +131,24 @@ public class XrayerVault {
         SendAllToPageZero();
     }
 
-    public void UpdateXrayerInfoLists(Player player, int page) //Updates Xrayer information arrays and also forces page open for player
+    //Clears data arrays and fills with input data
+    public void SubstituteXrayerInfoLists(List<String> uuids, List<Integer> handledamounts, List<String> firsthandledtimes)
     {
-        ClearXrayerInfoLists(); //Clearing previous data
+        //Clear previous data:
+        ClearXrayerInfoLists();
 
+        //Update with new data:
+        UUIDs.addAll(uuids);
+        handledAmounts.addAll(handledamounts);
+        firstHandledTimes.addAll(firsthandledtimes);
+    }
+
+    //Updates Xrayer information arrays through "SubstituteXayerInfoLists" and also forces page open for player
+    public void UpdateXrayerInfoLists(Player player, int page)
+    {
         Bukkit.getScheduler().runTaskAsynchronously(mainClassAccess, () -> mainClassAccess.mm.GetAllBaseXrayerData(new GetAllBaseXrayerDataCallback() {
             @Override
-            public void onQueryDone(List<String> uuids, List<Integer> handledamounts, List<String> firsthandledtimes) {
-                UUIDs.addAll(uuids);
-                handledAmounts.addAll(handledamounts);
-                firstHandledTimes.addAll(firsthandledtimes);
-
+            public void onQueryDone() {
                 OpenVault(player, page);
                 player.sendMessage(ChatColor.translateAlternateColorCodes('&', LocaleManager.get().getString("MessagesPrefix")) + " " + ChatColor.translateAlternateColorCodes('&', LocaleManager.get().getString("VaultRefreshed")));
             }
@@ -182,7 +189,7 @@ public class XrayerVault {
     public void OpenVault(Player player, int page) //Opens xrayer vault in specified page (This shows player heads with info about the xrayer)
     {
         Inventory gui = Bukkit.createInventory(null, 54, "Xrayer Vault"); //Vault contents to display
-        viewers.put(player.getName(), new PlayerViewInfo(page)); //Register player as gui viewer on a certain page (used as reference)
+        viewers.put(player.getName(), new PlayerViewInfo(page)); //Register player as gui viewer on a certain page (used as player-page reference)
 
         //Fill up vault:
         ItemStack skull = new ItemStack(Material.PLAYER_HEAD);
