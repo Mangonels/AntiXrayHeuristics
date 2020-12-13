@@ -8,7 +8,8 @@ import org.bukkit.ChatColor;
 
 import java.util.List;
 
-public class PlaceholderManager {
+class PlaceholderManager {
+
     public static String SubstitutePlayerNameAndColorCodePlaceholders(String toReplace, String player)
     {
         toReplace = toReplace.replaceAll("\\{PlayerName}", player);
@@ -25,12 +26,27 @@ public class PlaceholderManager {
         return toReplace;
     }
 
+    public static String SubstituteColorCodePlaceholders(String toReplace)
+    {
+        toReplace = ChatColor.translateAlternateColorCodes('&', toReplace);
+
+        return toReplace;
+    }
+
     public static List<String> SubstituteColorCodePlaceholders(List<String> toReplace)
     {
         for(int i = 0; i < toReplace.size(); i++)
         {
             toReplace.set(i, ChatColor.translateAlternateColorCodes('&', toReplace.get(i)));
         }
+
+        return toReplace;
+    }
+
+    public static String SubstituteXrayerSlotAndColorCodePlaceholders(String toReplace, int slot)
+    {
+        toReplace = toReplace.replaceAll("\\{Slot}", Integer.toString(slot));
+        toReplace = ChatColor.translateAlternateColorCodes('&', toReplace);
 
         return toReplace;
     }

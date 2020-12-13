@@ -4,14 +4,6 @@
 
 package es.mithrandircraft.antixrayheuristics;
 
-import es.mithrandircraft.antixrayheuristics.api.AntiXrayHeuristicsAPI;
-import es.mithrandircraft.antixrayheuristics.api.AntiXrayHeuristicsAPIImpl;
-import es.mithrandircraft.antixrayheuristics.commands.AXH;
-
-import es.mithrandircraft.antixrayheuristics.commands.AXHAutoCompleter;
-import es.mithrandircraft.antixrayheuristics.events.*;
-import es.mithrandircraft.antixrayheuristics.files.LocaleManager;
-import es.mithrandircraft.antixrayheuristics.gui.XrayerVault;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.block.Biome;
@@ -35,16 +27,16 @@ public final class AntiXrayHeuristics extends JavaPlugin implements Listener {
     private static AntiXrayHeuristics plugin;
 
     //API
-    AntiXrayHeuristicsAPI api;
+    private APIAntiXrayHeuristics api;
 
     //Captured spigot version:
-    public SpigotVersion spigotVersion;
+    protected SpigotVersion spigotVersion;
 
     //Mining sessions HashMap <Name, MiningSession>:
-    public HashMap<String, MiningSession> sessions = new HashMap<String, MiningSession>();
+    protected HashMap<String, MiningSession> sessions = new HashMap<String, MiningSession>();
 
     //Persistent memory storage manager:
-    public MemoryManager mm = new MemoryManager(this);
+    protected MemoryManager mm = new MemoryManager(this);
 
     //Hardcoded heuristics:
 
@@ -52,14 +44,12 @@ public final class AntiXrayHeuristics extends JavaPlugin implements Listener {
 
     private final int mainRunnableFrequency = 200; //(ticks)15s - Time in ticks at which suspicion decrease runnable is executed.
 
+    protected final float maxSuspicionDecreaseProportion = -10f;
+    protected final float minSuspicionDecreaseProportion = -0.1f;
+    protected final float absoluteMinimumSuspicionDecrease = -3.0f; //Players mining below certain speeds should at least have this suspicion level applied, else fp's emerge
 
-    public final float maxSuspicionDecreaseProportion = -10f;
-    public final float minSuspicionDecreaseProportion = -0.1f;
-    public final float absoluteMinimumSuspicionDecrease = -3.0f; //Players mining below certain speeds should at least have this suspicion level applied, else fp's emerge
-
-    public final int maxAccountableMillisecondDeltaForThirtyMinedBlocks = 20000; //Directly proportional to "minSuspicionDecreaseProportion"
-    public final int minAccountableMillisecondDeltaForThirtyMinedBlocks = 0; //Directly proportional to "maxSuspicionDecreaseProportion"
-
+    protected final int maxAccountableMillisecondDeltaForThirtyMinedBlocks = 20000; //Directly proportional to "minSuspicionDecreaseProportion"
+    protected final int minAccountableMillisecondDeltaForThirtyMinedBlocks = 0; //Directly proportional to "maxSuspicionDecreaseProportion"
 
     private final int suspicionStreakZeroThreshold = 20; //Ammount of consecutive times after which a player is considered as no longer mining.
 
@@ -74,7 +64,7 @@ public final class AntiXrayHeuristics extends JavaPlugin implements Listener {
     private float extraAncientDebrisWeight; //A higher weight value applied to MiningSessions on ancient debris encounter if suspicion is higher than usual
 
     //GUI:
-    public XrayerVault vault;
+    protected XrayerVault vault;
 
 
     //-------
@@ -85,7 +75,7 @@ public final class AntiXrayHeuristics extends JavaPlugin implements Listener {
     public static AntiXrayHeuristics GetPlugin() { return plugin; }
 
     //Get AXH API
-    public AntiXrayHeuristicsAPI GetAPI() { return api; }
+    public APIAntiXrayHeuristics GetAPI() { return api; }
 
     @Override
     public void onEnable() {
@@ -94,7 +84,7 @@ public final class AntiXrayHeuristics extends JavaPlugin implements Listener {
         plugin = this;
 
         //API init:
-        api = new AntiXrayHeuristicsAPIImpl(this);
+        api = new APIAntiXrayHeuristicsImpl(this);
 
         //Spigot version capture:
         spigotVersion = new SpigotVersion();
@@ -112,9 +102,9 @@ public final class AntiXrayHeuristics extends JavaPlugin implements Listener {
         vault = new XrayerVault(this);
 
         //Commands:
-        getCommand("AXH").setExecutor(new AXH(this));
+        getCommand("AXH").setExecutor(new CommandAXH(this));
         //Tab completer:
-        getCommand("AXH").setTabCompleter(new AXHAutoCompleter());
+        getCommand("AXH").setTabCompleter(new CommandAXHAutoCompleter());
 
         //Sql connection?:
         if(getConfig().getString("StorageType").equals("MYSQL"))
@@ -136,12 +126,12 @@ public final class AntiXrayHeuristics extends JavaPlugin implements Listener {
         }
 
         //Event registring:
-        getServer().getPluginManager().registerEvents(new BlockBreakEv(this), this);
-        getServer().getPluginManager().registerEvents(new BlockPlaceEv(this), this);
-        getServer().getPluginManager().registerEvents(new ClickEv(this), this);
-        getServer().getPluginManager().registerEvents(new ItemDragEv(), this);
-        getServer().getPluginManager().registerEvents(new InventoryCloseEv(this), this);
-        getServer().getPluginManager().registerEvents(new PlayerChangedWorldEv(this), this);
+        getServer().getPluginManager().registerEvents(new EventBlockBreak(this), this);
+        getServer().getPluginManager().registerEvents(new EventBlockPlace(this), this);
+        getServer().getPluginManager().registerEvents(new EventClick(this), this);
+        getServer().getPluginManager().registerEvents(new EventItemDrag(), this);
+        getServer().getPluginManager().registerEvents(new EventInventoryClose(this), this);
+        getServer().getPluginManager().registerEvents(new EventPlayerChangedWorld(this), this);
 
         //Runnables:
         MainRunnable();
@@ -462,7 +452,7 @@ public final class AntiXrayHeuristics extends JavaPlugin implements Listener {
     }
 
     //Inspects the blockbreak event further for actions
-    public void BBEventAnalyzer(BlockBreakEvent ev)
+    protected void BBEventAnalyzer(BlockBreakEvent ev)
     {
         if (!ev.getPlayer().hasPermission("AXH.Ignore")) {
             //Check if the block is relevant:

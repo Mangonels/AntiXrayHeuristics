@@ -6,10 +6,6 @@ package es.mithrandircraft.antixrayheuristics;
 
 import com.google.common.reflect.TypeToken;
 import com.google.gson.Gson;
-import es.mithrandircraft.antixrayheuristics.callbacks.*;
-import es.mithrandircraft.antixrayheuristics.files.Xrayer;
-import es.mithrandircraft.antixrayheuristics.misc.MadeUpEquipment;
-import es.mithrandircraft.antixrayheuristics.misc.MadeUpInventory;
 import org.apache.commons.dbcp.BasicDataSource;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -26,7 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-public class MemoryManager {
+class MemoryManager {
 
     private final es.mithrandircraft.antixrayheuristics.AntiXrayHeuristics mainClassAccess;
 
@@ -102,7 +98,7 @@ public class MemoryManager {
     }
 
     //Returns various array lists through callback function containing all registered xrayer UUID's, handled times amount, and firstHandled time.
-    public void GetAllBaseXrayerData(final GetAllBaseXrayerDataCallback callback)
+    public void GetAllBaseXrayerData(final CallbackGetAllBaseXrayerData callback)
     {
         switch (mainClassAccess.getConfig().getString("StorageType")) {
             case "MYSQL":
@@ -131,7 +127,7 @@ public class MemoryManager {
     }
 
     //Returns ItemStack array through callback function containing all confiscated ItemStacks from the specified player by UUID
-    public void GetXrayerBelongings(String xrayerUUID, final GetXrayerBelongingsCallback callback)
+    public void GetXrayerBelongings(String xrayerUUID, final CallbackGetXrayerBelongings callback)
     {
         switch (mainClassAccess.getConfig().getString("StorageType")) {
             case "MYSQL":
@@ -159,7 +155,7 @@ public class MemoryManager {
     }
 
     //Returns HandleLocation Location through callback function by UUID
-    public void GetXrayerHandleLocation(String xrayerUUID, final GetXrayerHandleLocationCallback callback)
+    public void GetXrayerHandleLocation(String xrayerUUID, final CallbackGetXrayerHandleLocation callback)
     {
         switch (mainClassAccess.getConfig().getString("StorageType")) {
             case "MYSQL":
@@ -394,7 +390,7 @@ public class MemoryManager {
             }
         }
     }
-    private void SQLGetAllBaseXrayerData(java.sql.Connection connection, final GetAllBaseXrayerDataCallback callback) throws SQLException //Returns all of the basic xrayer information (pretty much everything except for the inventory and handlecoordinates)
+    private void SQLGetAllBaseXrayerData(java.sql.Connection connection, final CallbackGetAllBaseXrayerData callback) throws SQLException //Returns all of the basic xrayer information (pretty much everything except for the inventory and handlecoordinates)
     {
         PreparedStatement entry = connection.prepareStatement("SELECT UUID, Handled, FirstHandleTime FROM Xrayers");
 
@@ -420,7 +416,7 @@ public class MemoryManager {
             }
         });
     }
-    private void SQLGetXrayerBelongings(java.sql.Connection connection, String xrayerUUID, GetXrayerBelongingsCallback callback) throws SQLException //Gets an xrayer player's (by UUID) confiscated belongings
+    private void SQLGetXrayerBelongings(java.sql.Connection connection, String xrayerUUID, CallbackGetXrayerBelongings callback) throws SQLException //Gets an xrayer player's (by UUID) confiscated belongings
     {
         PreparedStatement query = connection.prepareStatement("SELECT Belongings FROM Xrayers WHERE UUID = ?");
         query.setString(1, xrayerUUID);
@@ -441,7 +437,7 @@ public class MemoryManager {
             System.err.print(e);
         }
     }
-    private void SQLGetXrayerHandleLocation(java.sql.Connection connection, String xrayerUUID, GetXrayerHandleLocationCallback callback) throws SQLException //Gets an xrayer player's (by UUID) handle location
+    private void SQLGetXrayerHandleLocation(java.sql.Connection connection, String xrayerUUID, CallbackGetXrayerHandleLocation callback) throws SQLException //Gets an xrayer player's (by UUID) handle location
     {
         PreparedStatement query = connection.prepareStatement("SELECT HandleLocation FROM Xrayers WHERE UUID = ?");
         query.setString(1, xrayerUUID);
@@ -619,7 +615,7 @@ public class MemoryManager {
             });
         }
     }
-    private void JSONGetAllBaseXrayerData(GetAllBaseXrayerDataCallback callback) //Returns all of the basic xrayer information (pretty much everything except for the inventory and handlecoordinates)
+    private void JSONGetAllBaseXrayerData(CallbackGetAllBaseXrayerData callback) //Returns all of the basic xrayer information (pretty much everything except for the inventory and handlecoordinates)
     {
         //Refresh loaded xrayers in RAM Stack:
         JSONRefreshLoadedXrayerData();
@@ -645,7 +641,7 @@ public class MemoryManager {
             }
         });
     }
-    private void JSONGetXrayerBelongings(String xrayerUUID, GetXrayerBelongingsCallback callback)
+    private void JSONGetXrayerBelongings(String xrayerUUID, CallbackGetXrayerBelongings callback)
     {
         //Refresh loaded xrayers in RAM Stack:
         JSONRefreshLoadedXrayerData();
@@ -667,7 +663,7 @@ public class MemoryManager {
             }
         }
     }
-    private void JSONGetXrayerHandleLocation(String xrayerUUID, GetXrayerHandleLocationCallback callback)
+    private void JSONGetXrayerHandleLocation(String xrayerUUID, CallbackGetXrayerHandleLocation callback)
     {
         //Refresh loaded xrayers in RAM Stack:
         JSONRefreshLoadedXrayerData();

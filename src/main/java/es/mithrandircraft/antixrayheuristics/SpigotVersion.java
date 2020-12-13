@@ -10,7 +10,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 
-public class SpigotVersion {
+class SpigotVersion {
     //Getting Versions enum from a representing integer:
     //Versions version = Versions.valueOf(112); // version = Versions.VERSION_1_12
 

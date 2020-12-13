@@ -4,9 +4,6 @@
 
 package es.mithrandircraft.antixrayheuristics;
 
-import es.mithrandircraft.antixrayheuristics.callbacks.StorePlayerDataCallback;
-import es.mithrandircraft.antixrayheuristics.files.LocaleManager;
-import es.mithrandircraft.antixrayheuristics.listeners.HandleXrayerEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -20,7 +17,7 @@ import org.bukkit.util.Vector;
 import java.util.Map;
 import java.util.UUID;
 
-public class XrayerHandler {
+class XrayerHandler {
 
     private static void XrayerWarn(String xrayername) //Sends a warning message to an xrayer by name
     {
@@ -36,7 +33,7 @@ public class XrayerHandler {
         Player player = Bukkit.getPlayer(xrayername); //Reference to player
 
         //Notify XraherHandledEvent
-        HandleXrayerEvent ev = new HandleXrayerEvent(player);
+        HandlingXrayerEvent ev = new HandlingXrayerEvent(player);
         Bukkit.getServer().getPluginManager().callEvent(ev);
         if (!ev.isCancelled()) //Event isn't cancelled
         {

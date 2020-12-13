@@ -4,14 +4,13 @@
 
 package es.mithrandircraft.antixrayheuristics;
 
-import es.mithrandircraft.antixrayheuristics.math.IntVector3;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
 import java.util.Arrays;
 
-public class MiningSession { //Contains heuristics tracked per player
+class MiningSession { //Contains heuristics tracked per player
 
     private final es.mithrandircraft.antixrayheuristics.AntiXrayHeuristics mainClassAccess;
 

@@ -11,7 +11,7 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
-public class BukkitSerializer {
+class BukkitSerializer {
 
     public static ItemStack[] InventoryAndEquipmentToSingleItemStackArray(Inventory inv, EntityEquipment equip) //Returns inventory and equipment item stacks put into an array
     {
