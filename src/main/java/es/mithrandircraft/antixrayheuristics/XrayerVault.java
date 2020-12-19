@@ -209,7 +209,7 @@ class XrayerVault {
         if((page+1) == pages)
         {
             iterations = UUIDs.size() % 45;
-            if(iterations == 0) iterations = 45;
+            if(iterations == 0 && page > 0) iterations = 45;
         }
         else iterations = 45;
         for(int i = 0; i < iterations; i++) //Fills up the vault page with entry buttons
