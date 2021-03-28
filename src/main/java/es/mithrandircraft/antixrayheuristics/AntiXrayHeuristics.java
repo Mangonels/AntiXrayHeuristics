@@ -98,8 +98,10 @@ public final class AntiXrayHeuristics extends JavaPlugin implements Listener {
         LocaleManager.get().options().copyDefaults(true);
         LocaleManager.save();
 
-        //Vault GUI object initialize:
-        vault = new XrayerVault(this);
+        //Vault GUI object initialize (version specific through NMS):
+        if(spigotVersion.version.GetValue() >= 113) vault = new XrayerVault_1_13_R1_AndHigher(this);
+        else if(spigotVersion.version.GetValue() >= 109) vault = new XrayerVault_1_9_R1(this);
+        else if(spigotVersion.version.GetValue() >= 108) vault = new XrayerVault_1_8_R1(this);
 
         //Commands:
         getCommand("AXH").setExecutor(new CommandAXH(this));

@@ -47,41 +47,41 @@ class EventClick implements Listener {
                     String xrayerUUID = mainClassAccess.vault.GetInspectedXrayer(viewerName);
                     mainClassAccess.vault.TeleportToDetectionCoordinates((Player) e.getWhoClicked(), xrayerUUID);
                 }
-                else if(e.getCurrentItem().equals(mainClassAccess.vault.GetNextButtonFormat())) //Clicked next button
+                else if(e.getCurrentItem().getItemMeta().getDisplayName().equals(LocaleManager.get().getString("NextButtonTitle"))) //Clicked next button
                 {
                     //Show next row:
                     mainClassAccess.vault.OpenVault((Player) e.getView().getPlayer(), mainClassAccess.vault.GetPage(e.getWhoClicked().getName()) + 1);
                 }
-                else if(e.getCurrentItem().equals(mainClassAccess.vault.GetPrevButtonFormat())) //Clicked prev button
+                else if(e.getCurrentItem().getItemMeta().getDisplayName().equals(LocaleManager.get().getString("BackButtonTitle"))) //Clicked prev button
                 {
                     //Show previous row:
                     mainClassAccess.vault.OpenVault((Player) e.getView().getPlayer(), mainClassAccess.vault.GetPage(e.getWhoClicked().getName()) - 1);
                 }
-                else if(e.getCurrentItem().equals(mainClassAccess.vault.GetPurgeButtonFormat())) //Clicked purge vault button
+                else if(e.getCurrentItem().getItemMeta().getDisplayName().equals(LocaleManager.get().getString("PurgeButtonTitle"))) //Clicked purge vault button
                 {
                     if(e.getWhoClicked().hasPermission("AXH.Vault.Purge")) {
                         mainClassAccess.vault.PurgeAllXrayersAndRefreshVault();
                     }
                     else e.getView().getPlayer().sendMessage(ChatColor.translateAlternateColorCodes('&', LocaleManager.get().getString("NoPermissionForCommand")));
                 }
-                else if(e.getCurrentItem().equals(mainClassAccess.vault.GetRefreshButtonFormat())) //Clicked refresh vault button
+                else if(e.getCurrentItem().getItemMeta().getDisplayName().equals(LocaleManager.get().getString("RefreshButtonTitle"))) //Clicked refresh vault button
                 {
                     //refresh:
                     mainClassAccess.vault.UpdateXrayerInfoLists((Player) e.getView().getPlayer(), mainClassAccess.vault.GetPage(e.getWhoClicked().getName()));
                 }
-                else if(e.getCurrentItem().equals(mainClassAccess.vault.GetBackButtonFormat())) //Clicked back button
+                else if(e.getCurrentItem().getItemMeta().getDisplayName().equals(LocaleManager.get().getString("GoBackButtonTitle"))) //Clicked back button
                 {
                     //go back to previous page:
                     mainClassAccess.vault.OpenVault((Player) e.getView().getPlayer(), mainClassAccess.vault.GetPage(e.getWhoClicked().getName()));
                 }
-                else if(e.getCurrentItem().equals(mainClassAccess.vault.GetPurgePlayerButtonFormat())) //Clicked purge player button
+                else if(e.getCurrentItem().getItemMeta().getDisplayName().equals(LocaleManager.get().getString("PurgeButtonTitle"))) //Clicked purge player button
                 {
                     if(e.getWhoClicked().hasPermission("AXH.Commands.PurgePlayer")) {
                         mainClassAccess.vault.XrayerDataRemover(e.getWhoClicked().getName(), true);
                     }
                     else e.getView().getPlayer().sendMessage(ChatColor.translateAlternateColorCodes('&', LocaleManager.get().getString("NoPermissionForCommand")));
                 }
-                else if(e.getCurrentItem().equals(mainClassAccess.vault.GetAbsolvePlayerButtonFormat())) //Clicked absolve player button
+                else if(e.getCurrentItem().getItemMeta().getDisplayName().equals(LocaleManager.get().getString("AbsolvePlayerButtonTitle"))) //Clicked absolve player button
                 {
                     if(e.getWhoClicked().hasPermission("AXH.Commands.AbsolvePlayer")) {
                         final String viewerName = e.getWhoClicked().getName();
