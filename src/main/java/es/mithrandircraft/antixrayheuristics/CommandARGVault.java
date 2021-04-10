@@ -15,7 +15,7 @@ class CommandARGVault {
         {
             Player player = (Player) sender;
             if (player.hasPermission("AXH.Commands.Vault")) {
-                mainClass.vault.UpdateXrayerInfoLists(player, 0); //Update all of the xrayer's uuid's in vault's arraylist (Arguments imply also opening vault for player on page)
+                mainClass.vault.UpdateXrayerInfoLists(player, 0); //Update all of the xrayer's uuid's in vault's arraylist (arguments imply also opening vault for player on page)
 
             } else player.sendMessage(ChatColor.translateAlternateColorCodes('&', LocaleManager.get().getString("NoPermissionForCommand")));
         } else { //Is console

@@ -4,7 +4,6 @@
 
 package es.mithrandircraft.antixrayheuristics;
 
-import es.mithrandircraft.antixrayheuristics.AntiXrayHeuristics;
 import org.bukkit.entity.HumanEntity;
 
 class DelayedInventoryCloseExecution implements Runnable {
@@ -23,7 +22,7 @@ class DelayedInventoryCloseExecution implements Runnable {
             //Clear loaded xrayer information in vault from RAM if no one is still viewing the GUI:
             if(mainClassAccess.vault.CheckIfNoViewers())
             {
-                mainClassAccess.vault.ClearXrayerInfoLists();
+                mainClassAccess.vault.ClearXrayerInfoLists(false);
             }
             if(mainClassAccess.getConfig().getString("StorageMethod").equals("JSON"))
             {

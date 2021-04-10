@@ -2,12 +2,11 @@ C:\Users\dylan\Desktop\LocalRepos\AntiXrayHeuristics\src\main\java\es\mithrandir
 C:\Users\dylan\Desktop\LocalRepos\AntiXrayHeuristics\src\main\java\es\mithrandircraft\antixrayheuristics\EventClick.java
 C:\Users\dylan\Desktop\LocalRepos\AntiXrayHeuristics\src\main\java\es\mithrandircraft\antixrayheuristics\EventBlockPlace.java
 C:\Users\dylan\Desktop\LocalRepos\AntiXrayHeuristics\src\main\java\es\mithrandircraft\antixrayheuristics\Xrayer.java
-C:\Users\dylan\Desktop\LocalRepos\AntiXrayHeuristics\src\main\java\es\mithrandircraft\antixrayheuristics\XrayerVault_1_8_R1.java
 C:\Users\dylan\Desktop\LocalRepos\AntiXrayHeuristics\src\main\java\es\mithrandircraft\antixrayheuristics\APIAntiXrayHeuristicsImpl.java
 C:\Users\dylan\Desktop\LocalRepos\AntiXrayHeuristics\src\main\java\es\mithrandircraft\antixrayheuristics\CallbackGetXrayerBelongings.java
 C:\Users\dylan\Desktop\LocalRepos\AntiXrayHeuristics\src\main\java\es\mithrandircraft\antixrayheuristics\RandomItemStackGenerator.java
-C:\Users\dylan\Desktop\LocalRepos\AntiXrayHeuristics\src\main\java\es\mithrandircraft\antixrayheuristics\XrayerVault_1_9_R1.java
 C:\Users\dylan\Desktop\LocalRepos\AntiXrayHeuristics\src\main\java\es\mithrandircraft\antixrayheuristics\MadeUpInventory.java
+C:\Users\dylan\Desktop\LocalRepos\AntiXrayHeuristics\src\main\java\es\mithrandircraft\antixrayheuristics\HeadManager.java
 C:\Users\dylan\Desktop\LocalRepos\AntiXrayHeuristics\src\main\java\es\mithrandircraft\antixrayheuristics\PlayerViewInfo.java
 C:\Users\dylan\Desktop\LocalRepos\AntiXrayHeuristics\src\main\java\es\mithrandircraft\antixrayheuristics\XrayerHandler.java
 C:\Users\dylan\Desktop\LocalRepos\AntiXrayHeuristics\src\main\java\es\mithrandircraft\antixrayheuristics\CommandARGSuspicion.java
@@ -15,9 +14,9 @@ C:\Users\dylan\Desktop\LocalRepos\AntiXrayHeuristics\src\main\java\es\mithrandir
 C:\Users\dylan\Desktop\LocalRepos\AntiXrayHeuristics\src\main\java\es\mithrandircraft\antixrayheuristics\CommandAXHAutoCompleter.java
 C:\Users\dylan\Desktop\LocalRepos\AntiXrayHeuristics\src\main\java\es\mithrandircraft\antixrayheuristics\MathFunctions.java
 C:\Users\dylan\Desktop\LocalRepos\AntiXrayHeuristics\src\main\java\es\mithrandircraft\antixrayheuristics\CommandARGReload.java
-C:\Users\dylan\Desktop\LocalRepos\AntiXrayHeuristics\src\main\java\es\mithrandircraft\antixrayheuristics\XrayerVault_1_13_R1_AndHigher.java
 C:\Users\dylan\Desktop\LocalRepos\AntiXrayHeuristics\src\main\java\es\mithrandircraft\antixrayheuristics\EventItemDrag.java
 C:\Users\dylan\Desktop\LocalRepos\AntiXrayHeuristics\src\main\java\es\mithrandircraft\antixrayheuristics\IntVector3.java
+C:\Users\dylan\Desktop\LocalRepos\AntiXrayHeuristics\src\main\java\es\mithrandircraft\antixrayheuristics\CallbackUpdateXrayerHeadCache.java
 C:\Users\dylan\Desktop\LocalRepos\AntiXrayHeuristics\src\main\java\es\mithrandircraft\antixrayheuristics\CommandARGXrayer.java
 C:\Users\dylan\Desktop\LocalRepos\AntiXrayHeuristics\src\main\java\es\mithrandircraft\antixrayheuristics\EventPlayerChangedWorld.java
 C:\Users\dylan\Desktop\LocalRepos\AntiXrayHeuristics\src\main\java\es\mithrandircraft\antixrayheuristics\CommandARGAbsolvePlayer.java
@@ -29,6 +28,7 @@ C:\Users\dylan\Desktop\LocalRepos\AntiXrayHeuristics\src\main\java\es\mithrandir
 C:\Users\dylan\Desktop\LocalRepos\AntiXrayHeuristics\src\main\java\es\mithrandircraft\antixrayheuristics\SpigotVersion.java
 C:\Users\dylan\Desktop\LocalRepos\AntiXrayHeuristics\src\main\java\es\mithrandircraft\antixrayheuristics\StorePlayerDataCallback.java
 C:\Users\dylan\Desktop\LocalRepos\AntiXrayHeuristics\src\main\java\es\mithrandircraft\antixrayheuristics\APIAntiXrayHeuristics.java
+C:\Users\dylan\Desktop\LocalRepos\AntiXrayHeuristics\src\main\java\es\mithrandircraft\antixrayheuristics\CallbackAddXrayerHeadToCache.java
 C:\Users\dylan\Desktop\LocalRepos\AntiXrayHeuristics\src\main\java\es\mithrandircraft\antixrayheuristics\CommandARGResetSuspicion.java
 C:\Users\dylan\Desktop\LocalRepos\AntiXrayHeuristics\src\main\java\es\mithrandircraft\antixrayheuristics\MemoryManager.java
 C:\Users\dylan\Desktop\LocalRepos\AntiXrayHeuristics\src\main\java\es\mithrandircraft\antixrayheuristics\AntiXrayHeuristics.java
