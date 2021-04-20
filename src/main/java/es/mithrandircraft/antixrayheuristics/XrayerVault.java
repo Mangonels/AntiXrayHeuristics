@@ -174,7 +174,7 @@ class XrayerVault
     public void SubstituteXrayerInfoLists(List<String> uuids, List<Integer> handledamounts, List<String> firsthandledtimes)
     {
         //Clear previous data:
-        ClearXrayerInfoLists(true);
+        ClearXrayerInfoLists(false);
 
         //Update with new data:
         UUIDs.addAll(uuids);
@@ -238,7 +238,12 @@ class XrayerVault
         Inventory gui = Bukkit.createInventory(null, 54, GUITitle + (page+1) + "/" + pages);
         viewers.put(player.getName(), new PlayerViewInfo(page)); //Register player as gui viewer on a certain page (used as player-page reference)
 
-        if(!xrayerSkulls.isEmpty()) //Cache the xrayer heads + construct the vault and display it to the player if the head caché is empty
+        if(!xrayerSkulls.isEmpty()) //Head caché has entries: Only construct the vault and then display it to the player
+        {
+            ConstructVault(gui, page);
+            player.openInventory(gui);
+        }
+        else //Head caché doesn't have entries: Cache the xrayer heads + construct the vault and display it to the player
         {
             Bukkit.getScheduler().runTaskAsynchronously(mainClassAccess, () -> UpdateXrayerHeadCache(new CallbackUpdateXrayerHeadCache() {
                 @Override
@@ -248,32 +253,26 @@ class XrayerVault
                 }
             }));
         }
-        else //Only construct the vault and then display it to the player if the head caché is already filled
-        {
-            ConstructVault(gui, page);
-            player.openInventory(gui);
-        }
     }
 
     /**Fills up vault gui with xrayer heads from cache*/
     private void ConstructVault(Inventory gui, int page)
     {
-        ItemStack skull;
+        ItemStack head;
         UUID currentUUID;
         int iteration = 0;
         ListIterator<String> iter = UUIDs.listIterator(page * 45);
         while (iter.hasNext() && !(iteration >= 45)) //Fills up the vault page with skulls containing xrayer data
         {
             currentUUID = UUID.fromString(iter.next());
-            skull = GetPlayerHead(Bukkit.getServer().getOfflinePlayer(currentUUID).getName());
-            SkullMeta meta = (SkullMeta) skull.getItemMeta();
-            //meta.setOwningPlayer(Bukkit.getServer().getOfflinePlayer(currentUUID)); //Assigns player to head owner
-            //meta.setDisplayName(Bukkit.getServer().getOfflinePlayer(currentUUID).getName()); //Head name editing
+            head = xrayerSkulls.get(iteration);
+            SkullMeta meta = (SkullMeta) head.getItemMeta();
+            meta.setDisplayName(Bukkit.getServer().getOfflinePlayer(currentUUID).getName()); //Head name editing
             Date lastSeenDate = new Date(Bukkit.getServer().getOfflinePlayer(currentUUID).getLastPlayed()); //Getting the last played date as Date object, and then formatting it...
             DateFormat df = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
             meta.setLore(PlaceholderManager.SubstituteXrayerDataAndColorCodePlaceholders(LocaleManager.get().getStringList("PlayerHeadDesc"), String.valueOf(handledAmounts.get(iteration)), firstHandledTimes.get(iteration), df.format(lastSeenDate))); //Head lore editing
-            skull.setItemMeta(meta);
-            gui.setItem(iteration, skull);
+            head.setItemMeta(meta);
+            gui.setItem(iteration, head);
             iteration++;
         }
 
@@ -365,15 +364,14 @@ class XrayerVault
                 inv.setItem(51, purgePlayerButton);
                 inv.setItem(53, absolvePlayerButton);
 
-                ItemStack skull = new ItemStack(Material.PLAYER_HEAD);
-                SkullMeta meta = (SkullMeta) skull.getItemMeta();
-                meta.setOwningPlayer(Bukkit.getServer().getOfflinePlayer(UUID.fromString(UUIDs.get(xrayerUUIDIndex)))); //Assigns player to head owner
+                ItemStack head = xrayerSkulls.get(xrayerUUIDIndex);
+                SkullMeta meta = (SkullMeta) head.getItemMeta();
                 meta.setDisplayName(Bukkit.getServer().getOfflinePlayer(UUID.fromString(UUIDs.get(xrayerUUIDIndex))).getName()); //Head name editing
                 Date lastSeenDate = new Date(Bukkit.getServer().getOfflinePlayer(UUID.fromString(UUIDs.get(xrayerUUIDIndex))).getLastPlayed()); //Getting the last played date as Date object, and then formatting it...
                 DateFormat df = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
                 meta.setLore(PlaceholderManager.SubstituteXrayerDataAndColorCodePlaceholders(LocaleManager.get().getStringList("PlayerHeadDescInspector"), String.valueOf(handledAmounts.get(xrayerUUIDIndex)), firstHandledTimes.get(xrayerUUIDIndex), df.format(lastSeenDate))); //Head lore editing
-                skull.setItemMeta(meta);
-                inv.setItem(49, skull);
+                head.setItemMeta(meta);
+                inv.setItem(49, head);
 
                 player.openInventory(inv);
             }

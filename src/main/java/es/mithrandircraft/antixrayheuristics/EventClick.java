@@ -24,24 +24,29 @@ class EventClick implements Listener {
     public void clickEvent(InventoryClickEvent e)
     {
         //GUI CLICK EVENT:
+
         //Check if xrayer vault gui item was clicked:
         if(e.getView().getTitle().contains(mainClassAccess.vault.GetGUITitle()))
         {
             if(e.getRawSlot() < e.getView().getTopInventory().getSize()) //The slot clicked was from the upper window
             {
+                Material refMaterial;
+                if(mainClassAccess.spigotVersion.version.GetValue() > 109) refMaterial = Material.LEGACY_SKULL_ITEM;
+                else refMaterial = Material.PLAYER_HEAD;
+
                 //Check if a relevant GUI item was clicked:
                 if(e.getCurrentItem() == null) //Nothing clicked
                 {
                     e.setCancelled(true);
                 }
-                else if(e.getCurrentItem().getType() == Material.PLAYER_HEAD && e.getSlot() == 49) //Clicked on player head, and it WAS located at slot 49 (which shows up in xrayer confiscated belongings inspector)
+                else if(e.getCurrentItem().getData().getItemType().equals(refMaterial) && e.getSlot() == 49) //Clicked on player head, and it WAS located at slot 49 (which shows up in xrayer confiscated belongings inspector)
                 {
                     //Teleport to player detection (HandleLocation) coordinates
                     String viewerName = e.getWhoClicked().getName();
                     String xrayerUUID = mainClassAccess.vault.GetInspectedXrayer(viewerName);
                     mainClassAccess.vault.TeleportToDetectionCoordinates((Player) e.getWhoClicked(), xrayerUUID);
                 }
-                else if(e.getCurrentItem().getType() == Material.PLAYER_HEAD) //Clicked on handled xrayer entry
+                else if(e.getCurrentItem().getData().getItemType().equals(refMaterial)) //Clicked on handled xrayer entry
                 {
                     //Open xrayer's confiscated inventory: The slot the item we clicked is on + the page we're on multiplied by the entry slots range (45 player heads) is equal to the xrayer's UUID position in the vault's XrayerUUID's array:
                     mainClassAccess.vault.OpenXrayerConfiscatedInventory((Player) e.getWhoClicked(), e.getRawSlot() + mainClassAccess.vault.GetPage(e.getWhoClicked().getName()) * 45);
