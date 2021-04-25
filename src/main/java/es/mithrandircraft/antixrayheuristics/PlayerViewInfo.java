@@ -6,7 +6,9 @@ package es.mithrandircraft.antixrayheuristics;
 
 class PlayerViewInfo {
     public int page; //Page Player is on
-    public String xrayerInvUUID; //Current or last viewed inventory's xrayer uiid by Player
+
+    public String xrayerInvUUID; //Current or last viewed xrayer vault's Player UUID
+
     PlayerViewInfo(int pag)
     {
         page = pag;

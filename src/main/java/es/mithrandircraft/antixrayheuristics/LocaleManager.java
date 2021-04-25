@@ -62,8 +62,8 @@ class LocaleManager {
         localeConfiguration.addDefault("AbsolvePlayerButtonTitle", "&eAbsolve player");
         localeConfiguration.addDefault("AbsolvePlayerButtonDesc", Arrays.asList("&bAbsolve this player,", "&breturning all confiscated", "&bitems. If they don't fit in", "&bplayer's inventory, they", "&bwill be dropped nearby.", "&bThis also purges the player's", "&bentry in this vault."));
         localeConfiguration.addDefault("HandledXrayerSlotName", "&aHandled xrayer slot #{Slot}");
-        localeConfiguration.addDefault("PlayerHeadDesc", Arrays.asList("&aConsecutive times handled: &b{HandledTimesAmount}", "&aFirst time detected: &b{FirstTimeDetected}", "&aLast seen: &b{LastSeenTime}"));
-        localeConfiguration.addDefault("PlayerHeadDescInspector", Arrays.asList("&aCLICK TO TELEPORT to detected location","&aConsecutive times handled: &b{HandledTimesAmount}", "&aFirst time detected: &b{FirstTimeDetected}", "&aLast seen: &b{LastSeenTime}"));
+        localeConfiguration.addDefault("EntryDesc", Arrays.asList("&aConsecutive times handled: &b{HandledTimesAmount}", "&aFirst time detected: &b{FirstTimeDetected}", "&aLast seen: &b{LastSeenTime}"));
+        localeConfiguration.addDefault("EntryDescInspector", Arrays.asList("&aCLICK TO TELEPORT to detected location","&aConsecutive times handled: &b{HandledTimesAmount}", "&aFirst time detected: &b{FirstTimeDetected}", "&aLast seen: &b{LastSeenTime}"));
     }
 
     public static void setup(String pluginName) //Finds or generates custom config file

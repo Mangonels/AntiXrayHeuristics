@@ -51,7 +51,7 @@ class XrayerHandler {
                         //The following are better occurring AFTER xrayer data storing is done asynchronously, that's why they're in this callback:
 
                         //Add xrayer head to the vault's xrayerSkull List
-                        mainClass.vault.AddXrayerHeadToCache(xrayername);
+                        if(mainClass.getConfig().getBoolean("UseHeadsInGUI")) mainClass.vault.AddXrayerHeadToCache(player.getUniqueId());
 
                         //Remove all of the xrayer's belongings if configured:
                         if (mainClass.getConfig().getBoolean("ClensePlayerItems")) {

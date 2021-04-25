@@ -66,17 +66,6 @@ class XrayerVault
             purgePlayerButton = new ItemStack(Material.RED_STAINED_GLASS_PANE);
             absolvePlayerButton = new ItemStack(Material.YELLOW_STAINED_GLASS_PANE);
         }
-        else if(mainClassAccess.spigotVersion.version.GetValue() > 109)
-        {
-            separator = new ItemStack(Material.valueOf("GRAY_STAINED_GLASS_PANE"));
-            nextButton = new ItemStack(Material.valueOf("GREEN_STAINED_GLASS_PANE"));
-            prevButton = new ItemStack(Material.valueOf("GREEN_STAINED_GLASS_PANE"));
-            purgeButton = new ItemStack(Material.valueOf("RED_STAINED_GLASS_PANE"));
-            refreshButton = new ItemStack(Material.valueOf("BLUE_STAINED_GLASS_PANE"));
-            backButton = new ItemStack(Material.valueOf("GREEN_STAINED_GLASS_PANE"));
-            purgePlayerButton = new ItemStack(Material.valueOf("RED_STAINED_GLASS_PANE"));
-            absolvePlayerButton = new ItemStack(Material.valueOf("YELLOW_STAINED_GLASS_PANE"));
-        }
         else
         {
             separator = new ItemStack(Material.valueOf("STAINED_GLASS_PANE"), 1, (short) 7);
@@ -85,7 +74,7 @@ class XrayerVault
             purgeButton = new ItemStack(Material.valueOf("STAINED_GLASS_PANE"),1, (short) 14);
             refreshButton = new ItemStack(Material.valueOf("STAINED_GLASS_PANE"),1, (short) 11);
             backButton = new ItemStack(Material.valueOf("STAINED_GLASS_PANE"),1, (short) 13);
-            purgePlayerButton = new ItemStack(Material.valueOf("STAINED_GLASS_PANE"),1, (short) 11);
+            purgePlayerButton = new ItemStack(Material.valueOf("STAINED_GLASS_PANE"),1, (short) 14);
             absolvePlayerButton = new ItemStack(Material.valueOf("STAINED_GLASS_PANE"),1, (short) 4);
         }
 
@@ -204,7 +193,7 @@ class XrayerVault
         UUIDs.clear();
         handledAmounts.clear();
         firstHandledTimes.clear();
-        if(clearHeadCache) xrayerSkulls.clear();
+        if(mainClassAccess.getConfig().getBoolean("UseHeadsInGUI") && clearHeadCache) xrayerSkulls.clear();
     }
 
     /**Calculates pages considering the amount of registered xrayer uuid's, and that there can only be 45 results per page*/
@@ -238,42 +227,70 @@ class XrayerVault
         Inventory gui = Bukkit.createInventory(null, 54, GUITitle + (page+1) + "/" + pages);
         viewers.put(player.getName(), new PlayerViewInfo(page)); //Register player as gui viewer on a certain page (used as player-page reference)
 
-        if(!xrayerSkulls.isEmpty()) //Head caché has entries: Only construct the vault and then display it to the player
+        if(mainClassAccess.getConfig().getBoolean("UseHeadsInGUI"))
+        {
+            if(!xrayerSkulls.isEmpty()) //Head caché has entries: Only construct the vault and then display it to the player
+            {
+                ConstructVault(gui, page);
+                player.openInventory(gui);
+            }
+            else //Head caché doesn't have entries: Cache the xrayer heads + construct the vault and display it to the player
+            {
+                Bukkit.getScheduler().runTaskAsynchronously(mainClassAccess, () -> UpdateXrayerHeadCache(new CallbackUpdateXrayerHeadCache() {
+                    @Override
+                    public void onFetchUpdateDone() {
+                        ConstructVault(gui, page);
+                        player.openInventory(gui);
+                    }
+                }));
+            }
+        }
+        else
         {
             ConstructVault(gui, page);
             player.openInventory(gui);
-        }
-        else //Head caché doesn't have entries: Cache the xrayer heads + construct the vault and display it to the player
-        {
-            Bukkit.getScheduler().runTaskAsynchronously(mainClassAccess, () -> UpdateXrayerHeadCache(new CallbackUpdateXrayerHeadCache() {
-                @Override
-                public void onFetchUpdateDone() {
-                    ConstructVault(gui, page);
-                    player.openInventory(gui);
-                }
-            }));
         }
     }
 
     /**Fills up vault gui with xrayer heads from cache*/
     private void ConstructVault(Inventory gui, int page)
     {
-        ItemStack head;
         UUID currentUUID;
         int iteration = 0;
         ListIterator<String> iter = UUIDs.listIterator(page * 45);
-        while (iter.hasNext() && !(iteration >= 45)) //Fills up the vault page with skulls containing xrayer data
+
+        if(mainClassAccess.getConfig().getBoolean("UseHeadsInGUI")) //Fills up the vault page with skull entries containing xrayer data
         {
-            currentUUID = UUID.fromString(iter.next());
-            head = xrayerSkulls.get(iteration);
-            SkullMeta meta = (SkullMeta) head.getItemMeta();
-            meta.setDisplayName(Bukkit.getServer().getOfflinePlayer(currentUUID).getName()); //Head name editing
-            Date lastSeenDate = new Date(Bukkit.getServer().getOfflinePlayer(currentUUID).getLastPlayed()); //Getting the last played date as Date object, and then formatting it...
-            DateFormat df = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
-            meta.setLore(PlaceholderManager.SubstituteXrayerDataAndColorCodePlaceholders(LocaleManager.get().getStringList("PlayerHeadDesc"), String.valueOf(handledAmounts.get(iteration)), firstHandledTimes.get(iteration), df.format(lastSeenDate))); //Head lore editing
-            head.setItemMeta(meta);
-            gui.setItem(iteration, head);
-            iteration++;
+            ItemStack head;
+            while (iter.hasNext() && !(iteration >= 45))
+            {
+                currentUUID = UUID.fromString(iter.next());
+                head = xrayerSkulls.get(iteration);
+                SkullMeta meta = (SkullMeta) head.getItemMeta();
+                meta.setDisplayName(Bukkit.getServer().getOfflinePlayer(currentUUID).getName()); //Head name editing
+                Date lastSeenDate = new Date(Bukkit.getServer().getOfflinePlayer(currentUUID).getLastPlayed()); //Getting the last played date as Date object, and then formatting it...
+                DateFormat df = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+                meta.setLore(PlaceholderManager.SubstituteXrayerDataAndColorCodePlaceholders(LocaleManager.get().getStringList("EntryDesc"), String.valueOf(handledAmounts.get(iteration)), firstHandledTimes.get(iteration), df.format(lastSeenDate))); //Head lore editing
+                head.setItemMeta(meta);
+                gui.setItem(iteration, head);
+                iteration++;
+            }
+        }
+        else
+        {
+            ItemStack stone = new ItemStack(Material.STONE);
+            while (iter.hasNext() && !(iteration >= 45)) //Fills up the vault page with stone entries containing xrayer data
+            {
+                currentUUID = UUID.fromString(iter.next());
+                ItemMeta meta = stone.getItemMeta();
+                meta.setDisplayName(Bukkit.getServer().getOfflinePlayer(currentUUID).getName()); //Stone name editing
+                Date lastSeenDate = new Date(Bukkit.getServer().getOfflinePlayer(currentUUID).getLastPlayed()); //Getting the last played date as Date object, and then formatting it...
+                DateFormat df = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+                meta.setLore(PlaceholderManager.SubstituteXrayerDataAndColorCodePlaceholders(LocaleManager.get().getStringList("EntryDesc"), String.valueOf(handledAmounts.get(iteration)), firstHandledTimes.get(iteration), df.format(lastSeenDate))); //Head lore editing
+                stone.setItemMeta(meta);
+                gui.setItem(iteration, stone);
+                iteration++;
+            }
         }
 
         //Lower section separators:
@@ -302,7 +319,7 @@ class XrayerVault
         //Fills up the xrayerSkulls list with xrayer skulls
         for (String uuid : UUIDs) {
             currentUUID = UUID.fromString(uuid);
-            xrayerSkulls.add(GetPlayerHead(Bukkit.getServer().getOfflinePlayer(currentUUID).getName()));
+            xrayerSkulls.add(HeadManager.GetPlayerHead(currentUUID, null));
         }
 
         //Callback to main thread runs synchronous instructions at the end of the asynchronous instructions
@@ -315,9 +332,9 @@ class XrayerVault
     }
 
     /**Adds a single corresponding xrayer head to the xrayerSkulls cache list by xrayerName if not already listed*/
-    public void AddXrayerHeadToCache(String xrayerName)
+    public void AddXrayerHeadToCache(UUID xrayerUUID)
     {
-        Bukkit.getScheduler().runTaskAsynchronously(mainClassAccess, () -> GetPlayerHeadAsyncCallback(xrayerName, new CallbackAddXrayerHeadToCache() {
+        Bukkit.getScheduler().runTaskAsynchronously(mainClassAccess, () -> HeadManager.GetPlayerHead(xrayerUUID, new CallbackAddXrayerHeadToCache() {
             @Override
             public void onFetchUpdateDone(ItemStack xrayerSkull) {
                 if(!xrayerSkulls.contains(xrayerSkull)) xrayerSkulls.add(xrayerSkull);
@@ -333,7 +350,7 @@ class XrayerVault
      */
     public void OpenXrayerConfiscatedInventory(Player player, int xrayerUUIDIndex)
     {
-        viewers.get(player.getName()).xrayerInvUUID = UUIDs.get(xrayerUUIDIndex); //Update uuid of xrayer we're watching
+        viewers.get(player.getName()).xrayerInvUUID = UUIDs.get(xrayerUUIDIndex); //Update uuid of the xrayer we're watching
 
         Bukkit.getScheduler().runTaskAsynchronously(mainClassAccess, () -> mainClassAccess.mm.GetXrayerBelongings(UUIDs.get(xrayerUUIDIndex), new CallbackGetXrayerBelongings()
         {
@@ -364,52 +381,32 @@ class XrayerVault
                 inv.setItem(51, purgePlayerButton);
                 inv.setItem(53, absolvePlayerButton);
 
-                ItemStack head = xrayerSkulls.get(xrayerUUIDIndex);
-                SkullMeta meta = (SkullMeta) head.getItemMeta();
-                meta.setDisplayName(Bukkit.getServer().getOfflinePlayer(UUID.fromString(UUIDs.get(xrayerUUIDIndex))).getName()); //Head name editing
-                Date lastSeenDate = new Date(Bukkit.getServer().getOfflinePlayer(UUID.fromString(UUIDs.get(xrayerUUIDIndex))).getLastPlayed()); //Getting the last played date as Date object, and then formatting it...
-                DateFormat df = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
-                meta.setLore(PlaceholderManager.SubstituteXrayerDataAndColorCodePlaceholders(LocaleManager.get().getStringList("PlayerHeadDescInspector"), String.valueOf(handledAmounts.get(xrayerUUIDIndex)), firstHandledTimes.get(xrayerUUIDIndex), df.format(lastSeenDate))); //Head lore editing
-                head.setItemMeta(meta);
-                inv.setItem(49, head);
+                if(mainClassAccess.getConfig().getBoolean("UseHeadsInGUI"))
+                {
+                    ItemStack head = xrayerSkulls.get(xrayerUUIDIndex);
+                    SkullMeta meta = (SkullMeta) head.getItemMeta();
+                    meta.setDisplayName(Bukkit.getServer().getOfflinePlayer(UUID.fromString(UUIDs.get(xrayerUUIDIndex))).getName()); //Head name editing
+                    Date lastSeenDate = new Date(Bukkit.getServer().getOfflinePlayer(UUID.fromString(UUIDs.get(xrayerUUIDIndex))).getLastPlayed()); //Getting the last played date as Date object, and then formatting it...
+                    DateFormat df = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+                    meta.setLore(PlaceholderManager.SubstituteXrayerDataAndColorCodePlaceholders(LocaleManager.get().getStringList("EntryDescInspector"), String.valueOf(handledAmounts.get(xrayerUUIDIndex)), firstHandledTimes.get(xrayerUUIDIndex), df.format(lastSeenDate))); //Head lore editing
+                    head.setItemMeta(meta);
+                    inv.setItem(49, head);
+                }
+                else
+                {
+                    ItemStack stone = new ItemStack(Material.STONE);
+                    ItemMeta meta = stone.getItemMeta();
+                    meta.setDisplayName(Bukkit.getServer().getOfflinePlayer(UUID.fromString(UUIDs.get(xrayerUUIDIndex))).getName()); //Head name editing
+                    Date lastSeenDate = new Date(Bukkit.getServer().getOfflinePlayer(UUID.fromString(UUIDs.get(xrayerUUIDIndex))).getLastPlayed()); //Getting the last played date as Date object, and then formatting it...
+                    DateFormat df = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+                    meta.setLore(PlaceholderManager.SubstituteXrayerDataAndColorCodePlaceholders(LocaleManager.get().getStringList("EntryDescInspector"), String.valueOf(handledAmounts.get(xrayerUUIDIndex)), firstHandledTimes.get(xrayerUUIDIndex), df.format(lastSeenDate))); //Head lore editing
+                    stone.setItemMeta(meta);
+                    inv.setItem(49, stone);
+                }
 
                 player.openInventory(inv);
             }
         }));
-    }
-
-    /**
-     *Gets the head of a player
-     *This method should be called asynchronously
-     *
-     * @param playerName The player's name for the head we want
-     * @return ItemStack with the player's skull as material
-     */
-    public ItemStack GetPlayerHead(String playerName)
-    {
-        String value;
-        value = HeadManager.GetHeadValue(playerName);
-        if (value == null){
-            value = "";
-        }
-        return HeadManager.GetHead(value);
-    }
-    /**
-     *Gets the head of a player
-     *This method should be called asynchronously
-     *
-     * @param playerName The player's name for the head we want
-     * @param callback This variant of the GetPlayerHead method adds a callback for post-async task
-     * @return ItemStack with the player's skull as material
-     */
-    public void GetPlayerHeadAsyncCallback(String playerName, CallbackAddXrayerHeadToCache callback)
-    {
-        String value;
-        value = HeadManager.GetHeadValue(playerName);
-        if (value == null){
-            value = "";
-        }
-        callback.onFetchUpdateDone(HeadManager.GetHead(value));
     }
 
     /**Teleports the player to the coordinates where an xrayer was detected for xraying*/
@@ -442,7 +439,7 @@ class XrayerVault
             handledAmounts.remove(i);
             firstHandledTimes.remove(i);
 
-            xrayerSkulls.remove(i);
+            if(mainClassAccess.getConfig().getBoolean("UseHeadsInGUI")) xrayerSkulls.remove(i);
             break;
         }
     }

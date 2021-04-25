@@ -134,3 +134,6 @@ SQLMaxActiveConnections: 10
 #Note: dummy xrayers won't trigger any configured command executions, warn messages, or suspicion resets when added to
 #the vault. They're just dummies.
 AddRandomDummyIfXrayerDeclaredButNameNotOnline: false
+
+#If set to true, heads will be used as GUI entries and data displays, else STONE will be used.
+UseHeadsInGUI: true
