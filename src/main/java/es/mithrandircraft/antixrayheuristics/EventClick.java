@@ -25,95 +25,119 @@ class EventClick implements Listener {
     {
         //GUI CLICK EVENT:
 
-        //Check if xrayer vault gui item was clicked:
+        //Check if click occured with xrayer vault gui view open:
         if(e.getView().getTitle().contains(mainClassAccess.vault.GetGUITitle()))
         {
-            if(e.getRawSlot() < e.getView().getTopInventory().getSize()) //The slot clicked was from the upper window
+            //A non-null, non AIR, uper window slot was clicked
+            if(e.getCurrentItem() != null && e.getRawSlot() < e.getView().getTopInventory().getSize() && e.getCurrentItem().getType() != Material.AIR)
             {
-                Material refMaterial;
-                if(mainClassAccess.getConfig().getBoolean("UseHeadsInGUI")) refMaterial = Material.LEGACY_SKULL_ITEM;
-                else refMaterial = Material.LEGACY_STONE;
+                //An item was clicked
+                final String playerWhoClicked = e.getWhoClicked().getName();
+                if(mainClassAccess.vault.GetInspectedXrayer(playerWhoClicked) == null) //We're on the overall xrayer vault which shows xrayer entries
+                {
+                    switch(e.getSlot())
+                    {
+                        case 48:
+                        {
+                            //Purge all xrayers:
+                            if(e.getWhoClicked().hasPermission("AXH.Vault.Purge")) {
+                                mainClassAccess.vault.PurgeAllXrayersAndRefreshVault();
+                            }
+                            else e.getView().getPlayer().sendMessage(ChatColor.translateAlternateColorCodes('&', LocaleManager.get().getString("NoPermissionForCommand")));
 
-                //Check if a relevant GUI item was clicked:
-                if(e.getCurrentItem() == null) //Nothing clicked
-                {
-                    e.setCancelled(true);
-                }
-                else
-                {
-                    if(e.getCurrentItem().getData().getItemType().equals(refMaterial) && e.getSlot() == 49) //Clicked on player head, and it WAS located at slot 49 (which shows up in xrayer confiscated belongings inspector)
-                    {
-                        //Teleport to player detection (HandleLocation) coordinates
-                        String viewerName = e.getWhoClicked().getName();
-                        String xrayerUUID = mainClassAccess.vault.GetInspectedXrayer(viewerName);
-                        mainClassAccess.vault.TeleportToDetectionCoordinates((Player) e.getWhoClicked(), xrayerUUID);
-                    }
-                    else if(e.getCurrentItem().getData().getItemType().equals(refMaterial)) //Clicked on handled xrayer entry
-                    {
-                        //Open xrayer's confiscated inventory: The slot the item we clicked is on + the page we're on multiplied by the entry slots range (45 player heads) is equal to the xrayer's UUID position in the vault's XrayerUUID's array:
-                        mainClassAccess.vault.OpenXrayerConfiscatedInventory((Player) e.getWhoClicked(), e.getRawSlot() + mainClassAccess.vault.GetPage(e.getWhoClicked().getName()) * 45);
-                    }
-                    else if(e.getCurrentItem().getItemMeta().getDisplayName().equals(mainClassAccess.vault.nextButton.getItemMeta().getDisplayName())) //Clicked next button
-                    {
-                        //Show next row:
-                        mainClassAccess.vault.OpenVault((Player) e.getView().getPlayer(), mainClassAccess.vault.GetPage(e.getWhoClicked().getName()) + 1);
-                    }
-                    else if(e.getCurrentItem().getItemMeta().getDisplayName().equals(mainClassAccess.vault.prevButton.getItemMeta().getDisplayName())) //Clicked prev button
-                    {
-                        //Show previous row:
-                        mainClassAccess.vault.OpenVault((Player) e.getView().getPlayer(), mainClassAccess.vault.GetPage(e.getWhoClicked().getName()) - 1);
-                    }
-                    else if(e.getCurrentItem().getItemMeta().getDisplayName().equals(mainClassAccess.vault.purgeButton.getItemMeta().getDisplayName())) //Clicked purge vault button
-                    {
-                        if(e.getWhoClicked().hasPermission("AXH.Vault.Purge")) {
-                            mainClassAccess.vault.PurgeAllXrayersAndRefreshVault();
+                            break;
                         }
-                        else e.getView().getPlayer().sendMessage(ChatColor.translateAlternateColorCodes('&', LocaleManager.get().getString("NoPermissionForCommand")));
-                    }
-                    else if(e.getCurrentItem().getItemMeta().getDisplayName().equals(mainClassAccess.vault.refreshButton.getItemMeta().getDisplayName())) //Clicked refresh vault button
-                    {
-                        //refresh:
-                        mainClassAccess.vault.UpdateXrayerInfoLists((Player) e.getView().getPlayer(), mainClassAccess.vault.GetPage(e.getWhoClicked().getName()));
-                    }
-                    else if(e.getCurrentItem().getItemMeta().getDisplayName().equals(mainClassAccess.vault.backButton.getItemMeta().getDisplayName())) //Clicked back button
-                    {
-                        //go back to previous page:
-                        mainClassAccess.vault.OpenVault((Player) e.getView().getPlayer(), mainClassAccess.vault.GetPage(e.getWhoClicked().getName()));
-                    }
-                    else if(e.getCurrentItem().getItemMeta().getDisplayName().equals(mainClassAccess.vault.purgePlayerButton.getItemMeta().getDisplayName())) //Clicked purge player button
-                    {
-                        if(e.getWhoClicked().hasPermission("AXH.Commands.PurgePlayer")) {
-                            mainClassAccess.vault.XrayerDataRemover(e.getWhoClicked().getName(), true);
+                        case 50:
+                        {
+                            //Refresh vault:
+                            mainClassAccess.vault.UpdateXrayerInfoLists((Player) e.getView().getPlayer(), mainClassAccess.vault.GetPage(playerWhoClicked));
+
+                            break;
                         }
-                        else e.getView().getPlayer().sendMessage(ChatColor.translateAlternateColorCodes('&', LocaleManager.get().getString("NoPermissionForCommand")));
-                    }
-                    else if(e.getCurrentItem().getItemMeta().getDisplayName().equals(mainClassAccess.vault.absolvePlayerButton.getItemMeta().getDisplayName())) //Clicked absolve player button
-                    {
-                        if(e.getWhoClicked().hasPermission("AXH.Commands.AbsolvePlayer")) {
-                            final String viewerName = e.getWhoClicked().getName();
-                            final String xrayerUUID = mainClassAccess.vault.GetInspectedXrayer(viewerName);
-                            //return inventory to player, and do the rest if player was online (function returns true if it worked):
-                            Bukkit.getScheduler().runTaskAsynchronously(mainClassAccess, () -> mainClassAccess.mm.GetXrayerBelongings(xrayerUUID, new CallbackGetXrayerBelongings()
+                        case 53:
+                        {
+                            //Show next vault row:
+                            if(e.getCurrentItem().getItemMeta().getDisplayName().equals(mainClassAccess.vault.nextButton.getItemMeta().getDisplayName()))
+                                mainClassAccess.vault.OpenVault((Player) e.getView().getPlayer(), mainClassAccess.vault.GetPage(playerWhoClicked) + 1);
+
+                            break;
+                        }
+                        case 45:
+                        {
+                            //Show previous vault row:
+                            if(e.getCurrentItem().getItemMeta().getDisplayName().equals(mainClassAccess.vault.prevButton.getItemMeta().getDisplayName()))
+                                mainClassAccess.vault.OpenVault((Player) e.getView().getPlayer(), mainClassAccess.vault.GetPage(playerWhoClicked) - 1);
+
+                            break;
+                        }
+                        default:
+                        {
+                            if(e.getSlot() > -1 && e.getSlot() < 45)
                             {
-                                @Override
-                                public void onQueryDone(ItemStack[] belongings)
-                                {
-                                    if (XrayerHandler.PlayerAbsolver(xrayerUUID, belongings, mainClassAccess)) {
-                                        mainClassAccess.vault.XrayerDataRemover(viewerName, true);
-                                    }
-                                    else e.getWhoClicked().sendMessage(ChatColor.translateAlternateColorCodes('&',LocaleManager.get().getString("MessagesPrefix")) + " " + ChatColor.translateAlternateColorCodes('&', LocaleManager.get().getString("PlayerNotOnlineOnAbsolution")));
-                                }
-                            }));
+                                //Open xrayer's confiscated inventory: The slot the item we clicked is on + the page we're on multiplied by the entry slots range (45 player heads) is equal to the xrayer's UUID position in the vault's XrayerUUID's array:
+                                mainClassAccess.vault.OpenXrayerConfiscatedInventory((Player) e.getWhoClicked(), e.getRawSlot() + mainClassAccess.vault.GetPage(playerWhoClicked) * 45);
+                            }
+
+                            break;
                         }
-                        else e.getView().getPlayer().sendMessage(ChatColor.translateAlternateColorCodes('&', LocaleManager.get().getString("NoPermissionForCommand")));
                     }
-                    e.setCancelled(true);
+                }
+                else //We're inspecting an xrayer's information and possible confiscated items
+                {
+                    switch(e.getSlot())
+                    {
+                        case 45:
+                        {
+                            //Go back to previous page:
+                            mainClassAccess.vault.OpenVault((Player) e.getView().getPlayer(), mainClassAccess.vault.GetPage(playerWhoClicked));
+
+                            break;
+                        }
+                        case 53:
+                        {
+                            //Absolve player:
+                            if(e.getWhoClicked().hasPermission("AXH.Commands.AbsolvePlayer")) {
+                                final String xrayerUUID = mainClassAccess.vault.GetInspectedXrayer(playerWhoClicked);
+                                //Return inventory to player, and do the rest if player was online:
+                                Bukkit.getScheduler().runTaskAsynchronously(mainClassAccess, () -> mainClassAccess.mm.GetXrayerBelongings(xrayerUUID, new CallbackGetXrayerBelongings()
+                                {
+                                    @Override
+                                    public void onQueryDone(ItemStack[] belongings)
+                                    {
+                                        if (XrayerHandler.PlayerAbsolver(xrayerUUID, belongings, mainClassAccess)) {
+                                            mainClassAccess.vault.XrayerDataRemover(playerWhoClicked, true);
+                                        }
+                                        else e.getWhoClicked().sendMessage(ChatColor.translateAlternateColorCodes('&',LocaleManager.get().getString("MessagesPrefix")) + " " + ChatColor.translateAlternateColorCodes('&', LocaleManager.get().getString("PlayerNotOnlineOnAbsolution")));
+                                    }
+                                }));
+                            }
+                            else e.getView().getPlayer().sendMessage(ChatColor.translateAlternateColorCodes('&', LocaleManager.get().getString("NoPermissionForCommand")));
+
+                            break;
+                        }
+                        case 51:
+                        {
+                            //Purge player:
+                            if(e.getWhoClicked().hasPermission("AXH.Commands.PurgePlayer")) {
+                                mainClassAccess.vault.XrayerDataRemover(playerWhoClicked, true);
+                            }
+                            else e.getView().getPlayer().sendMessage(ChatColor.translateAlternateColorCodes('&', LocaleManager.get().getString("NoPermissionForCommand")));
+
+                            break;
+                        }
+                        case 49:
+                        {
+                            //Teleport to player detection (HandleLocation) coordinates:
+                            String xrayerUUID = mainClassAccess.vault.GetInspectedXrayer(playerWhoClicked);
+                            mainClassAccess.vault.TeleportToDetectionCoordinates((Player) e.getWhoClicked(), xrayerUUID);
+
+                            break;
+                        }
+                    }
                 }
             }
-            else if (e.getAction().equals(InventoryAction.MOVE_TO_OTHER_INVENTORY)) //This check stops item stack movement with shift between inventories
-            {
-                e.setCancelled(true);
-            }
+
+            e.setCancelled(true);
         }
     }
 }
