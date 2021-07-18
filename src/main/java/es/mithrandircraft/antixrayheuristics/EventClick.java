@@ -1,5 +1,5 @@
 //--------------------------------------------------------------------
-// Copyright © Dylan Calaf Latham 2019-2020 AntiXrayHeuristics
+// Copyright © Dylan Calaf Latham 2019-2021 AntiXrayHeuristics
 //--------------------------------------------------------------------
 
 package es.mithrandircraft.antixrayheuristics;
@@ -10,7 +10,6 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.inventory.InventoryAction;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
 

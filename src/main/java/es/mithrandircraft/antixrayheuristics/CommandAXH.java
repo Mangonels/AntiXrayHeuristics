@@ -1,5 +1,5 @@
 //--------------------------------------------------------------------
-// Copyright © Dylan Calaf Latham 2019-2020 AntiXrayHeuristics
+// Copyright © Dylan Calaf Latham 2019-2021 AntiXrayHeuristics
 //--------------------------------------------------------------------
 
 package es.mithrandircraft.antixrayheuristics;
@@ -22,7 +22,8 @@ class CommandAXH implements CommandExecutor {
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) { //Check for what command it is in following list:
         if(args.length == 1)
         {
-            if (args[0].equalsIgnoreCase("vault") || args[0].equalsIgnoreCase("v")) CommandARGVault.V(sender, mainClassAccess);
+            if (args[0].equalsIgnoreCase("xrayer") || args[0].equalsIgnoreCase("x")) CommandARGXrayer.X(sender, mainClassAccess);
+            else if (args[0].equalsIgnoreCase("vault") || args[0].equalsIgnoreCase("v")) CommandARGVault.V(sender, mainClassAccess);
             else if (args[0].equalsIgnoreCase("reload") || args[0].equalsIgnoreCase("r")) CommandARGReload.R(sender, mainClassAccess);
             else if (args[0].equalsIgnoreCase("resetsuspicion") || args[0].equalsIgnoreCase("rs")) CommandARGResetSuspicion.RS(sender, mainClassAccess);
             //else if (args[0].equalsIgnoreCase("suspicion") || args[0].equalsIgnoreCase("s")) CommandARGSuspicion.S(sender, mainClassAccess);

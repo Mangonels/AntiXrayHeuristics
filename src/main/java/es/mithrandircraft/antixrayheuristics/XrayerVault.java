@@ -1,5 +1,5 @@
 //--------------------------------------------------------------------
-// Copyright © Dylan Calaf Latham 2019-2020 AntiXrayHeuristics
+// Copyright © Dylan Calaf Latham 2019-2021 AntiXrayHeuristics
 //--------------------------------------------------------------------
 
 package es.mithrandircraft.antixrayheuristics;
@@ -47,6 +47,11 @@ class XrayerVault
     public String GetGUITitle()
     {
         return GUITitle;
+    }
+
+    public List<String> GetUUIDs()
+    {
+        return UUIDs;
     }
 
     public XrayerVault(es.mithrandircraft.antixrayheuristics.AntiXrayHeuristics main)
@@ -337,7 +342,20 @@ class XrayerVault
         Bukkit.getScheduler().runTaskAsynchronously(mainClassAccess, () -> HeadManager.GetPlayerHead(xrayerUUID, new CallbackAddXrayerHeadToCache() {
             @Override
             public void onFetchUpdateDone(ItemStack xrayerSkull) {
-                if(!xrayerSkulls.contains(xrayerSkull)) xrayerSkulls.add(xrayerSkull);
+                if(!xrayerSkulls.contains(xrayerSkull)){
+                    xrayerSkulls.add(xrayerSkull);
+                }
+            }
+        }));
+    }
+    /**Adds a dummy xrayer head to the xrayerSkulls cache. The dummy head will be Notch's head*/
+    public void AddDummyXrayerHeadToCache()
+    {
+        Bukkit.getScheduler().runTaskAsynchronously(mainClassAccess, () -> HeadManager.GetPlayerHead(UUID.fromString("069a79f4-44e9-4726-a5be-fca90e38aaf5"), new CallbackAddXrayerHeadToCache() {
+            @Override
+            public void onFetchUpdateDone(ItemStack xrayerSkull) {
+                //No repeated head check since all dummy heads are generated with Notch's UUID, hence the head will repeat if this method is called more than once
+                xrayerSkulls.add(xrayerSkull);
             }
         }));
     }

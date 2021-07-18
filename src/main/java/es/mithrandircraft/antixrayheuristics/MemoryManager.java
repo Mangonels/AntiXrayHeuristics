@@ -1,5 +1,5 @@
 //--------------------------------------------------------------------
-// Copyright © Dylan Calaf Latham 2019-2020 AntiXrayHeuristics
+// Copyright © Dylan Calaf Latham 2019-2021 AntiXrayHeuristics
 //--------------------------------------------------------------------
 
 package es.mithrandircraft.antixrayheuristics;
@@ -68,7 +68,7 @@ class MemoryManager {
     }
 
     //Stores fake player as xrayer with fake data
-    void StoreDummyPlayerData()
+    void StoreDummyPlayerData(final StorePlayerDataCallback callback)
     {
         switch (mainClassAccess.getConfig().getString("StorageType")) {
             case "MYSQL":
@@ -77,7 +77,7 @@ class MemoryManager {
                     cn = dataSource.getConnection();
                     if(cn != null)
                     {
-                        SQLPlayerDataStore(cn, null, null);
+                        SQLPlayerDataStore(cn, null, callback);
                     }
                 } catch (SQLException e) {
                     System.err.print(e);
@@ -90,7 +90,7 @@ class MemoryManager {
                 }
                 break;
             case "JSON":
-                JSONPlayerDataStore(null, null);
+                JSONPlayerDataStore(null, callback);
                 break;
             default:
                 break;
@@ -246,7 +246,8 @@ class MemoryManager {
     {
         BasicDataSource basicDataSource = new BasicDataSource();
 
-        basicDataSource.setDriverClassName("org.gjt.mm.mysql.Driver");
+        if(!mainClassAccess.getConfig().getString("SQLDriverClassName").equals(""))
+            basicDataSource.setDriverClassName(mainClassAccess.getConfig().getString("SQLDriverClassName"));
         basicDataSource.setUsername(mainClassAccess.getConfig().getString("SQLUsername"));
         basicDataSource.setPassword(mainClassAccess.getConfig().getString("SQLPassword"));
         basicDataSource.setUrl("jdbc:mysql://" + mainClassAccess.getConfig().getString("SQLHost") + ":" + mainClassAccess.getConfig().getString("SQLPort") + "/" + mainClassAccess.getConfig().getString("SQLDatabaseName") + "?useSSL=false");

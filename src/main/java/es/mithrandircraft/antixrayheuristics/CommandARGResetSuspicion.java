@@ -1,5 +1,5 @@
 //--------------------------------------------------------------------
-// Copyright © Dylan Calaf Latham 2019-2020 AntiXrayHeuristics
+// Copyright © Dylan Calaf Latham 2019-2021 AntiXrayHeuristics
 //--------------------------------------------------------------------
 
 package es.mithrandircraft.antixrayheuristics;
@@ -9,7 +9,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 class CommandARGResetSuspicion {
-    public static void RS(CommandSender sender, AntiXrayHeuristics mainClass) {//Non-parametrized
+    public static void RS(CommandSender sender, AntiXrayHeuristics mainClass) { //Non-parametrized
         if(sender instanceof Player) //Is player
         {
             Player player = (Player) sender;

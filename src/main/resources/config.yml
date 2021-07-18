@@ -109,7 +109,10 @@ TellPlayersWithPermission: true
 #----------------------
 #AXH needs to store certain persistent information, here you should configure your preferred method for data storing.
 
-#Storage type (available: 'MYSQL', 'JSON')
+#Storage type
+#Available types:
+#  'MYSQL'   - May only work if you are running Paper (or fork of it).
+#  'JSON'    - May only work if you are running Spigot (or fork of it).
 #Be warned: AAX does not offer data conversion between available storage types, so choose your data storage
 #wisely before you start using this plugin. The storage type will be swapped once you change it on this config and
 #restart the server. If you don't even know what the storage types are and how they work, just leave the default
@@ -117,23 +120,26 @@ TellPlayersWithPermission: true
 StorageType: 'JSON'
 
 #Edit the following credentials if you are using MySQL:
+SQLDriverClassName: '' #Leaving this empty '' (for none/disable) should work fine on newer versions, if you get any errors, try using one of these: 'org.gjt.mm.mysql.Driver', 'com.mysql.jdbc.Driver'
 SQLHost: '127.0.0.1'
 SQLPort: '3306'
 SQLDatabaseName: 'myDatabase'
 SQLUsername: 'root'
 SQLPassword: 'root'
 SQLMaxActiveConnections: 10
+UseDriverClassName: false
 
 #------
 #TOOLS:
 #------
 
-#If set to true, when an xrayer is handled (usually explicitly through /axh xrayer <playerName>), and the playerName's
-#player is offline, a dummy will be created. Used for GUI stress testing purposes, you probably really don't need to
-#enable this option unless you're testing something. It was kinda made for development testing purposes.
+#If set to true, the command /axh xrayer (without any parameters) will add a dummy xrayer for testing purposes,
+#and the playerName's. You probably really don't need to enable this option unless you're testing something.
+#It was kinda made for development testing purposes.
 #Note: dummy xrayers won't trigger any configured command executions, warn messages, or suspicion resets when added to
 #the vault. They're just dummies.
-AddRandomDummyIfXrayerDeclaredButNameNotOnline: false
+AddRandomDummyXrayerIfNoXrayerCommandParameters: false
 
-#If set to true, heads will be used as GUI entries and data displays, else STONE will be used.
-UseHeadsInGUI: true
+#[The head feature is currently broken/very unstable. Not recommended] If set to true, heads will be used as GUI
+#entries and data displays, else STONE will be used.
+UseHeadsInGUI: false

@@ -28,6 +28,7 @@ es\mithrandircraft\antixrayheuristics\MemoryManager$6.class
 es\mithrandircraft\antixrayheuristics\IntVector3.class
 es\mithrandircraft\antixrayheuristics\EventClick$1.class
 es\mithrandircraft\antixrayheuristics\CommandARGPurgePlayer.class
+es\mithrandircraft\antixrayheuristics\XrayerHandler$2.class
 es\mithrandircraft\antixrayheuristics\MemoryManager$3.class
 es\mithrandircraft\antixrayheuristics\XrayerVault$5.class
 es\mithrandircraft\antixrayheuristics\LocaleManager.class
@@ -57,6 +58,7 @@ es\mithrandircraft\antixrayheuristics\MemoryManager$8.class
 es\mithrandircraft\antixrayheuristics\BukkitSerializer.class
 es\mithrandircraft\antixrayheuristics\MemoryManager$1.class
 es\mithrandircraft\antixrayheuristics\CommandARGAbsolvePlayer$2.class
+es\mithrandircraft\antixrayheuristics\XrayerVault$7.class
 es\mithrandircraft\antixrayheuristics\MemoryManager$5.class
 es\mithrandircraft\antixrayheuristics\MemoryManager.class
 es\mithrandircraft\antixrayheuristics\HandlingXrayerEvent.class

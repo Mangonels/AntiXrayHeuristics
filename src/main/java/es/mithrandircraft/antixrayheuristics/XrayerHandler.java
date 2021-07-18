@@ -1,5 +1,5 @@
 //--------------------------------------------------------------------
-// Copyright © Dylan Calaf Latham 2019-2020 AntiXrayHeuristics
+// Copyright © Dylan Calaf Latham 2019-2021 AntiXrayHeuristics
 //--------------------------------------------------------------------
 
 package es.mithrandircraft.antixrayheuristics;
@@ -37,7 +37,7 @@ class XrayerHandler {
         Bukkit.getServer().getPluginManager().callEvent(ev);
         if (!ev.isCancelled()) //Event isn't cancelled
         {
-            if (player != null) //If the player is online hence data was obtained
+            if (player != null) //The player is online
             {
                 //Send message to xrayer if configured:
                 if (mainClass.getConfig().getBoolean("SendMessageToPlayer")) {
@@ -88,15 +88,35 @@ class XrayerHandler {
                 //Warn players with permission:
                 if (mainClass.getConfig().getBoolean("TellPlayersWithPermission")) XrayerWarn(xrayername);
             }
-            //If the player isn't online
-            else if (mainClass.getConfig().getBoolean("AddRandomDummyIfXrayerDeclaredButNameNotOnline")) //Store dummy?
-            {
-                //Store dummy xrayer data (and inventory only if configured):
-                Bukkit.getScheduler().runTaskAsynchronously(mainClass, () -> mainClass.mm.StoreDummyPlayerData());
-                System.out.println("Specified player was not online, adding dummy player as specified in configuration.");
-            } else
-                System.out.println(ChatColor.translateAlternateColorCodes('&', LocaleManager.get().getString("MessagesPrefix")) + " " + PlaceholderManager.SubstitutePlayerNameAndColorCodePlaceholders(LocaleManager.get().getString("PlayerNotOnlineOnHandle"), xrayername));
+            //The player isn't online
+            else System.out.println(ChatColor.translateAlternateColorCodes('&', LocaleManager.get().getString("MessagesPrefix")) + " " + PlaceholderManager.SubstitutePlayerNameAndColorCodePlaceholders(LocaleManager.get().getString("PlayerNotOnlineOnHandle"), xrayername));
         }
+    }
+
+    /**Stores dummy xrayer data (and inventory only if configured)*/
+    public static void AddDummyXrayer()
+    {
+        AntiXrayHeuristics mainClass = JavaPlugin.getPlugin(AntiXrayHeuristics.class);
+        Bukkit.getScheduler().runTaskAsynchronously(mainClass, () -> mainClass.mm.StoreDummyPlayerData(new StorePlayerDataCallback() {
+            @Override
+            public void onInsertDone(int handleTimes) {
+                //Add dummy xrayer head to the vault's xrayerSkull List
+                if(mainClass.getConfig().getBoolean("UseHeadsInGUI"))
+                {
+                    /*
+                    //There is an extremely rare chance that the random UUID may already be cache'd, so we might as well account for it, since we want a fresh new head for every dummy
+                    String nonRepeatingRandomUUID;
+                    do{
+                        nonRepeatingRandomUUID = UUID.randomUUID().toString();
+                    }
+                    while (mainClass.vault.GetUUIDs().contains(nonRepeatingRandomUUID));
+                    */
+
+                    //WARNING: The same head will be generated always
+                    mainClass.vault.AddDummyXrayerHeadToCache();
+                }
+            }
+        }));
     }
 
     private static void DropItemAtPlayerLocation(ItemStack item, Player p) //Drops items at player location
