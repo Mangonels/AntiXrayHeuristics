@@ -1,7 +1,7 @@
 name: AntiXrayHeuristics
-version: 1.3.10
+version: 1.3.11
 main: es.mithrandircraft.antixrayheuristics.AntiXrayHeuristics
-api-version: 1.13
+api-version: 1.17
 authors: [__Mithrandir__]
 description: An heuristically based monitor designed to stop and/or punish xray usage.
 website: www.mithrandircraft.es

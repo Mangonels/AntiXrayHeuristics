@@ -16,6 +16,11 @@ class MadeUpEquipment implements EntityEquipment {
     }
 
     @Override
+    public void setItem(EquipmentSlot equipmentSlot, ItemStack itemStack, boolean b) {
+
+    }
+
+    @Override
     public ItemStack getItem(EquipmentSlot slot) {
         return RandomItemStackGenerator.GetRandomItemStack();
     }
@@ -31,12 +36,22 @@ class MadeUpEquipment implements EntityEquipment {
     }
 
     @Override
+    public void setItemInMainHand(ItemStack itemStack, boolean b) {
+
+    }
+
+    @Override
     public ItemStack getItemInOffHand() {
         return RandomItemStackGenerator.GetRandomItemStack();
     }
 
     @Override
     public void setItemInOffHand(ItemStack item) {
+
+    }
+
+    @Override
+    public void setItemInOffHand(ItemStack itemStack, boolean b) {
 
     }
 
@@ -61,12 +76,22 @@ class MadeUpEquipment implements EntityEquipment {
     }
 
     @Override
+    public void setHelmet(ItemStack itemStack, boolean b) {
+
+    }
+
+    @Override
     public ItemStack getChestplate() {
         return RandomItemStackGenerator.GetRandomItemStack();
     }
 
     @Override
     public void setChestplate(ItemStack chestplate) {
+
+    }
+
+    @Override
+    public void setChestplate(ItemStack itemStack, boolean b) {
 
     }
 
@@ -81,12 +106,22 @@ class MadeUpEquipment implements EntityEquipment {
     }
 
     @Override
+    public void setLeggings(ItemStack itemStack, boolean b) {
+
+    }
+
+    @Override
     public ItemStack getBoots() {
         return RandomItemStackGenerator.GetRandomItemStack();
     }
 
     @Override
     public void setBoots(ItemStack boots) {
+
+    }
+
+    @Override
+    public void setBoots(ItemStack itemStack, boolean b) {
 
     }
 

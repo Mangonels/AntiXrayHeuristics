@@ -7,6 +7,7 @@ package es.mithrandircraft.antixrayheuristics;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.block.Biome;
+import org.bukkit.configuration.serialization.ConfigurationSerialization;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -93,10 +94,18 @@ public final class AntiXrayHeuristics extends JavaPlugin implements Listener {
         getConfig().options().copyDefaults();
         saveDefaultConfig();
 
+        //Register serializable object (used for complex MaterialWeights config serialization)
+        ConfigurationSerialization.registerClass(BlockWeightInfo.class);
+
         //Locale load:
         LocaleManager.setup(getName());
         LocaleManager.get().options().copyDefaults(true);
         LocaleManager.save();
+
+        //Material weights load:
+        WeightsCard.setup(getName());
+        WeightsCard.get().options().copyDefaults(true);
+        WeightsCard.save();
 
         //Vault GUI object initialize (version specific through NMS):
         vault = new XrayerVault(this);

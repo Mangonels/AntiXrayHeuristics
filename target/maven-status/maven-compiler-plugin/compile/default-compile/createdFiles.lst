@@ -8,6 +8,7 @@ es\mithrandircraft\antixrayheuristics\EventBlockPlace.class
 es\mithrandircraft\antixrayheuristics\CommandARGReload.class
 es\mithrandircraft\antixrayheuristics\XrayerVault$3.class
 es\mithrandircraft\antixrayheuristics\AntiXrayHeuristics$1.class
+es\mithrandircraft\antixrayheuristics\BlockWeightInfo.class
 es\mithrandircraft\antixrayheuristics\CallbackGetXrayerBelongings.class
 es\mithrandircraft\antixrayheuristics\XrayerVault$6.class
 es\mithrandircraft\antixrayheuristics\MadeUpEquipment.class
@@ -40,6 +41,7 @@ es\mithrandircraft\antixrayheuristics\XrayerHandler.class
 es\mithrandircraft\antixrayheuristics\CallbackAddXrayerHeadToCache.class
 es\mithrandircraft\antixrayheuristics\RandomItemStackGenerator.class
 es\mithrandircraft\antixrayheuristics\CommandARGAbsolvePlayer$1.class
+es\mithrandircraft\antixrayheuristics\WeightsCard.class
 es\mithrandircraft\antixrayheuristics\EventItemDrag.class
 es\mithrandircraft\antixrayheuristics\CallbackGetXrayerHandleLocation.class
 es\mithrandircraft\antixrayheuristics\AntiXrayHeuristics.class
