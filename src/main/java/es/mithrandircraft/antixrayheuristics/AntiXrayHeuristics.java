@@ -427,7 +427,10 @@ public final class AntiXrayHeuristics extends JavaPlugin implements Listener {
             return Material.STONE;
         else if (e.getBlock().getType() == Material.NETHERRACK)
             return Material.NETHERRACK;
-
+        else if (e.getBlock().getType() == Material.DEEPSLATE)
+            return Material.DEEPSLATE;
+        else if (e.getBlock().getType() == Material.TUFF)
+            return Material.TUFF;
         else if (e.getBlock().getType() == Material.COAL_ORE && getConfig().getLong("CoalWeight") != 0f)
             return Material.COAL_ORE;
         else if (e.getBlock().getType() == Material.REDSTONE_ORE && getConfig().getLong("RedstoneWeight") != 0f)
@@ -468,6 +471,8 @@ public final class AntiXrayHeuristics extends JavaPlugin implements Listener {
             Material m = RelevantBlockCheck(ev);
             if (m != Material.AIR) { //Attempt at updating player mining session:
                 if (!UpdateMiningSession(ev, m)) { //Let's asume the player doesn't have a MiningSession entry. Then is the block consequently a first stone or first netherrack?
+                System.out.println(m);
+                if (!UpdateMiningSession(ev, m)) { //Let's asume the player doesn't have a MiningSession entry. Then is the block consequently a first stone, netherrack, tuff or deepslate?
                     if (m == Material.STONE) {
                         sessions.put(ev.getPlayer().getName(), new MiningSession(this)); //Adds new entry to sessions HashMap for player
                     }
@@ -480,6 +485,16 @@ public final class AntiXrayHeuristics extends JavaPlugin implements Listener {
                             sessions.put(ev.getPlayer().getName(), new MiningSession(this)); //Adds new entry to sessions HashMap for player
                         }
                     }
+                    else if (m == Material.DEEPSLATE){
+                            sessions.put(ev.getPlayer().getName(), new MiningSession(this));
+                        }
+                    } else if (m == Material.TUFF){
+                        sessions.put(ev.getPlayer().getName(), new MiningSession(this));
+                    }
+
+
+                    //else if(spigotVersion.version.GetValue() >= 118) { //Spigot for MC 1.18+
+
                 }
             }
         }

@@ -31,6 +31,7 @@ NetherGoldWeight: 5.0
 AncientDebrisWeight: 22.0
 
 #You can use these reducers for certain biomes where ores are more abundant. They are used internally in order to
+
 #reduce the total amount of suspicion applied according to the algorithm, when an ore is mined in a biome where it's
 #more frequent (Example: Gold (Mesa), Emerald (ExtremeHills)), the higher, the more weight is reduced:
 FinalEmeraldWeightDivisionReducer: 2
