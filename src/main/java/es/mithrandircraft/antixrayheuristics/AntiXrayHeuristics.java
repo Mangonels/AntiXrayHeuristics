@@ -283,7 +283,7 @@ public final class AntiXrayHeuristics extends JavaPlugin implements Listener {
 
             //Relevant non-ores mining triggers
             // These are right on top of the state machine because they're very common:
-            if ((m == Material.STONE) || (m == Material.NETHERRACK)
+            if ((m == Material.STONE) || (m == Material.NETHERRACK) || (m == Material.DEEPSLATE) || (m == Material.TUFF)
 
                     || (spigotVersion.version.GetValue() >= 116 && m == Material.BASALT)) //Spigot for MC 1.16+
             {
@@ -348,7 +348,77 @@ public final class AntiXrayHeuristics extends JavaPlugin implements Listener {
                         s.minedNonOreBlocksStreak = 0;
                     }
                 s.SetLastMinedOreData(m, ev.getBlock().getLocation());
-            } else if (m == Material.EMERALD_ORE) {
+
+
+
+
+            } else if (m == Material.DEEPSLATE_DIAMOND_ORE) {
+                s.UpdateTimeAccountingProperties(ev.getPlayer());
+                if (s.GetLastMinedOre() != m || s.GetLastMinedOreLocation().distance(ev.getBlock().getLocation()) > getConfig().getInt("ConsiderAdjacentWithinDistance"))
+                    if (s.minedNonOreBlocksStreak > getConfig().getInt("MinimumBlocksMinedToNextVein")) {
+                        if (s.minedNonOreBlocksStreak > usualEncounterThreshold)
+                            s.AddSuspicionLevel(GetWeightFromAnalyzingTrail(ev, s, getConfig().getLong("DeepslateDiamond"))); //Updates suspicion level normally.
+                        else
+                            s.AddSuspicionLevel(GetWeightFromAnalyzingTrail(ev, s, extraDiamondWeight)); //Updates suspicion level with extra suspicion since the ore was quite close to last mined ore.
+
+                        s.minedNonOreBlocksStreak = 0;
+                    }
+                s.SetLastMinedOreData(m, ev.getBlock().getLocation());
+            }
+
+            else if (m == Material.DEEPSLATE_GOLD_ORE) {
+                s.UpdateTimeAccountingProperties(ev.getPlayer());
+                //Check that it's not the same block ore material as the last mined block's. If it is, it will execute "||" statement which will verify the distance from last same mined block material to new mined block is not less than configured vein size:
+                if(s.GetLastMinedOre() != m || s.GetLastMinedOreLocation().distance(ev.getBlock().getLocation()) > getConfig().getInt("ConsiderAdjacentWithinDistance"))
+                    //Check if enough non-ore blocks have been previously mined in order to account for this ore (exposed ores fp prevention):
+                    if(s.minedNonOreBlocksStreak > getConfig().getInt("MinimumBlocksMinedToNextVein")) {
+                        //We got to an ore over threshold, so we analyze our non-ores mined trail and get weight based on that:
+                        s.AddSuspicionLevel(GetWeightFromAnalyzingTrail(ev, s, getConfig().getLong("DeepslateGold")));
+                        s.minedNonOreBlocksStreak = 0; //Resets previously mined blocks counter
+                    }
+                s.SetLastMinedOreData(m, ev.getBlock().getLocation());
+            }
+            else if (m == Material.DEEPSLATE_IRON_ORE) {
+                s.UpdateTimeAccountingProperties(ev.getPlayer());
+                //Check that it's not the same block ore material as the last mined block's. If it is, it will execute "||" statement which will verify the distance from last same mined block material to new mined block is not less than configured vein size:
+                if(s.GetLastMinedOre() != m || s.GetLastMinedOreLocation().distance(ev.getBlock().getLocation()) > getConfig().getInt("ConsiderAdjacentWithinDistance"))
+                    //Check if enough non-ore blocks have been previously mined in order to account for this ore (exposed ores fp prevention):
+                    if(s.minedNonOreBlocksStreak > getConfig().getInt("MinimumBlocksMinedToNextVein")) {
+                        //We got to an ore over threshold, so we analyze our non-ores mined trail and get weight based on that:
+                        s.AddSuspicionLevel(GetWeightFromAnalyzingTrail(ev, s, getConfig().getLong("DeepslateIron")));
+                        s.minedNonOreBlocksStreak = 0; //Resets previously mined blocks counter
+                    }
+                s.SetLastMinedOreData(m, ev.getBlock().getLocation());
+            }
+            else if (m == Material.DEEPSLATE_LAPIS_ORE) {
+                s.UpdateTimeAccountingProperties(ev.getPlayer());
+                //Check that it's not the same block ore material as the last mined block's. If it is, it will execute "||" statement which will verify the distance from last same mined block material to new mined block is not less than configured vein size:
+                if(s.GetLastMinedOre() != m || s.GetLastMinedOreLocation().distance(ev.getBlock().getLocation()) > getConfig().getInt("ConsiderAdjacentWithinDistance"))
+                    //Check if enough non-ore blocks have been previously mined in order to account for this ore (exposed ores fp prevention):
+                    if(s.minedNonOreBlocksStreak > getConfig().getInt("MinimumBlocksMinedToNextVein")) {
+                        //We got to an ore over threshold, so we analyze our non-ores mined trail and get weight based on that:
+                        s.AddSuspicionLevel(GetWeightFromAnalyzingTrail(ev, s, getConfig().getLong("DeepslateLapis")));
+                        s.minedNonOreBlocksStreak = 0; //Resets previously mined blocks counter
+                    }
+                s.SetLastMinedOreData(m, ev.getBlock().getLocation());
+            }
+            else if (m == Material.DEEPSLATE_REDSTONE_ORE) {
+                s.UpdateTimeAccountingProperties(ev.getPlayer());
+                //Check that it's not the same block ore material as the last mined block's. If it is, it will execute "||" statement which will verify the distance from last same mined block material to new mined block is not less than configured vein size:
+                if(s.GetLastMinedOre() != m || s.GetLastMinedOreLocation().distance(ev.getBlock().getLocation()) > getConfig().getInt("ConsiderAdjacentWithinDistance"))
+                    //Check if enough non-ore blocks have been previously mined in order to account for this ore (exposed ores fp prevention):
+                    if(s.minedNonOreBlocksStreak > getConfig().getInt("MinimumBlocksMinedToNextVein")) {
+                        //We got to an ore over threshold, so we analyze our non-ores mined trail and get weight based on that:
+                        s.AddSuspicionLevel(GetWeightFromAnalyzingTrail(ev, s, getConfig().getLong("DeepslateRedstone")));
+                        s.minedNonOreBlocksStreak = 0; //Resets previously mined blocks counter
+                    }
+                s.SetLastMinedOreData(m, ev.getBlock().getLocation());
+            }
+
+
+
+
+            else if (m == Material.EMERALD_ORE) {
                 s.UpdateTimeAccountingProperties(ev.getPlayer());
                 if(s.GetLastMinedOre() != m || s.GetLastMinedOreLocation().distance(ev.getBlock().getLocation()) > getConfig().getInt("ConsiderAdjacentWithinDistance"))
                     if(s.minedNonOreBlocksStreak > getConfig().getInt("MinimumBlocksMinedToNextVein")) {
@@ -431,6 +501,7 @@ public final class AntiXrayHeuristics extends JavaPlugin implements Listener {
             return Material.DEEPSLATE;
         else if (e.getBlock().getType() == Material.TUFF)
             return Material.TUFF;
+
         else if (e.getBlock().getType() == Material.COAL_ORE && getConfig().getLong("CoalWeight") != 0f)
             return Material.COAL_ORE;
         else if (e.getBlock().getType() == Material.REDSTONE_ORE && getConfig().getLong("RedstoneWeight") != 0f)
@@ -447,6 +518,16 @@ public final class AntiXrayHeuristics extends JavaPlugin implements Listener {
             return Material.EMERALD_ORE;
         else if (e.getBlock().getType() == Material.NETHER_QUARTZ_ORE && getConfig().getLong("QuartzWeight") != 0f)
             return Material.NETHER_QUARTZ_ORE;
+        else if (e.getBlock().getType() == Material.DEEPSLATE_DIAMOND_ORE && getConfig().getLong("DeepslateDiamond") != 0f)
+            return Material.DEEPSLATE_DIAMOND_ORE;
+        else if (e.getBlock().getType() == Material.DEEPSLATE_IRON_ORE && getConfig().getLong("DeepslateIron") != 0f)
+            return Material.DEEPSLATE_IRON_ORE;
+        else if (e.getBlock().getType() == Material.DEEPSLATE_GOLD_ORE && getConfig().getLong("DeepslateGold") != 0f)
+            return Material.DEEPSLATE_GOLD_ORE;
+        else if (e.getBlock().getType() == Material.DEEPSLATE_REDSTONE_ORE && getConfig().getLong("DeepslateRedstone") != 0f)
+            return Material.DEEPSLATE_REDSTONE_ORE;
+        else if (e.getBlock().getType() == Material.DEEPSLATE_LAPIS_ORE && getConfig().getLong("DeepslateLapis") != 0f)
+            return Material.DEEPSLATE_LAPIS_ORE;
 
         else if(spigotVersion.version.GetValue() >= 116) //Spigot for MC 1.16+
         {

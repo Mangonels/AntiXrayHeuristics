@@ -29,6 +29,11 @@ DiamondWeight: 15.0
 QuartzWeight: 5.0
 NetherGoldWeight: 5.0
 AncientDebrisWeight: 22.0
+DeepslateDiamond: 20.0
+DeeplsateGold: 5.0
+DeepslateIron: 5.0
+DeepslateLapis: 8.0
+DeepslateRedstone: 9.0
 
 #You can use these reducers for certain biomes where ores are more abundant. They are used internally in order to
 
