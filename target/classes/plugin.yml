@@ -21,3 +21,5 @@ commands:
     description: Removes xrayer from xrayer vault and restores belongings.
   AXH Purge:
     description: Removes xrayer from xrayer vault.
+  AXH Suspicion:
+    description: View your own suspicion, or the suspicion for a player
