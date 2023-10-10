@@ -21,6 +21,7 @@ class CommandAXHAutoCompleter implements TabCompleter {
             firstArguments.add("xrayer");
             firstArguments.add("absolve");
             firstArguments.add("purge");
+            firstArguments.add("suspicion");
 
             return firstArguments;
         }

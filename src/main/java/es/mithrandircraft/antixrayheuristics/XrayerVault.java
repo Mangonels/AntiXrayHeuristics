@@ -4,10 +4,7 @@
 
 package es.mithrandircraft.antixrayheuristics;
 
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.Location;
-import org.bukkit.Material;
+import org.bukkit.*;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
@@ -228,6 +225,7 @@ class XrayerVault
     {
         //Recalculate pages length:
         CalculatePages();
+        player.playSound(player.getLocation(), Sound.BLOCK_ENDER_CHEST_OPEN, 100, 1);
 
         Inventory gui = Bukkit.createInventory(null, 54, GUITitle + (page+1) + "/" + pages);
         viewers.put(player.getName(), new PlayerViewInfo(page)); //Register player as gui viewer on a certain page (used as player-page reference)
@@ -435,6 +433,7 @@ class XrayerVault
             @Override
             public void onQueryDone(Location handlelocation)
             {
+                player.playSound(player.getLocation(), Sound.ENTITY_ENDERMAN_TELEPORT, 100, 1);
                 player.teleport(handlelocation);
                 player.sendMessage(ChatColor.translateAlternateColorCodes('&',LocaleManager.get().getString("MessagesPrefix")) + " " + ChatColor.translateAlternateColorCodes('&', LocaleManager.get().getString("TeleportToHandleLocation")));
             }
