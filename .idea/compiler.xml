@@ -9,8 +9,5 @@
         <module name="AntiXrayHeuristics" />
       </profile>
     </annotationProcessing>
-    <bytecodeTargetLevel>
-      <module name="AntiXrayHeuristics" target="1.8" />
-    </bytecodeTargetLevel>
   </component>
 </project>
